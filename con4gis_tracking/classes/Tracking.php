@@ -61,20 +61,22 @@ class Tracking extends \Controller
             'latitude' => $dblLatitude,
             'longitude' => $dblLongitude,
             'accuracy' => $longAccuracy,
-            'speed' => $longSpeed
+            'speed' => $longSpeed,
+            'comment' => $strComment
         );
 
         $objPoi = new \C4gTrackingPoisModel();
         $objPoi->setRow($arrSet)->save();
 
         $arrTrackingPoi['poiId'] = $objPoi->id;
+        $arrTrackingPoi['poiUuid'] = $strUuid;
 
         $arrTrackingPoi['version'] = self::VERSION;
 
         return $arrTrackingPoi;
     }
 
-    public static function setNewTrack($intConfiguration, $intUserId, $timeStamp=false)
+    public static function setNewTrack($intConfiguration, $intUserId, $strComment="", $timeStamp=false)
     {
         $arrTrackingTrack = array();
         $time = $timeStamp ? $timeStamp : time();
@@ -85,13 +87,15 @@ class Tracking extends \Controller
             'tstamp'    => $time,
             'pid'    => $intConfiguration,
             'uuid'  => $strUuid,
-            'member' => $intUserId
+            'member' => $intUserId,
+            'comment' => $strComment
         );
 
         $objTrack = new \C4gTrackingTracksModel();
         $objTrack->setRow($arrSet)->save();
 
         $arrTrackingTrack['trackId'] = $objTrack->id;
+        $arrTrackingTrack['trackUuid'] = $strUuid;
 
         $arrTrackingTrack['version'] = self::VERSION;
 

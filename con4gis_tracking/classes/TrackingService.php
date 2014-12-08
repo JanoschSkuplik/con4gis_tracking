@@ -79,9 +79,17 @@ class TrackingService extends \Controller
             $this->arrReturn = $this->getErrorReturn('No longitude submittet');
             $blnHasError = true;
         }
+        
+        $strComment = "";
+        if (\Input::post('comment'))
+        {
+            $strComment = \Input::post('comment');
+        }
+        
         if (!$blnHasError)
         {
-            $this->arrReturn['track'] = \Tracking::setNewPoi(\Input::post('configuration'), \Input::post('user'), \Input::post('latitude'), \Input::post('longitude'));
+            $this->arrReturn['error'] = 0;
+            $this->arrReturn['track'] = \Tracking::setNewPoi(\Input::post('configuration'), \Input::post('user'), \Input::post('latitude'), \Input::post('longitude'), 0, 0, $strComment, false);
         }
 
         return true;
@@ -115,6 +123,7 @@ class TrackingService extends \Controller
         }
         if (!$blnHasError)
         {
+            $this->arrReturn['error'] = 0;
             $this->arrReturn['track'] = \Tracking::setNewPosition(\Input::post('track'), \Input::post('latitude'), \Input::post('longitude'));
         }
 
@@ -141,9 +150,15 @@ class TrackingService extends \Controller
             $this->arrReturn = $this->getErrorReturn('No configuration submittet');
             $blnHasError = true;
         }
+        $strComment = "";
+        if (\Input::post('comment'))
+        {
+            $strComment = \Input::post('comment');
+        }
         if (!$blnHasError)
         {
-            $this->arrReturn['track'] = \Tracking::setNewTrack(\Input::post('configuration'), \Input::post('user'));
+            $this->arrReturn['error'] = 0;
+            $this->arrReturn['track'] = \Tracking::setNewTrack(\Input::post('configuration'), \Input::post('user'), $strComment, false);
         }
 
         return true;
@@ -158,6 +173,7 @@ class TrackingService extends \Controller
         }
 
         $blnHasError = false;
+        
         if (!\Input::post('user') && !\Input::post('password'))
         {
             $this->arrReturn = $this->getErrorReturn('No username and password');
@@ -189,9 +205,14 @@ class TrackingService extends \Controller
         }
         else
         {
-
+            $this->import('Database');
+            $strUniqId = md5(uniqid());
+            $this->Database->prepare("UPDATE tl_member SET ssoHash=? WHERE id=?")->execute($strUniqId,$this->User->id);
+            
+            $this->arrReturn['error'] = 0;
             $this->arrReturn['userId'] = $this->User->id;
             $this->arrReturn['userName'] = $this->User->username;
+            $this->arrReturn['userHash'] = $strUniqId;
             $this->arrReturn['userRealName'] = ($this->User->firstname ? ($this->User->firstname . " ") : '') . $this->User->lastname;
             $this->arrReturn['trackingConfig'] = \Tracking::getTrackingConfig();
 

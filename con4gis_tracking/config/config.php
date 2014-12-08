@@ -12,6 +12,9 @@
  * @filesource
  */
 
+$GLOBALS['FE_MOD']['miscellaneous']['c4g_ssologin'] = 'ModuleSsoLogin';
+
+
 /**
  * Backend Modules
  */

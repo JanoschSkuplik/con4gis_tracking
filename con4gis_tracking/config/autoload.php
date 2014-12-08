@@ -3,12 +3,11 @@
 /**
  * Contao Open Source CMS
  *
- * @version   php 5
- * @package   con4gis_tracking
- * @author    Janosch Oltmanns
- * @license   GNU/LGPL http://opensource.org/licenses/lgpl-3.0.html
- * @copyright Janosch Oltmanns in cooperation with Küstenschmiede GmbH Software & Design 2014
- * @link      http://janosch-oltmanns.de https://www.kuestenschmiede.de
+ * Copyright (c) 2005-2014 Leo Feyer
+ *
+ * @package Con4gis_tracking
+ * @link    https://contao.org
+ * @license http://www.gnu.org/licenses/lgpl-3.0.html LGPL
  */
 
 
@@ -26,13 +25,26 @@ ClassLoader::addNamespaces(array
  */
 ClassLoader::addClasses(array
 (
+	// Modules
+	'JanoschOltmanns\ModuleSsoLogin'            => 'system/modules/con4gis_tracking/modules/ModuleSsoLogin.php',
+
 	// Classes
-	'JanoschOltmanns\Tracking'                 => 'system/modules/con4gis_tracking/classes/Tracking.php',
-	'JanoschOltmanns\TrackingService'          => 'system/modules/con4gis_tracking/classes/TrackingService.php',
+	'JanoschOltmanns\TrackingService'           => 'system/modules/con4gis_tracking/classes/TrackingService.php',
+	'JanoschOltmanns\Tracking'                  => 'system/modules/con4gis_tracking/classes/Tracking.php',
 
 	// Models
-	'JanoschOltmanns\C4gTrackingModel'         => 'system/modules/con4gis_tracking/models/C4gTrackingModel.php',
-	'JanoschOltmanns\C4gTrackingPoisModel'     => 'system/modules/con4gis_tracking/models/C4gTrackingPoisModel.php',
+	'JanoschOltmanns\C4gTrackingModel'          => 'system/modules/con4gis_tracking/models/C4gTrackingModel.php',
+	'JanoschOltmanns\C4gTrackingTracksModel'    => 'system/modules/con4gis_tracking/models/C4gTrackingTracksModel.php',
 	'JanoschOltmanns\C4gTrackingPositionsModel' => 'system/modules/con4gis_tracking/models/C4gTrackingPositionsModel.php',
-	'JanoschOltmanns\C4gTrackingTracksModel'   => 'system/modules/con4gis_tracking/models/C4gTrackingTracksModel.php',
+	'JanoschOltmanns\C4gTrackingPoisModel'      => 'system/modules/con4gis_tracking/models/C4gTrackingPoisModel.php',
+));
+
+
+/**
+ * Register the templates
+ */
+TemplateLoader::addFiles(array
+(
+	'j_app4gis'          => 'system/modules/con4gis_tracking/templates/javascript',
+	'mod_centralcontent' => 'system/modules/con4gis_tracking/templates/elements',
 ));
