@@ -25,18 +25,19 @@ ClassLoader::addNamespaces(array
  */
 ClassLoader::addClasses(array
 (
-	// Modules
-	'JanoschOltmanns\ModuleSsoLogin'            => 'system/modules/con4gis_tracking/modules/ModuleSsoLogin.php',
-
 	// Classes
-	'JanoschOltmanns\TrackingService'           => 'system/modules/con4gis_tracking/classes/TrackingService.php',
 	'JanoschOltmanns\Tracking'                  => 'system/modules/con4gis_tracking/classes/Tracking.php',
+	'JanoschOltmanns\TrackingFrontend'          => 'system/modules/con4gis_tracking/classes/TrackingFrontend.php',
+	'JanoschOltmanns\TrackingService'           => 'system/modules/con4gis_tracking/classes/TrackingService.php',
 
 	// Models
 	'JanoschOltmanns\C4gTrackingModel'          => 'system/modules/con4gis_tracking/models/C4gTrackingModel.php',
-	'JanoschOltmanns\C4gTrackingTracksModel'    => 'system/modules/con4gis_tracking/models/C4gTrackingTracksModel.php',
-	'JanoschOltmanns\C4gTrackingPositionsModel' => 'system/modules/con4gis_tracking/models/C4gTrackingPositionsModel.php',
 	'JanoschOltmanns\C4gTrackingPoisModel'      => 'system/modules/con4gis_tracking/models/C4gTrackingPoisModel.php',
+	'JanoschOltmanns\C4gTrackingPositionsModel' => 'system/modules/con4gis_tracking/models/C4gTrackingPositionsModel.php',
+	'JanoschOltmanns\C4gTrackingTracksModel'    => 'system/modules/con4gis_tracking/models/C4gTrackingTracksModel.php',
+
+	// Modules
+	'JanoschOltmanns\ModuleSsoLogin'            => 'system/modules/con4gis_tracking/modules/ModuleSsoLogin.php',
 ));
 
 
@@ -45,6 +46,6 @@ ClassLoader::addClasses(array
  */
 TemplateLoader::addFiles(array
 (
-	'j_app4gis'          => 'system/modules/con4gis_tracking/templates/javascript',
 	'mod_centralcontent' => 'system/modules/con4gis_tracking/templates/elements',
+	'j_app4gis'          => 'system/modules/con4gis_tracking/templates/javascript',
 ));

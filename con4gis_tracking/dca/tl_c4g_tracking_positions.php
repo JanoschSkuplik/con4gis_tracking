@@ -87,7 +87,7 @@ $GLOBALS['TL_DCA']['tl_c4g_tracking_positions'] = array
 	'palettes' => array
 	(
 		'__selector__'                => array(''),
-		'default'                     => '{title_legend},track_uuid;{position_legend},latitude,longitude,accuracy,speed;',
+		'default'                     => '{title_legend},track_uuid;{position_legend},location,accuracy,speed;',
 	),
 
 	// Subpalettes
@@ -139,6 +139,15 @@ $GLOBALS['TL_DCA']['tl_c4g_tracking_positions'] = array
             'inputType'               => 'text',
             'eval'                    => array('tl_class'=>'w50', 'mandatory'=>true),
             'sql'                     => "double NULL"
+        ),
+        'location' => array
+        (
+            'label'                   => &$GLOBALS['TL_LANG']['tl_c4g_tracking_pois']['name'],
+            'exclude'                 => true,
+            'search'                  => true,
+            'inputType'               => 'text',
+            'eval'                    => array('tl_class'=>'w50', 'mandatory'=>true),
+            'sql'                     => "point NOT NULL"
         ),
         'accuracy' => array
         (

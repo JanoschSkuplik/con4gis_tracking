@@ -29,8 +29,12 @@ $GLOBALS['BE_MOD']['con4gis']['c4g_tracking'] = array
  * Hooks
  */
 //$GLOBALS['TL_HOOKS']['dispatchAjax']['trackingDispatchAjax'] = array('TrackingService', 'trackingDispatchAjax');
+$GLOBALS['TL_HOOKS']['c4gAddLocationsParent']['tracking'] = array('TrackingFrontend','addLocations');
 
 /**
  * Rest-API
  */
 $GLOBALS['TL_API']['trackingService'] = 'TrackingService';
+
+$GLOBALS['c4g_locationtypes'][] = 't_pois';
+$GLOBALS['c4g_locationtypes'][] = 't_tracks';
