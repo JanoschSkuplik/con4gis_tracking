@@ -21,10 +21,10 @@ class Tracking extends \Controller
      */
     const VERSION = '0.0.1';
 
-    public static function setNewPosition($intTrackId, $dblLatitude, $dblLongitude, $longAccuracy=0, $longSpeed=0)
+    public static function setNewPosition($intTrackId, $dblLatitude, $dblLongitude, $longAccuracy=0, $longSpeed=0, $timeStamp=false)
     {
         $arrTrackingPosition = array();
-        $time = time();
+        $time = $timeStamp ? $timeStamp : time();
 
         $arrSet = array
         (
@@ -41,13 +41,15 @@ class Tracking extends \Controller
 
         $arrTrackingPosition['positionId'] = $objPosition->id;
 
+        $arrTrackingConfig['version'] = self::VERSION;
+
         return $arrTrackingPosition;
     }
 
-    public static function setNewPoi($intConfiguration, $intUserId, $dblLatitude, $dblLongitude, $longAccuracy=0, $longSpeed=0, $strComment="")
+    public static function setNewPoi($intConfiguration, $intUserId, $dblLatitude, $dblLongitude, $longAccuracy=0, $longSpeed=0, $strComment="", $timeStamp=false)
     {
         $arrTrackingPoi = array();
-        $time = time();
+        $time = $timeStamp ? $timeStamp : time();
         $strUuid = uniqid('', true);
 
         $arrSet = array
@@ -67,13 +69,15 @@ class Tracking extends \Controller
 
         $arrTrackingPoi['poiId'] = $objPoi->id;
 
+        $arrTrackingPoi['version'] = self::VERSION;
+
         return $arrTrackingPoi;
     }
 
-    public static function setNewTrack($intConfiguration, $intUserId)
+    public static function setNewTrack($intConfiguration, $intUserId, $timeStamp=false)
     {
         $arrTrackingTrack = array();
-        $time = time();
+        $time = $timeStamp ? $timeStamp : time();
         $strUuid = uniqid('', true);
 
         $arrSet = array
@@ -88,6 +92,8 @@ class Tracking extends \Controller
         $objTrack->setRow($arrSet)->save();
 
         $arrTrackingTrack['trackId'] = $objTrack->id;
+
+        $arrTrackingTrack['version'] = self::VERSION;
 
         return $arrTrackingTrack;
     }
@@ -128,6 +134,8 @@ class Tracking extends \Controller
         {
             $arrTrackingConfig['message'] = "no tracking configuration";
         }
+
+        $arrTrackingConfig['version'] = self::VERSION;
 
         return $arrTrackingConfig;
 

@@ -17,7 +17,15 @@ class TrackingService extends \Controller
 {
 
     private $arrReturn = array();
-    private $blnDebugMode = true;
+    private $blnDebugMode = false;
+
+    public function __construct()
+    {
+        if ($this->Input->get('debug') && ($this->Input->get('debug')=='1' || $this->Input->get('debug')=='true'))
+        {
+            $this->blnDebugMode = true;
+        }
+    }
 
     public function trackingDispatchAjax()
     {
@@ -183,6 +191,8 @@ class TrackingService extends \Controller
         {
 
             $this->arrReturn['userId'] = $this->User->id;
+            $this->arrReturn['userName'] = $this->User->username;
+            $this->arrReturn['userRealName'] = ($this->User->firstname ? ($this->User->firstname . " ") : '') . $this->User->lastname;
             $this->arrReturn['trackingConfig'] = \Tracking::getTrackingConfig();
 
 
