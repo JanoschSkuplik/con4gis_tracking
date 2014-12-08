@@ -28,4 +28,9 @@ $GLOBALS['BE_MOD']['con4gis']['c4g_tracking'] = array
 /**
  * Hooks
  */
-$GLOBALS['TL_HOOKS']['dispatchAjax']['trackingDispatchAjax'] = array('TrackingService', 'trackingDispatchAjax');
+//$GLOBALS['TL_HOOKS']['dispatchAjax']['trackingDispatchAjax'] = array('TrackingService', 'trackingDispatchAjax');
+
+/**
+ * Rest-API
+ */
+$GLOBALS['TL_API']['trackingService'] = 'TrackingService';

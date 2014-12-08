@@ -27,7 +27,7 @@ class TrackingService extends \Controller
         }
     }
 
-    public function trackingDispatchAjax()
+    public function generate()
     {
 
         $strMethod = 'tracking' . ucfirst(\Input::get('method'));
@@ -36,9 +36,9 @@ class TrackingService extends \Controller
         {
             if ($this->$strMethod())
             {
-                return $this->arrReturn;
+                return json_encode($this->arrReturn);
             }
-            return $this->getErrorReturn('method error in ' . $strMethod);
+            return json_encode($this->getErrorReturn('method error in ' . $strMethod));
         }
         else
         {
