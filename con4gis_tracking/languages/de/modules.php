@@ -21,5 +21,5 @@ $GLOBALS['TL_LANG']['TMD']['pois'] = array("POI's", "Getrackte interessante Punk
 $GLOBALS['TL_LANG']['TMD']['tracks'] = array("Tracks", "Getrackte Tracks");
 
 
-$GLOBALS['TL_LANG']['c4gTracking']['no_username'] = "Kein Benutzername übermittelt.";
-$GLOBALS['TL_LANG']['c4gTracking']['wrong_login'] = "Falscher Benutzername oder falsches Passwort.";
+$GLOBALS['TL_LANG']['MOD']['c4g_tracking'] = array('Tracking', 'Tracking');
+$GLOBALS['TL_LANG']['MOD']['con4gis_tracking'] = array('Tracking', 'Tracking');

@@ -24,6 +24,7 @@ $GLOBALS['TL_DCA']['tl_c4g_tracking_tracks'] = array
 		'dataContainer'               => 'Table',
 		'ptable'                      => 'tl_c4g_tracking',
 		'enableVersioning'            => true,
+		'closed'                      => true,
 		'onload_callback' => array
 		(
 			//array('tl_module', 'checkPermission')
@@ -42,12 +43,18 @@ $GLOBALS['TL_DCA']['tl_c4g_tracking_tracks'] = array
 	(
 		'sorting' => array
 		(
-			'mode'                    => 4,
-			'fields'                  => array('name'),
+			'mode'                    => 2,
+			'fields'                  => array('tstamp DESC', 'id DESC'),
 			'panelLayout'             => 'filter;sort,search,limit',
 			'headerFields'            => array('name', 'author', 'tstamp'),
 			//'child_record_callback'   => array('tl_module', 'listModule'),
 			//'child_record_class'      => 'no_padding'
+		),
+		'label' => array
+		(
+			'fields'                  => array('name'),
+			'format'                  => '%s',
+			//'label_callback'          => array('tl_theme', 'addPreviewImage')
 		),
 		'global_operations' => array
 		(
@@ -63,34 +70,20 @@ $GLOBALS['TL_DCA']['tl_c4g_tracking_tracks'] = array
 		(
 			'edit' => array
 			(
-				'label'               => &$GLOBALS['TL_LANG']['tl_c4g_tracking_devices']['edit'],
+				'label'               => &$GLOBALS['TL_LANG']['tl_c4g_tracking_tracks']['edit'],
 				'href'                => 'act=edit',
 				'icon'                => 'edit.gif'
 			),
-			'copy' => array
-			(
-				'label'               => &$GLOBALS['TL_LANG']['tl_c4g_tracking_devices']['copy'],
-				'href'                => 'act=paste&amp;mode=copy',
-				'icon'                => 'copy.gif',
-				'attributes'          => 'onclick="Backend.getScrollOffset()"'
-			),
-			'cut' => array
-			(
-				'label'               => &$GLOBALS['TL_LANG']['tl_c4g_tracking_devices']['cut'],
-				'href'                => 'act=paste&amp;mode=cut',
-				'icon'                => 'cut.gif',
-				'attributes'          => 'onclick="Backend.getScrollOffset()"'
-			),
 			'delete' => array
 			(
-				'label'               => &$GLOBALS['TL_LANG']['tl_c4g_tracking_devices']['delete'],
+				'label'               => &$GLOBALS['TL_LANG']['tl_c4g_tracking_tracks']['delete'],
 				'href'                => 'act=delete',
 				'icon'                => 'delete.gif',
 				'attributes'          => 'onclick="if(!confirm(\'' . $GLOBALS['TL_LANG']['MSC']['deleteConfirm'] . '\'))return false;Backend.getScrollOffset()"'
 			),
 			'show' => array
 			(
-				'label'               => &$GLOBALS['TL_LANG']['tl_c4g_tracking_devices']['show'],
+				'label'               => &$GLOBALS['TL_LANG']['tl_c4g_tracking_tracks']['show'],
 				'href'                => 'act=show',
 				'icon'                => 'show.gif'
 			)
@@ -101,7 +94,7 @@ $GLOBALS['TL_DCA']['tl_c4g_tracking_tracks'] = array
 	'palettes' => array
 	(
 		'__selector__'                => array('visibility'),
-		'default'                     => '{title_legend},name,uuid;{comment_legend:hide},comment;{user_legend},member,visibility,groups',
+		'default'                     => '{title_legend},name,uuid;{comment_legend:hide},comment;{user_legend},member,visibility,groups;{delete_legend:hide},forDelete',
 	),
 
 	// Subpalettes
@@ -125,11 +118,12 @@ $GLOBALS['TL_DCA']['tl_c4g_tracking_tracks'] = array
 		),
 		'tstamp' => array
 		(
+  		'flag'                    => 6,
 			'sql'                     => "int(10) unsigned NOT NULL default '0'"
 		),
 		'name' => array
 		(
-			'label'                   => &$GLOBALS['TL_LANG']['tl_c4g_tracking_pois']['name'],
+			'label'                   => &$GLOBALS['TL_LANG']['tl_c4g_tracking_tracks']['name'],
 			'exclude'                 => true,
 			'sorting'                 => true,
 			'flag'                    => 1,
@@ -140,7 +134,7 @@ $GLOBALS['TL_DCA']['tl_c4g_tracking_tracks'] = array
 		),
         'uuid' => array
         (
-            'label'                   => &$GLOBALS['TL_LANG']['tl_c4g_tracking_pois']['name'],
+            'label'                   => &$GLOBALS['TL_LANG']['tl_c4g_tracking_tracks']['uuid'],
             'exclude'                 => true,
             'search'                  => true,
             'inputType'               => 'text',
@@ -149,7 +143,7 @@ $GLOBALS['TL_DCA']['tl_c4g_tracking_tracks'] = array
         ),
         'comment' => array
         (
-            'label'                   => &$GLOBALS['TL_LANG']['tl_article']['keywords'],
+            'label'                   => &$GLOBALS['TL_LANG']['tl_c4g_tracking_tracks']['comment'],
             'exclude'                 => true,
             'inputType'               => 'textarea',
             'search'                  => true,
@@ -158,17 +152,17 @@ $GLOBALS['TL_DCA']['tl_c4g_tracking_tracks'] = array
         ),
         'member' => array
         (
-            'label'                   => &$GLOBALS['TL_LANG']['tl_article']['author'],
+            'label'                   => &$GLOBALS['TL_LANG']['tl_c4g_tracking_tracks']['member'],
             'exclude'                 => true,
             'inputType'               => 'select',
-            'foreignKey'              => 'tl_member.name',
+            'foreignKey'              => 'tl_member.username',
             'eval'                    => array('doNotCopy'=>true, 'mandatory'=>true, 'chosen'=>true, 'includeBlankOption'=>true, 'tl_class'=>'w50'),
             'sql'                     => "int(10) unsigned NOT NULL default '0'",
             'relation'                => array('type'=>'hasOne', 'load'=>'eager')
         ),
         'visibility' => array
         (
-            'label'                   => &$GLOBALS['TL_LANG']['tl_module']['source'],
+            'label'                   => &$GLOBALS['TL_LANG']['tl_c4g_tracking_tracks']['visibility'],
             'default'                 => 'privat',
             'exclude'                 => true,
             'inputType'               => 'select',
@@ -179,7 +173,7 @@ $GLOBALS['TL_DCA']['tl_c4g_tracking_tracks'] = array
         ),
         'groups' => array
         (
-            'label'                   => &$GLOBALS['TL_LANG']['tl_module']['groups'],
+            'label'                   => &$GLOBALS['TL_LANG']['tl_c4g_tracking_tracks']['groups'],
             'exclude'                 => true,
             'inputType'               => 'checkbox',
             'foreignKey'              => 'tl_member_group.name',
@@ -189,7 +183,7 @@ $GLOBALS['TL_DCA']['tl_c4g_tracking_tracks'] = array
         ),
         'forDelete' => array
         (
-          	'label'                   => &$GLOBALS['TL_LANG']['tl_module']['showWithoutFilter'],
+          	'label'                   => &$GLOBALS['TL_LANG']['tl_c4g_tracking_tracks']['forDelete'],
           	'exclude'                 => true,
           	'inputType'               => 'checkbox',
           	'eval'                    => array('tl_class'=>'w50'),

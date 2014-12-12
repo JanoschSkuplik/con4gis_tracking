@@ -22,7 +22,7 @@ $GLOBALS['TL_DCA']['tl_c4g_tracking'] = array
 	'config' => array
 	(
 		'dataContainer'               => 'Table',
-        'ctable'                      => array('tl_c4g_tracking_devices', 'tl_c4g_tracking_pois', 'tl_c4g_tracking_tracks'),
+        'ctable'                      => array('tl_c4g_tracking_pois', 'tl_c4g_tracking_tracks'),
         'enableVersioning'            => true,
         'onload_callback'             => array
         (
@@ -65,43 +65,36 @@ $GLOBALS['TL_DCA']['tl_c4g_tracking'] = array
 		),
 		'operations' => array
 		(
-            'devices' => array
-            (
-                'label'               => &$GLOBALS['TL_LANG']['tl_theme']['css'],
-                'href'                => 'table=tl_c4g_tracking_devices',
-                'icon'                => 'system/modules/con4gis_tracking/assets/icon-devices.gif',
-                //'button_callback'     => array('tl_theme', 'editCss')
-            ),
             'pois' => array
             (
-                'label'               => &$GLOBALS['TL_LANG']['tl_theme']['modules'],
+                'label'               => &$GLOBALS['TL_LANG']['tl_c4g_tracking']['pois'],
                 'href'                => 'table=tl_c4g_tracking_pois',
-                'icon'                => 'system/modules/con4gis_tracking/assets/icon-pois.gif',
+                'icon'                => 'system/modules/con4gis_tracking/assets/location_flag.png',
                 //'button_callback'     => array('tl_theme', 'editModules')
             ),
             'tracks' => array
             (
-                'label'               => &$GLOBALS['TL_LANG']['tl_theme']['layout'],
+                'label'               => &$GLOBALS['TL_LANG']['tl_c4g_tracking']['tracks'],
                 'href'                => 'table=tl_c4g_tracking_tracks',
-                'icon'                => 'system/modules/con4gis_tracking/assets/icon-tracks.gif',
+                'icon'                => 'system/modules/con4gis_tracking/assets/location_track.png',
                 //'button_callback'     => array('tl_theme', 'editLayout')
             ),
             'edit' => array
             (
-                'label'               => &$GLOBALS['TL_LANG']['tl_theme']['edit'],
+                'label'               => &$GLOBALS['TL_LANG']['tl_c4g_tracking']['edit'],
                 'href'                => 'act=edit',
                 'icon'                => 'edit.gif'
             ),
 			'delete' => array
 			(
-				'label'               => &$GLOBALS['TL_LANG']['tl_theme']['delete'],
+				'label'               => &$GLOBALS['TL_LANG']['tl_c4g_tracking']['delete'],
 				'href'                => 'act=delete',
 				'icon'                => 'delete.gif',
 				'attributes'          => 'onclick="if(!confirm(\'' . $GLOBALS['TL_LANG']['MSC']['deleteConfirm'] . '\'))return false;Backend.getScrollOffset()"'
 			),
 			'show' => array
 			(
-				'label'               => &$GLOBALS['TL_LANG']['tl_theme']['show'],
+				'label'               => &$GLOBALS['TL_LANG']['tl_c4g_tracking']['show'],
 				'href'                => 'act=show',
 				'icon'                => 'show.gif',
 				'attributes'          => 'style="margin-right:3px"'
@@ -128,7 +121,7 @@ $GLOBALS['TL_DCA']['tl_c4g_tracking'] = array
 		),
 		'name' => array
 		(
-			'label'                   => &$GLOBALS['TL_LANG']['tl_theme']['name'],
+			'label'                   => &$GLOBALS['TL_LANG']['tl_c4g_tracking']['name'],
 			'inputType'               => 'text',
 			'exclude'                 => true,
 			'sorting'                 => true,
@@ -172,18 +165,8 @@ class tl_c4g_tracking extends Backend
         {
             return;
         }
-        /*if ($_POST || Input::get('act') != 'edit')
-        {
-            echo "erer";
-            return;
-        }*/
-        //Message::addInfo(sprintf($GLOBALS['TL_LANG']['tl_content']['includeTemplates'], 'moo_mediabox', 'j_colorbox'));
 
-        //print_r(get_class_methods(new \C4gTrackingModel));
-        $objTrackingConfigs = \C4gTrackingModel::findAll();
-        //echo $objTrackingConfigs->count();
-        Message::addInfo('Test');
-
-
+        //$objTrackingConfigs = \C4gTrackingModel::findAll();
+        Message::addInfo($GLOBALS['TL_LANG']['c4gTracking']['tracking_hint']);
     }
 }

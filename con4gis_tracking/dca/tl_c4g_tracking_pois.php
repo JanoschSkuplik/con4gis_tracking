@@ -24,6 +24,7 @@ $GLOBALS['TL_DCA']['tl_c4g_tracking_pois'] = array
 		'dataContainer'               => 'Table',
 		'ptable'                      => 'tl_c4g_tracking',
 		'enableVersioning'            => true,
+		'closed'                      => true,
 		'onload_callback' => array
 		(
 			//array('tl_module', 'checkPermission')
@@ -42,12 +43,18 @@ $GLOBALS['TL_DCA']['tl_c4g_tracking_pois'] = array
 	(
 		'sorting' => array
 		(
-			'mode'                    => 4,
-			'fields'                  => array('name'),
+			'mode'                    => 2,
+			'fields'                  => array('tstamp DESC', 'id DESC'),
 			'panelLayout'             => 'filter;sort,search,limit',
 			'headerFields'            => array('name', 'tstamp'),
 			//'child_record_callback'   => array('tl_module', 'listModule'),
 			//'child_record_class'      => 'no_padding'
+		),
+		'label' => array
+		(
+			'fields'                  => array('name'),
+			'format'                  => '%s',
+			//'label_callback'          => array('tl_theme', 'addPreviewImage')
 		),
 		'global_operations' => array
 		(
@@ -63,34 +70,20 @@ $GLOBALS['TL_DCA']['tl_c4g_tracking_pois'] = array
 		(
 			'edit' => array
 			(
-				'label'               => &$GLOBALS['TL_LANG']['tl_c4g_tracking_devices']['edit'],
+				'label'               => &$GLOBALS['TL_LANG']['tl_c4g_tracking_pois']['edit'],
 				'href'                => 'act=edit',
 				'icon'                => 'edit.gif'
 			),
-			'copy' => array
-			(
-				'label'               => &$GLOBALS['TL_LANG']['tl_c4g_tracking_devices']['copy'],
-				'href'                => 'act=paste&amp;mode=copy',
-				'icon'                => 'copy.gif',
-				'attributes'          => 'onclick="Backend.getScrollOffset()"'
-			),
-			'cut' => array
-			(
-				'label'               => &$GLOBALS['TL_LANG']['tl_c4g_tracking_devices']['cut'],
-				'href'                => 'act=paste&amp;mode=cut',
-				'icon'                => 'cut.gif',
-				'attributes'          => 'onclick="Backend.getScrollOffset()"'
-			),
 			'delete' => array
 			(
-				'label'               => &$GLOBALS['TL_LANG']['tl_c4g_tracking_devices']['delete'],
+				'label'               => &$GLOBALS['TL_LANG']['tl_c4g_tracking_pois']['delete'],
 				'href'                => 'act=delete',
 				'icon'                => 'delete.gif',
 				'attributes'          => 'onclick="if(!confirm(\'' . $GLOBALS['TL_LANG']['MSC']['deleteConfirm'] . '\'))return false;Backend.getScrollOffset()"'
 			),
 			'show' => array
 			(
-				'label'               => &$GLOBALS['TL_LANG']['tl_c4g_tracking_devices']['show'],
+				'label'               => &$GLOBALS['TL_LANG']['tl_c4g_tracking_pois']['show'],
 				'href'                => 'act=show',
 				'icon'                => 'show.gif'
 			)
@@ -101,7 +94,7 @@ $GLOBALS['TL_DCA']['tl_c4g_tracking_pois'] = array
 	'palettes' => array
 	(
 		'__selector__'                => array('visibility'),
-		'default'                     => '{title_legend},name,uuid;{position_legend},location,accuracy,speed;{comment_legend:hide},comment;{user_legend},member,visibility',
+		'default'                     => '{title_legend},name,uuid;{position_legend},latitude,longitude;{comment_legend:hide},comment;{user_legend},member,visibility;{delete_legend:hide},forDelete',
 	),
 
 	// Subpalettes
@@ -125,6 +118,7 @@ $GLOBALS['TL_DCA']['tl_c4g_tracking_pois'] = array
 		),
 		'tstamp' => array
 		(
+  		'flag'                    => 6,
 			'sql'                     => "int(10) unsigned NOT NULL default '0'"
 		),
 		'name' => array
@@ -140,7 +134,7 @@ $GLOBALS['TL_DCA']['tl_c4g_tracking_pois'] = array
 		),
         'uuid' => array
         (
-            'label'                   => &$GLOBALS['TL_LANG']['tl_c4g_tracking_pois']['name'],
+            'label'                   => &$GLOBALS['TL_LANG']['tl_c4g_tracking_pois']['uuid'],
             'exclude'                 => true,
             'search'                  => true,
             'inputType'               => 'text',
@@ -149,7 +143,7 @@ $GLOBALS['TL_DCA']['tl_c4g_tracking_pois'] = array
         ),
         'latitude' => array
         (
-            'label'                   => &$GLOBALS['TL_LANG']['tl_c4g_tracking_pois']['name'],
+            'label'                   => &$GLOBALS['TL_LANG']['tl_c4g_tracking_pois']['latitude'],
             'exclude'                 => true,
             'search'                  => true,
             'inputType'               => 'text',
@@ -158,7 +152,7 @@ $GLOBALS['TL_DCA']['tl_c4g_tracking_pois'] = array
         ),
         'longitude' => array
         (
-            'label'                   => &$GLOBALS['TL_LANG']['tl_c4g_tracking_pois']['name'],
+            'label'                   => &$GLOBALS['TL_LANG']['tl_c4g_tracking_pois']['longitude'],
             'exclude'                 => true,
             'search'                  => true,
             'inputType'               => 'text',
@@ -167,7 +161,7 @@ $GLOBALS['TL_DCA']['tl_c4g_tracking_pois'] = array
         ),
         'location' => array
         (
-            'label'                   => &$GLOBALS['TL_LANG']['tl_c4g_tracking_pois']['name'],
+            'label'                   => &$GLOBALS['TL_LANG']['tl_c4g_tracking_pois']['location'],
             'exclude'                 => true,
             'search'                  => true,
             'inputType'               => 'text',
@@ -176,7 +170,7 @@ $GLOBALS['TL_DCA']['tl_c4g_tracking_pois'] = array
         ),
         'accuracy' => array
         (
-            'label'                   => &$GLOBALS['TL_LANG']['tl_c4g_tracking_pois']['name'],
+            'label'                   => &$GLOBALS['TL_LANG']['tl_c4g_tracking_pois']['accuracy'],
             'exclude'                 => true,
             'search'                  => true,
             'inputType'               => 'text',
@@ -185,7 +179,7 @@ $GLOBALS['TL_DCA']['tl_c4g_tracking_pois'] = array
         ),
         'speed' => array
         (
-            'label'                   => &$GLOBALS['TL_LANG']['tl_c4g_tracking_pois']['name'],
+            'label'                   => &$GLOBALS['TL_LANG']['tl_c4g_tracking_pois']['speed'],
             'exclude'                 => true,
             'search'                  => true,
             'inputType'               => 'text',
@@ -194,7 +188,7 @@ $GLOBALS['TL_DCA']['tl_c4g_tracking_pois'] = array
         ),
         'comment' => array
         (
-            'label'                   => &$GLOBALS['TL_LANG']['tl_article']['keywords'],
+            'label'                   => &$GLOBALS['TL_LANG']['tl_c4g_tracking_pois']['comment'],
             'exclude'                 => true,
             'inputType'               => 'textarea',
             'search'                  => true,
@@ -203,7 +197,7 @@ $GLOBALS['TL_DCA']['tl_c4g_tracking_pois'] = array
         ),
         'member' => array
         (
-            'label'                   => &$GLOBALS['TL_LANG']['tl_article']['author'],
+            'label'                   => &$GLOBALS['TL_LANG']['tl_c4g_tracking_pois']['member'],
             'exclude'                 => true,
             'inputType'               => 'select',
             'foreignKey'              => 'tl_member.username',
@@ -213,7 +207,7 @@ $GLOBALS['TL_DCA']['tl_c4g_tracking_pois'] = array
         ),
         'visibility' => array
         (
-            'label'                   => &$GLOBALS['TL_LANG']['tl_module']['source'],
+            'label'                   => &$GLOBALS['TL_LANG']['tl_c4g_tracking_pois']['visibility'],
             'default'                 => 'privat',
             'exclude'                 => true,
             'inputType'               => 'select',
@@ -224,7 +218,7 @@ $GLOBALS['TL_DCA']['tl_c4g_tracking_pois'] = array
         ),
         'groups' => array
         (
-            'label'                   => &$GLOBALS['TL_LANG']['tl_module']['groups'],
+            'label'                   => &$GLOBALS['TL_LANG']['tl_c4g_tracking_pois']['groups'],
             'exclude'                 => true,
             'inputType'               => 'checkbox',
             'foreignKey'              => 'tl_member_group.name',
@@ -239,7 +233,7 @@ $GLOBALS['TL_DCA']['tl_c4g_tracking_pois'] = array
     		),
         'forDelete' => array
         (
-          	'label'                   => &$GLOBALS['TL_LANG']['tl_module']['showWithoutFilter'],
+          	'label'                   => &$GLOBALS['TL_LANG']['tl_c4g_tracking_pois']['forDelete'],
           	'exclude'                 => true,
           	'inputType'               => 'checkbox',
           	'eval'                    => array('tl_class'=>'w50'),
