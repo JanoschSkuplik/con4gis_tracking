@@ -19,3 +19,7 @@ $GLOBALS['TL_LANG']['TMD']['trackingmodules'] = array("Tracking-Module", "Tracki
 $GLOBALS['TL_LANG']['TMD']['devices'] = array("Geräte", "Geräte, die im Tracking vorhanden sind");
 $GLOBALS['TL_LANG']['TMD']['pois'] = array("POI's", "Getrackte interessante Punkte");
 $GLOBALS['TL_LANG']['TMD']['tracks'] = array("Tracks", "Getrackte Tracks");
+
+
+$GLOBALS['TL_LANG']['c4gTracking']['no_username'] = "Kein Benutzername übermittelt.";
+$GLOBALS['TL_LANG']['c4gTracking']['wrong_login'] = "Falscher Benutzername oder falsches Passwort.";

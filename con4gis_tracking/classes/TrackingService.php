@@ -30,6 +30,8 @@ class TrackingService extends \Controller
     public function generate()
     {
 
+        \System::loadLanguageFile('tl_c4g_tracking');
+
         $strMethod = 'tracking' . ucfirst(\Input::get('method'));
 
         if (method_exists($this, $strMethod))
@@ -38,7 +40,7 @@ class TrackingService extends \Controller
             {
                 return json_encode($this->arrReturn);
             }
-            return json_encode($this->getErrorReturn('method error in ' . $strMethod));
+            return json_encode($this->getErrorReturn($GLOBALS['TL_LANG']['c4gTracking']['method_error'] . $strMethod));
         }
         else
         {
@@ -178,22 +180,22 @@ class TrackingService extends \Controller
         $blnHasError = false;
         if (!\Input::post('user'))
         {
-            $this->arrReturn = $this->getErrorReturn('No username');
+            $this->arrReturn = $this->getErrorReturn($GLOBALS['TL_LANG']['c4gTracking']['no_username']);
             $blnHasError = true;
         }
         if (!\Input::post('configuration'))
         {
-            $this->arrReturn = $this->getErrorReturn('No configuration submittet');
+            $this->arrReturn = $this->getErrorReturn($GLOBALS['TL_LANG']['c4gTracking']['no_config']);
             $blnHasError = true;
         }
         if (!\Input::post('latitude'))
         {
-            $this->arrReturn = $this->getErrorReturn('No latitude submittet');
+            $this->arrReturn = $this->getErrorReturn($GLOBALS['TL_LANG']['c4gTracking']['no_latitude'] );
             $blnHasError = true;
         }
         if (!\Input::post('longitude'))
         {
-            $this->arrReturn = $this->getErrorReturn('No longitude submittet');
+            $this->arrReturn = $this->getErrorReturn($GLOBALS['TL_LANG']['c4gTracking']['no_longitude']);
             $blnHasError = true;
         }
         
@@ -231,17 +233,17 @@ class TrackingService extends \Controller
         $blnHasError = false;
         if (!\Input::post('track'))
         {
-            $this->arrReturn = $this->getErrorReturn('No track');
+            $this->arrReturn = $this->getErrorReturn($GLOBALS['TL_LANG']['c4gTracking']['no_track']);
             $blnHasError = true;
         }
         if (!\Input::post('latitude'))
         {
-            $this->arrReturn = $this->getErrorReturn('No latitude submittet');
+            $this->arrReturn = $this->getErrorReturn($GLOBALS['TL_LANG']['c4gTracking']['no_latitude'] );
             $blnHasError = true;
         }
         if (!\Input::post('longitude'))
         {
-            $this->arrReturn = $this->getErrorReturn('No longitude submittet');
+            $this->arrReturn = $this->getErrorReturn($GLOBALS['TL_LANG']['c4gTracking']['no_longitude']);
             $blnHasError = true;
         }
         if (!$blnHasError)
@@ -265,12 +267,12 @@ class TrackingService extends \Controller
         $blnHasError = false;
         if (!\Input::post('user'))
         {
-            $this->arrReturn = $this->getErrorReturn('No username');
+            $this->arrReturn = $this->getErrorReturn($GLOBALS['TL_LANG']['c4gTracking']['no_username']);
             $blnHasError = true;
         }
         if (!\Input::post('configuration'))
         {
-            $this->arrReturn = $this->getErrorReturn('No configuration submittet');
+            $this->arrReturn = $this->getErrorReturn($GLOBALS['TL_LANG']['c4gTracking']['no_config']);
             $blnHasError = true;
         }
         $strName = "";
@@ -307,17 +309,17 @@ class TrackingService extends \Controller
         
         if (!\Input::post('user') && !\Input::post('password'))
         {
-            $this->arrReturn = $this->getErrorReturn('No username and password');
+            $this->arrReturn = $this->getErrorReturn($GLOBALS['TL_LANG']['c4gTracking']['no_user_password']);
             $blnHasError = true;
         }
         elseif (!\Input::post('user'))
         {
-            $this->arrReturn = $this->getErrorReturn('No username');
+            $this->arrReturn = $this->getErrorReturn($GLOBALS['TL_LANG']['c4gTracking']['no_username']);
             $blnHasError = true;
         }
         elseif (!\Input::post('password'))
         {
-            $this->arrReturn = $this->getErrorReturn('No password');
+            $this->arrReturn = $this->getErrorReturn($GLOBALS['TL_LANG']['c4gTracking']['no_password']);
             $blnHasError = true;
         }
 
@@ -331,7 +333,7 @@ class TrackingService extends \Controller
         $this->import('FrontendUser', 'User');
         if (!$this->User->login())
         {
-            $this->arrReturn = $this->getErrorReturn('wrong username or password');
+            $this->arrReturn = $this->getErrorReturn($GLOBALS['TL_LANG']['c4gTracking']['wrong_login']);
             $blnHasError = true;
         }
         else
