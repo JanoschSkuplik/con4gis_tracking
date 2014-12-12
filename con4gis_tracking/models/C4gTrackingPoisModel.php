@@ -34,6 +34,58 @@ class C4gTrackingPoisModel extends \Model
 	 */
 	protected static $strTable = 'tl_c4g_tracking_pois';
 
+
+    public static function findWithMagic(array $arrMemberIds=array(), array $arrVisibilityStatus=array())
+    {
+      $t = static::$strTable;
+      $arrWhere = array();
+      if (sizeof($arrMemberIds) > 0)
+      {
+        $arrWhere[] = "$t.member IN(" . implode(",", $arrMemberIds) . ")";
+      }
+      
+      if (sizeof($arrVisibilityStatus) > 0)
+      {
+        $arrWhere[] = "($t.visibility='" . implode("' OR $t.visibility='", $arrVisibilityStatus) . "')";
+      }
+      
+      $strWhere = "";
+      if (sizeof($arrWhere) > 0)
+      {
+        $strWhere = " WHERE " . implode(" AND ", $arrWhere) . " AND forDelete!=1";
+      }
+      else 
+      {
+        $strWhere = " WHERE forDelete!=1";
+      }
+      
+   		$objDatabase = \Database::getInstance();
+
+   		$objResult = $objDatabase->execute("SELECT $t.* FROM $t" . $strWhere . "");
+   		return static::createCollectionFromDbResult($objResult, $t);
+      
+    }
+
+    public static function findPrivate($varMemberId, array $arrOptions=array())
+   	{
+   		$t = static::$strTable;
+
+        $arrColumns = array("$t.visibility=? AND $t.member=?");
+        $arrValues = array("privat", $varMemberId);
+
+   		return static::findBy($arrColumns, $arrValues, $arrOptions);
+   	}
+
+    public static function findPublic(array $arrOptions=array())
+   	{
+   		$t = static::$strTable;
+
+        $arrColumns = array("$t.visibility=?");
+        $arrValues = array("public");
+
+   		return static::findBy($arrColumns, $arrValues, $arrOptions);
+   	}
+
 }
 
 

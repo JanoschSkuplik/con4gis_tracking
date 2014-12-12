@@ -187,6 +187,14 @@ $GLOBALS['TL_DCA']['tl_c4g_tracking_tracks'] = array
             'sql'                     => "blob NULL",
             'relation'                => array('type'=>'hasMany', 'load'=>'lazy')
         ),
+        'forDelete' => array
+        (
+          	'label'                   => &$GLOBALS['TL_LANG']['tl_module']['showWithoutFilter'],
+          	'exclude'                 => true,
+          	'inputType'               => 'checkbox',
+          	'eval'                    => array('tl_class'=>'w50'),
+          	'sql'                     => "char(1) NOT NULL default '0'"
+        )
 	)
 );
 

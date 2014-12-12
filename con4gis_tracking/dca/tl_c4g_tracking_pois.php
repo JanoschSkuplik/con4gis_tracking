@@ -232,6 +232,19 @@ $GLOBALS['TL_DCA']['tl_c4g_tracking_pois'] = array
             'sql'                     => "blob NULL",
             'relation'                => array('type'=>'hasMany', 'load'=>'lazy')
         ),
+        'trackUuid' => array
+    		(
+    			'foreignKey'              => 'tl_c4g_tracking_track.name',
+    			'sql'                     => "varchar(23) NOT NULL default ''"
+    		),
+        'forDelete' => array
+        (
+          	'label'                   => &$GLOBALS['TL_LANG']['tl_module']['showWithoutFilter'],
+          	'exclude'                 => true,
+          	'inputType'               => 'checkbox',
+          	'eval'                    => array('tl_class'=>'w50'),
+          	'sql'                     => "char(1) NOT NULL default '0'"
+        )
 	)
 );
 

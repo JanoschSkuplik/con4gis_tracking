@@ -21,7 +21,7 @@ class Tracking extends \Controller
      */
     const VERSION = '0.0.1';
 
-    public static function setNewPosition($intTrackId, $dblLatitude, $dblLongitude, $longAccuracy=0, $longSpeed=0, $timeStamp=false)
+    public static function setNewPosition($intTrackUuid, $dblLatitude, $dblLongitude, $longAccuracy=0, $longSpeed=0, $timeStamp=false)
     {
         $arrTrackingPosition = array();
         $time = $timeStamp ? $timeStamp : time();
@@ -29,7 +29,7 @@ class Tracking extends \Controller
         $arrSet = array
         (
             'tstamp'    => $time,
-            'pid'    => $intTrackId,
+            'track_uuid'    => $intTrackUuid,
             'latitude' => $dblLatitude,
             'longitude' => $dblLongitude,
             'accuracy' => $longAccuracy,
@@ -46,7 +46,7 @@ class Tracking extends \Controller
         return $arrTrackingPosition;
     }
 
-    public static function setNewPoi($intConfiguration, $intUserId, $dblLatitude, $dblLongitude, $longAccuracy=0, $longSpeed=0, $strComment="", $timeStamp=false)
+    public static function setNewPoi($intConfiguration, $intUserId, $dblLatitude, $dblLongitude, $longAccuracy=0, $longSpeed=0, $strName="", $timeStamp=false, $strVisibility="privat", $intTrackUuid=0)
     {
         $arrTrackingPoi = array();
         $time = $timeStamp ? $timeStamp : time();
@@ -62,7 +62,9 @@ class Tracking extends \Controller
             'longitude' => $dblLongitude,
             'accuracy' => $longAccuracy,
             'speed' => $longSpeed,
-            'comment' => $strComment
+            'name' => $strName,
+            'visibility' => $strVisibility,
+            'trackUuid' => $intTrackUuid
         );
 
         $objPoi = new \C4gTrackingPoisModel();
@@ -76,7 +78,7 @@ class Tracking extends \Controller
         return $arrTrackingPoi;
     }
 
-    public static function setNewTrack($intConfiguration, $intUserId, $strComment="", $timeStamp=false)
+    public static function setNewTrack($intConfiguration, $intUserId, $strName="", $timeStamp=false, $strVisibility="privat")
     {
         $arrTrackingTrack = array();
         $time = $timeStamp ? $timeStamp : time();
@@ -88,7 +90,8 @@ class Tracking extends \Controller
             'pid'    => $intConfiguration,
             'uuid'  => $strUuid,
             'member' => $intUserId,
-            'comment' => $strComment
+            'name' => $strName,
+            'visibility' => $strVisibility
         );
 
         $objTrack = new \C4gTrackingTracksModel();

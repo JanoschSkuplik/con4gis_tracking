@@ -107,7 +107,7 @@ $GLOBALS['TL_DCA']['tl_c4g_tracking_positions'] = array
 		(
 			'foreignKey'              => 'tl_c4g_tracking_track.name',
 			'sql'                     => "int(10) unsigned NOT NULL default '0'",
-			'relation'                => array('type'=>'belongsTo', 'load'=>'lazy')
+			'relation'                => array('type'=>'belongsTo', 'load'=>'eager')
 		),
 		'tstamp' => array
 		(

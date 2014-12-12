@@ -11,5 +11,6 @@
  * @link      http://janosch-oltmanns.de https://www.kuestenschmiede.de
  */
 
-$GLOBALS['TL_LANG']['tl_c4g_maps']['references']['t_pois'] = 'Tracking – POIs';
-$GLOBALS['TL_LANG']['tl_c4g_maps']['references']['t_tracks'] = 'Tracking – Tracks';
+$GLOBALS['TL_LANG']['tl_c4g_maps']['references']['tPois'] = 'Tracking – POIs';
+$GLOBALS['TL_LANG']['tl_c4g_maps']['references']['tTracks'] = 'Tracking – Tracks';
+$GLOBALS['TL_LANG']['tl_c4g_maps']['references']['tLive'] = 'Tracking – Live-Ansicht';

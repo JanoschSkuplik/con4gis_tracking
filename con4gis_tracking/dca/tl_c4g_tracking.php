@@ -181,7 +181,7 @@ class tl_c4g_tracking extends Backend
 
         //print_r(get_class_methods(new \C4gTrackingModel));
         $objTrackingConfigs = \C4gTrackingModel::findAll();
-        echo $objTrackingConfigs->count();
+        //echo $objTrackingConfigs->count();
         Message::addInfo('Test');
 
 
