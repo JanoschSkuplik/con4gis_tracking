@@ -72,22 +72,92 @@ class ModuleSsoLogin extends \Module
 
     if ($objUser !== null)
     {
-      $strHash = sha1(session_id() . (!\Config::get('disableIpCheck') ? \Environment::get('ip') : '') . 'FE_USER_AUTH');
+      $time = time();
 
-      // Remove old sessions
-      $this->Database->prepare("DELETE FROM tl_session WHERE tstamp<? OR hash=?")
-      ->execute((time() - \Config::get('sessionTimeout')), $strHash);
+      $blnAccountError = false;
 
-      // Insert the new session
-      $this->Database->prepare("INSERT INTO tl_session (pid, tstamp, name, sessionID, ip, hash) VALUES (?, ?, ?, ?, ?, ?)")
-      ->execute($objUser->id, time(), 'FE_USER_AUTH', session_id(), \Environment::get('ip'), $strHash);
+      // Check whether account is locked
+      if (($objUser->locked + $GLOBALS['TL_CONFIG']['lockPeriod']) > $time)
+      {
+          $blnAccountError = true;
+          $_SESSION['TL_ERROR'][] = sprintf($GLOBALS['TL_LANG']['ERR']['accountLocked'], ceil((($objUser->locked + $GLOBALS['TL_CONFIG']['lockPeriod']) - $time) / 60));
+          $this->redirectTo403();
+      }
 
-      // Set the cookie
-      $this->setCookie('FE_USER_AUTH', $strHash, (time() + \Config::get('sessionTimeout')), null, null, false, true);
+      // Check whether account is disabled
+      elseif ($objUser->disable)
+      {
+          $blnAccountError = true;
+
+          $_SESSION['TL_ERROR'][] = $GLOBALS['TL_LANG']['ERR']['invalidLogin'];
+          $this->log('The account has been disabled', __METHOD__, TL_ACCESS);
+          $this->redirectTo403();
+      }
+
+      // Check wether login is allowed (front end only)
+      elseif (!$objUser->login)
+      {
+          $blnAccountError = true;
+
+          $_SESSION['TL_ERROR'][] = $GLOBALS['TL_LANG']['ERR']['invalidLogin'];
+          $this->log('User "' . $objUser->username . '" is not allowed to log in', __METHOD__, TL_ACCESS);
+          $this->redirectTo403();
+      }
+
+      // Check whether account is not active yet or anymore
+      elseif (strlen($objUser->start) || strlen($objUser->stop))
+      {
+        if (strlen($objUser->start) && $objUser->start > $time)
+        {
+          $blnAccountError = true;
+
+          $_SESSION['TL_ERROR'][] = $GLOBALS['TL_LANG']['ERR']['invalidLogin'];
+          $this->log('The account was not active yet (activation date: ' . $this->parseDate($GLOBALS['TL_CONFIG']['dateFormat'], $objUser->start) . ')', __METHOD__, TL_ACCESS);
+          $this->redirectTo403();
+        }
+
+        if (strlen($objUser->stop) && $objUser->stop < $time)
+        {
+          $blnAccountError = true;
+
+          $_SESSION['TL_ERROR'][] = $GLOBALS['TL_LANG']['ERR']['invalidLogin'];
+          $this->log('The account was not active anymore (deactivation date: ' . $this->parseDate($GLOBALS['TL_CONFIG']['dateFormat'], $objUser->stop) . ')', __METHOD__, TL_ACCESS);
+          $this->redirectTo403();
+        }
+      }
+
+      // Redirect to login screen if there is an error
+      if ($blnAccountError)
+      {
+          return false;
+      }
+      
+      $this->loginUser($objUser);
 
     }
 
 
+
+
+  }
+  
+  protected function loginUser($objUser)
+  {
+    
+    
+    $strHash = sha1(session_id() . (!\Config::get('disableIpCheck') ? \Environment::get('ip') : '') . 'FE_USER_AUTH');
+
+    // Remove old sessions
+    $this->Database->prepare("DELETE FROM tl_session WHERE tstamp<? OR hash=?")
+                   ->execute((time() - \Config::get('sessionTimeout')), $strHash);
+
+    // Insert the new session
+    $this->Database->prepare("INSERT INTO tl_session (pid, tstamp, name, sessionID, ip, hash) VALUES (?, ?, ?, ?, ?, ?)")
+                   ->execute($objUser->id, time(), 'FE_USER_AUTH', session_id(), \Environment::get('ip'), $strHash);
+
+    // Set the cookie
+    $this->setCookie('FE_USER_AUTH', $strHash, (time() + \Config::get('sessionTimeout')), null, null, false, true);
+    
     if ($this->jumpTo && ($objTarget = $this->objModel->getRelated('jumpTo')) !== null)
     {
       $strRedirect = $this->jumpToOrReload($objTarget->row());
@@ -96,6 +166,12 @@ class ModuleSsoLogin extends \Module
     {
       $this->reload();
     }
-
+  }
+  
+  protected function redirectTo403()
+  {
+    global $objPage;
+    $objHandler = new $GLOBALS['TL_PTY']['error_403']();
+    $objHandler->generate($objPage->id, $this->getRootPageFromUrl());
   }
 }
