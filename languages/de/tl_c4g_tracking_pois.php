@@ -17,11 +17,6 @@ $GLOBALS['TL_LANG']['tl_c4g_tracking_pois']['edit'] = array('Bearbeiten','POI %s
 $GLOBALS['TL_LANG']['tl_c4g_tracking_pois']['delete'] = array('Löschen','POI %s löschen.');
 $GLOBALS['TL_LANG']['tl_c4g_tracking_pois']['show'] = array('Details','Details von POI %s anzeigen.');
 
-$GLOBALS['TL_LANG']['tl_c4g_tracking']['title_legend'] = 'Titel der Tracking-Konfiguration';
-$GLOBALS['TL_LANG']['tl_c4g_tracking']['config_legend'] = 'Konfigurationseinstellungen';
-
-$GLOBALS['TL_LANG']['tl_c4g_tracking']['name'] = array('Name der Konfiguration','Der Name der Konfiguration kann in der App angezeigt werden');
-
 
 $GLOBALS['TL_LANG']['tl_c4g_tracking_pois']['title_legend'] = "Titel";
 $GLOBALS['TL_LANG']['tl_c4g_tracking_pois']['position_legend'] = "Positions-Daten";

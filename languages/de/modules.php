@@ -11,7 +11,7 @@
  * @link      http://janosch-oltmanns.de https://www.kuestenschmiede.de
  */
 
-$GLOBALS['TL_LANG']['TMD']['config_module'] = 'c4g Tracking Konfiguration (Version: %s)';
+$GLOBALS['TL_LANG']['TMD']['config_module'] = 'con4gis Tracking Konfiguration (Version: %s)';
 
 
 
