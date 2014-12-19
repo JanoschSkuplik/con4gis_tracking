@@ -12,6 +12,16 @@
  * @filesource
  */
 
+
+/**
+ * Global settings
+ */
+$GLOBALS['con4gis_tracking_extension']['installed']    = true;
+$GLOBALS['con4gis_tracking_extension']['version']      = '1.0.0';
+
+/**
+ * Frontend Modules
+ */
 $GLOBALS['FE_MOD']['miscellaneous']['c4g_ssologin'] = 'ModuleSsoLogin';
 $GLOBALS['FE_MOD']['miscellaneous']['c4g_tracklist'] = 'ModuleTrackList';
 $GLOBALS['FE_MOD']['miscellaneous']['c4g_trackedit'] = 'ModuleTrackEdit';
