@@ -22,9 +22,14 @@ $GLOBALS['con4gis_tracking_extension']['version']      = '1.0.0';
 /**
  * Frontend Modules
  */
-$GLOBALS['FE_MOD']['miscellaneous']['c4g_ssologin'] = 'ModuleSsoLogin';
-$GLOBALS['FE_MOD']['miscellaneous']['c4g_tracklist'] = 'ModuleTrackList';
-$GLOBALS['FE_MOD']['miscellaneous']['c4g_trackedit'] = 'ModuleTrackEdit';
+array_insert( $GLOBALS['FE_MOD']['con4gis'], $GLOBALS['con4gis_maps_extension']['installed']?1:0, array
+  (
+  'c4g_ssologin'   => 'ModuleSsoLogin',
+  'c4g_tracklist'  => 'ModuleTrackList',
+  'c4g_trackedit'  => 'ModuleTrackEdit'
+  )
+);
+
 
 /**
  * Backend Modules
@@ -33,8 +38,14 @@ array_insert($GLOBALS['BE_MOD']['con4gis'], 5, array
 (
 	'c4g_tracking' => array
 	(
-    'tables'      => array('tl_c4g_tracking', 'tl_c4g_tracking_devices', 'tl_c4g_tracking_pois',
-    'tl_c4g_tracking_tracks', 'tl_c4g_tracking_positions'),
+    'tables'      => array
+    (
+      'tl_c4g_tracking',
+      'tl_c4g_tracking_devices',
+      'tl_c4g_tracking_pois',
+      'tl_c4g_tracking_tracks',
+      'tl_c4g_tracking_positions'
+    ),
     'icon'	 		=> 'system/modules/con4gis_tracking/assets/tracking.png',
 	)
 ));
