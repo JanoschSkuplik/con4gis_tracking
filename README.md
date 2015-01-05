@@ -1,7 +1,10 @@
-con4gis-tracking
+con4gis-Tracking
 ================
 
-part of the gis-kit con4gis
+Part of the GIS-kit *con4gis*
 
-- [x] Contao-Modul
-- [ ] Android-Code liegt unter https://github.com/Kuestenschmiede/app4gis_tracking
+- [ ] con4gis_core https://github.com/Kuestenschmiede/con4gis_core
+- [ ] con4gis_maps https://github.com/Kuestenschmiede/con4gis_maps
+- [x] con4gis_tracking
+- [ ] app4gis 
+- [ ] con4gis_forum https://github.com/Kuestenschmiede/con4gis_forum
