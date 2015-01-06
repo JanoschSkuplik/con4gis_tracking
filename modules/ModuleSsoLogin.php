@@ -7,7 +7,7 @@
  * @package   con4gis_tracking
  * @author    Janosch Oltmanns
  * @license   GNU/LGPL http://opensource.org/licenses/lgpl-3.0.html
- * @copyright Janosch Oltmanns in cooperation with Küstenschmiede GmbH Software & Design 2014
+ * @copyright Janosch Oltmanns in cooperation with Küstenschmiede GmbH Software & Design 2014 - 2015
  * @link      http://janosch-oltmanns.de https://www.kuestenschmiede.de
  */
 
@@ -131,7 +131,7 @@ class ModuleSsoLogin extends \Module
       {
           return false;
       }
-      
+
       $this->loginUser($objUser);
 
     }
@@ -140,11 +140,11 @@ class ModuleSsoLogin extends \Module
 
 
   }
-  
+
   protected function loginUser($objUser)
   {
-    
-    
+
+
     $strHash = sha1(session_id() . (!\Config::get('disableIpCheck') ? \Environment::get('ip') : '') . 'FE_USER_AUTH');
 
     // Remove old sessions
@@ -157,7 +157,7 @@ class ModuleSsoLogin extends \Module
 
     // Set the cookie
     $this->setCookie('FE_USER_AUTH', $strHash, (time() + \Config::get('sessionTimeout')), null, null, false, true);
-    
+
     if ($this->jumpTo && ($objTarget = $this->objModel->getRelated('jumpTo')) !== null)
     {
       $strRedirect = $this->jumpToOrReload($objTarget->row());
@@ -167,7 +167,7 @@ class ModuleSsoLogin extends \Module
       $this->reload();
     }
   }
-  
+
   protected function redirectTo403()
   {
     global $objPage;

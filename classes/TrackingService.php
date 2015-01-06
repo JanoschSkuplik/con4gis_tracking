@@ -7,7 +7,7 @@
  * @package   con4gis_tracking
  * @author    Janosch Oltmanns
  * @license   GNU/LGPL http://opensource.org/licenses/lgpl-3.0.html
- * @copyright Janosch Oltmanns in cooperation with Küstenschmiede GmbH Software & Design 2014
+ * @copyright Janosch Oltmanns in cooperation with Küstenschmiede GmbH Software & Design 2014 - 2015
  * @link      http://janosch-oltmanns.de https://www.kuestenschmiede.de
  */
 
@@ -60,13 +60,13 @@ class TrackingService extends \Controller
                                                ->execute($strTimeSelect);
         if ($objPositions->numRows)
         {
-          
+
             $arrFeatures = array();
             while ($objPositions->next())
             {
-              
+
                 //print_r($objPositions->row());
-              
+
                 $arrFeatures[] = array
                 (
                     'type' => 'Feature',
@@ -101,10 +101,10 @@ class TrackingService extends \Controller
         $arrCoordinates = array();
 
         $trackId = \Input::get('id');
-        
+
         $objPositions = $this->Database->prepare("SELECT * FROM tl_c4g_tracking_positions WHERE track_uuid=?")
                                        ->execute($trackId);
-        
+
         if ($objPositions->numRows)
         {
           while ($objPositions->next())
@@ -131,7 +131,7 @@ class TrackingService extends \Controller
                 'projection' => 'EPSG:4326'
             )
         );
-        
+
         $objPois = $this->Database->prepare("SELECT * FROM tl_c4g_tracking_pois WHERE trackUuid=?")
                                        ->execute($trackId);
         if ($objPois->numRows > 0)
@@ -198,19 +198,19 @@ class TrackingService extends \Controller
             $this->arrReturn = $this->getErrorReturn($GLOBALS['TL_LANG']['c4gTracking']['no_longitude']);
             $blnHasError = true;
         }
-        
+
         $strName = "";
         if (\Input::post('name'))
         {
             $strName = \Input::post('name');
         }
-        
+
         $intTrackId = 0;
         if (\Input::post('trackid'))
         {
           $intTrackId = \Input::post('trackid');
         }
-        
+
         if (!$blnHasError)
         {
             $this->arrReturn['error'] = false;
@@ -285,7 +285,7 @@ class TrackingService extends \Controller
             $this->arrReturn['error'] = false;
             $arrTrackData = \Tracking::setNewTrack(\Input::post('configuration'), \Input::post('user'), $strName, false, \Input::post('privacy'));
             $this->arrReturn['track'] = $arrTrackData;
-            
+
             /* Store start location */
             if ($arrTrackData['trackId'] && \Input::post('latitude') && \Input::post('longitude'))
             {
@@ -306,7 +306,7 @@ class TrackingService extends \Controller
         }
 
         $blnHasError = false;
-        
+
         if (!\Input::post('user') && !\Input::post('password'))
         {
             $this->arrReturn = $this->getErrorReturn($GLOBALS['TL_LANG']['c4gTracking']['no_user_password']);
@@ -341,7 +341,7 @@ class TrackingService extends \Controller
             $this->import('Database');
             $strUniqId = md5(uniqid());
             $this->Database->prepare("UPDATE tl_member SET ssoHash=? WHERE id=?")->execute($strUniqId,$this->User->id);
-            
+
             $this->arrReturn['error'] = false;
             $this->arrReturn['userId'] = $this->User->id;
             $this->arrReturn['userName'] = $this->User->username;
