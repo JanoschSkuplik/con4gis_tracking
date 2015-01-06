@@ -11,12 +11,23 @@
  * @link      http://janosch-oltmanns.de https://www.kuestenschmiede.de
  */
 
-
-/**
- * Table tl_member
- */
-
-$GLOBALS['TL_DCA']['tl_member']['fields']['ssoHash'] = array
+$GLOBALS['TL_LANG']['tl_module']['showTracks'] = array
 (
- 	'sql'                     => "varchar(255) NOT NULL default ''"
+  "Tracks anzeigen",
+  ""
+);
+$GLOBALS['TL_LANG']['tl_module']['showPois'] = array
+(
+  "POIs anzeigen",
+  ""
+);
+$GLOBALS['TL_LANG']['tl_module']['showWithoutFilter'] = array
+(
+  "Ohne Filter anzeigen",
+  ""
+);
+$GLOBALS['TL_LANG']['tl_module']['editWithoutFilter'] = array
+(
+  "Ohne Filter editieren",
+  ""
 );

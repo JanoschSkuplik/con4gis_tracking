@@ -7,7 +7,7 @@
  * @package   con4gis_tracking
  * @author    Janosch Oltmanns
  * @license   GNU/LGPL http://opensource.org/licenses/lgpl-3.0.html
- * @copyright Janosch Oltmanns in cooperation with Küstenschmiede GmbH Software & Design 2014
+ * @copyright Janosch Oltmanns in cooperation with Küstenschmiede GmbH Software & Design 2014 - 2015
  * @link      http://janosch-oltmanns.de https://www.kuestenschmiede.de
  */
 
@@ -23,7 +23,7 @@ namespace JanoschOltmanns;
  *
  * @package   con4gis_tracking
  * @author    Janosch Oltmanns
- * @copyright Janosch Oltmanns in cooperation with Küstenschmiede GmbH Software & Design 2014
+ * @copyright Janosch Oltmanns in cooperation with Küstenschmiede GmbH Software & Design 2014 - 2015
  */
 class C4gTrackingPositionsModel extends \Model
 {

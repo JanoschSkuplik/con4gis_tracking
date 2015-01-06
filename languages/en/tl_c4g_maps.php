@@ -11,12 +11,6 @@
  * @link      http://janosch-oltmanns.de https://www.kuestenschmiede.de
  */
 
-
-/**
- * Table tl_member
- */
-
-$GLOBALS['TL_DCA']['tl_member']['fields']['ssoHash'] = array
-(
- 	'sql'                     => "varchar(255) NOT NULL default ''"
-);
+$GLOBALS['TL_LANG']['tl_c4g_maps']['references']['tPois'] = 'Tracking – POIs';
+$GLOBALS['TL_LANG']['tl_c4g_maps']['references']['tTracks'] = 'Tracking – Tracks';
+$GLOBALS['TL_LANG']['tl_c4g_maps']['references']['tLive'] = 'Tracking – Live-View';

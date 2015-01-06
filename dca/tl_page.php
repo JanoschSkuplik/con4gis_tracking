@@ -7,7 +7,7 @@
  * @package   con4gis_tracking
  * @author    Janosch Oltmanns
  * @license   GNU/LGPL http://opensource.org/licenses/lgpl-3.0.html
- * @copyright Janosch Oltmanns in cooperation with Küstenschmiede GmbH Software & Design 2014
+ * @copyright Janosch Oltmanns in cooperation with Küstenschmiede GmbH Software & Design 2014 - 2015
  * @link      http://janosch-oltmanns.de https://www.kuestenschmiede.de
  */
 
@@ -37,7 +37,7 @@ $GLOBALS['TL_DCA']['tl_page']['fields']['c4gtracking_configuration'] = array
  * Provide miscellaneous methods that are used by the data configuration array.
  * @package   con4gis_tracking
  * @author    Janosch Oltmanns
- * @copyright Janosch Oltmanns in cooperation with Küstenschmiede GmbH Software & Design 2014
+ * @copyright Janosch Oltmanns in cooperation with Küstenschmiede GmbH Software & Design 2014 - 2015
  */
 class tl_c4gtracking_page extends Backend
 {
