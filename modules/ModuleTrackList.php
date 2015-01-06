@@ -7,7 +7,7 @@
  * @package   con4gis_tracking
  * @author    Janosch Oltmanns
  * @license   GNU/LGPL http://opensource.org/licenses/lgpl-3.0.html
- * @copyright Janosch Oltmanns in cooperation with Küstenschmiede GmbH Software & Design 2014
+ * @copyright Janosch Oltmanns in cooperation with Küstenschmiede GmbH Software & Design 2014 - 2015
  * @link      http://janosch-oltmanns.de https://www.kuestenschmiede.de
  */
 
@@ -53,22 +53,22 @@ class ModuleTrackList extends \Module
    */
   protected function compile()
   {
-    
+
     $arrData = array();
-    
+
     $strWhere = " WHERE member=0";
     if (FE_USER_LOGGED_IN)
     {
       $this->import('FrontendUser', 'User');
       $strWhere = " WHERE member=" . $this->User->id;
     }
-    
+
     if ($this->showWithoutFilter)
     {
       $strWhere = "";
     }
-    
-    
+
+
     if ($this->showTracks)
     {
       $objTracks = $this->Database->prepare("SELECT tl_c4g_tracking_tracks.*, CONCAT('track') as type, count(*) as count FROM tl_c4g_tracking_tracks LEFT JOIN tl_c4g_tracking_positions ON tl_c4g_tracking_positions.track_uuid=tl_c4g_tracking_tracks.uuid" . $strWhere . " GROUP BY tl_c4g_tracking_tracks.id")
@@ -77,7 +77,7 @@ class ModuleTrackList extends \Module
       {
         $arrTracks = $objTracks->fetchAllAssoc();
         $arrData = array_merge($arrData, $arrTracks);
-      }                            
+      }
     }
     if ($this->showPois)
     {
@@ -87,43 +87,43 @@ class ModuleTrackList extends \Module
       {
         $arrPois = $objPois->fetchAllAssoc();
         $arrData = array_merge($arrData, $arrPois);
-      }                            
+      }
     }
-    
+
     uasort($arrData, array($this, 'sortByTstamp'));
-    
+
     $arrDataManipulatet = array();
-    
+
     $blnUseEditLink = false;
     if (($objJumpTo = $this->objModel->getRelated('jumpTo')) !== null)
 		{
       $blnUseEditLink = true;
       $arrJumpTo = $objJumpTo->row();
 		}
-    
+
     foreach ($arrData as $arrEntry)
     {
-      
+
       $arrEntry['date'] = \Date::parse(\Date::getNumericDateFormat(),$arrEntry['tstamp']);
       $arrEntry['datim'] = \Date::parse(\Date::getNumericDatimFormat(),$arrEntry['tstamp']);
       if ($blnUseEditLink)
       {
-        if ($this->editWithoutFilter || (FE_USER_LOGGED_IN && $this->User->id==$arrEntry['member'])) 
+        if ($this->editWithoutFilter || (FE_USER_LOGGED_IN && $this->User->id==$arrEntry['member']))
         {
           $arrEntry['editHref'] = ampersand($this->generateFrontendUrl($arrJumpTo, ((\Config::get('useAutoItem') && !\Config::get('disableAlias')) ?  '/' : '/items/') . $arrEntry['type'] . '_' . $arrEntry['id']));
         }
       }
-      
+
       //((\Config::get('useAutoItem') && !\Config::get('disableAlias')) ?  '/' : '/items/') . ((!\Config::get('disableAlias') && $objItem->alias != '') ? $objItem->alias : $objItem->id)));
-      
+
       $arrDataManipulatet[] = $arrEntry;
     }
-    
+
     //print_r($arrDataManipulatet);
-    $this->Template->data = $arrDataManipulatet;                    
-    
+    $this->Template->data = $arrDataManipulatet;
+
   }
-  
+
   private function sortByTstamp($a, $b)
   {
     if ($a['tstamp'] == $b['tstamp']) {

@@ -7,7 +7,7 @@
  * @package   con4gis_tracking
  * @author    Janosch Oltmanns
  * @license   GNU/LGPL http://opensource.org/licenses/lgpl-3.0.html
- * @copyright Janosch Oltmanns in cooperation with Küstenschmiede GmbH Software & Design 2014
+ * @copyright Janosch Oltmanns in cooperation with Küstenschmiede GmbH Software & Design 2014 - 2015
  * @link      http://janosch-oltmanns.de https://www.kuestenschmiede.de
  */
 
@@ -51,7 +51,7 @@ class ModuleTrackEdit extends \Module
 		{
 			\Input::setGet('items', \Input::get('auto_item'));
 		}
-		
+
 		if (!\Input::get('items'))
 		{
 			global $objPage;
@@ -59,21 +59,21 @@ class ModuleTrackEdit extends \Module
 			$objPage->cache = 0;
 			return '';
 		}
-		
-		
+
+
 		$strItem = \Input::get('items');
-		
-		if (strpos($strItem, "track")!==false) 
+
+		if (strpos($strItem, "track")!==false)
 		{
   		$this->strType = "track";
   		$this->intTrackId = str_replace("track_", "", $strItem);
 		}
-		if (strpos($strItem, "poi")!==false) 
+		if (strpos($strItem, "poi")!==false)
 		{
   		$this->strType = "poi";
   		$this->intPoiId = str_replace("poi_", "", $strItem);
 		}
-		
+
 		if (!$this->strType || $this->strType=="")
 		{
 			global $objPage;
@@ -91,9 +91,9 @@ class ModuleTrackEdit extends \Module
    */
   protected function compile()
   {
-    
+
     global $objPage;
-    
+
     switch ($this->strType)
     {
       case "track":
@@ -104,8 +104,8 @@ class ModuleTrackEdit extends \Module
         $objData = $this->Database->prepare("SELECT * FROM tl_c4g_tracking_pois WHERE id=? AND member=3")
                                ->execute($this->intPoiId);
         break;
-    } 
-                        
+    }
+
 		if ($objData->numRows == 0)
 		{
 			// Do not index or cache the page
@@ -117,13 +117,13 @@ class ModuleTrackEdit extends \Module
 			$this->Template->error = '<p class="error">' . sprintf($GLOBALS['TL_LANG']['MSC']['invalidPage'], \Input::get('items')) . '</p>';
 			return;
 		}
-		
+
 		if (FE_USER_LOGGED_IN)
     {
       $this->import('FrontendUser', 'User');
     }
-		
-		if (!$this->editWithoutFilter && (FE_USER_LOGGED_IN && $this->User->id!=$objData->member)) 
+
+		if (!$this->editWithoutFilter && (FE_USER_LOGGED_IN && $this->User->id!=$objData->member))
 		{
 			// Do not index or cache the page
 			$objPage->noSearch = 1;
@@ -134,10 +134,10 @@ class ModuleTrackEdit extends \Module
 			$this->Template->error = '<p class="error">' . sprintf($GLOBALS['TL_LANG']['MSC']['invalidPage'], \Input::get('items')) . '</p>';
 			return;
 		}
-		
+
 		$arrFields = $this->getFields($objData);
 		$arrFieldsForTemplate = array();
-		
+
 		foreach ($arrFields as $arrField)
     {
 
@@ -151,48 +151,48 @@ class ModuleTrackEdit extends \Module
       $arrField['tableless'] = true;
 
       $objWidget = new $strClass($arrField);
-      
+
       if ($arrField['eval']['rgxp'])
       {
         $objWidget->rgxp = $arrField['eval']['rgxp'];
       }
-      
+
       if ($arrField['eval']['maxlength'])
       {
         $objWidget->maxlength = $arrField['eval']['maxlength'];
       }
-              
+
       if (!$arrField['id'] && $arrField['name'])
       {
         $objWidget->id = $arrField['name'];
       }
-      
+
       if ($arrField['eval']['toggleFields'])
       {
         $objWidget->class = $objWidget->class ? ($objWidget->class . " toggle") : "toggle";
       }
-      
+
       if ($arrField['eval']['toggleBy'])
       {
         $strToggleByClass = "toggleBy" . ucfirst($arrField['eval']['toggleBy']);
-        
+
         $blnIsVisible = false;
-        
+
         $arrToggleField = $this->arrFields[$arrField['eval']['toggleBy']];
-        
+
         if ($arrToggleField['inputType'] == "checkbox")
         {
           if (\Input::post($arrToggleField['name']))
           {
             $blnIsVisible = true;
-            
+
             if (!$arrField['eval']['mandatory'] && $arrField['eval']['toggleMandatory'])
             {
               $objWidget->mandatory = true;
             }
           }
         }
-        
+
         if (!$blnIsVisible)
         {
           $strToggleByClass .= " toggleInvisible";
@@ -201,7 +201,7 @@ class ModuleTrackEdit extends \Module
         {
           $strToggleByClass .= " toggleVisible";
         }
-        
+
         $objWidget->class = $objWidget->class ? ($objWidget->class . " " . $strToggleByClass) : $strToggleByClass;
       }
 
@@ -213,20 +213,20 @@ class ModuleTrackEdit extends \Module
             $this->doNotSubmit = true;
           }
       }
-      
+
       if ($arrField['eval']['toggleMandatory'] && !$objWidget->mandatory)
       {
         $objWidget->label = '<span class="invisible">Pflichtfeld</span>' . $arrField['label'] . '<span class="mandatory">*</span>';
       }
-      
+
       $this->Template->fields .= $objWidget->parse();
       $arrFieldsForTemplate[$arrField['name']] = $objWidget->parse();
     }
-    
+
     if ($this->Input->post('FORM_SUBMIT') == 'formTrackEdit' && !$this->doNotSubmit)
     {
       // Check whether there is a jumpTo page
-      
+
       $arrForDatabaseUpdate = array();
       $arrForDatabaseUpdate['name'] = \Input::post('name');
       $arrForDatabaseUpdate['visibility'] = \Input::post('visibility');
@@ -235,11 +235,11 @@ class ModuleTrackEdit extends \Module
       {
         $arrForDatabaseUpdate['groups'] = serialize(\Input::post('visibilityGroups'));
       }
-      else 
+      else
       {
         $arrForDatabaseUpdate['groups'] = null;
       }
-      
+
       if (\Input::post('deleteEntry') == 'delete')
       {
         $arrForDatabaseUpdate['forDelete'] = true;
@@ -248,7 +248,7 @@ class ModuleTrackEdit extends \Module
       {
         $arrForDatabaseUpdate['forDelete'] = false;
       }
-      
+
       switch ($this->strType)
       {
         case "track":
@@ -262,17 +262,17 @@ class ModuleTrackEdit extends \Module
                      ->execute($this->intPoiId);
           break;
       }
-      
-      
-      
+
+
+
     	if (($objJumpTo = $this->objModel->getRelated('jumpTo')) !== null)
     	{
     		$this->jumpToOrReload($objJumpTo->row());
     	}
-    
-    	$this->reload();  
+
+    	$this->reload();
     }
-    
+
     $this->Template->fieldData = $arrFieldsForTemplate;
     $this->Template->action = "";
     $this->Template->formId = "formTrackEdit";
@@ -283,14 +283,14 @@ class ModuleTrackEdit extends \Module
     $this->Template->formSubmit = "formTrackEdit";
 
     $this->Template->submitTitle = "Speichern";
-    
+
 
   }
-  
+
   private function getFields($objData)
   {
     $arrFields = array();
-    
+
     $arrFields['name'] = array(
       'name' => 'name',
       'label' => 'Name',
@@ -322,13 +322,13 @@ class ModuleTrackEdit extends \Module
     {
       $this->import('FrontendUser', 'User');
       $arrMemberGroups = $this->User->__get('groups');
-      
+
       $arrDataGroups = array();
       if ($objData->groups)
       {
         $arrDataGroups = deserialize($objData->groups);
       }
-      
+
       $objGroups = $this->Database->prepare("SELECT * FROM tl_member_group WHERE id IN(" . implode(',', $arrMemberGroups) . ")")
                                   ->execute();
       if ($objGroups->numRows > 0)
@@ -359,7 +359,7 @@ class ModuleTrackEdit extends \Module
     	'value' => $objData->comment,
     	'inputType' => 'textarea',
     	'eval'      => array('mandatory' => false)
-    ); 
+    );
     $arrFields['deleteEntry'] = array
     (
       'name' => 'deleteEntry',
@@ -370,13 +370,13 @@ class ModuleTrackEdit extends \Module
     		'delete' => array('label'=>'Eintrag zum löschen vormerken', 'value'=>'delete')
   		),
  		  'eval'      => array('mandatory' => false)
-    );    
+    );
     if ($objData->forDelete == 1)
     {
       $arrFields['deleteEntry']['options']['delete']['default'] = true;
     }
-    
+
     return $arrFields;
   }
-  
+
 }

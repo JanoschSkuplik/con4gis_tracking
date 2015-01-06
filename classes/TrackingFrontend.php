@@ -7,7 +7,7 @@
  * @package   con4gis_tracking
  * @author    Janosch Oltmanns
  * @license   GNU/LGPL http://opensource.org/licenses/lgpl-3.0.html
- * @copyright Janosch Oltmanns in cooperation with Küstenschmiede GmbH Software & Design 2014
+ * @copyright Janosch Oltmanns in cooperation with Küstenschmiede GmbH Software & Design 2014 - 2015
  * @link      http://janosch-oltmanns.de https://www.kuestenschmiede.de
  */
 
@@ -82,10 +82,10 @@ class TrackingFrontend extends \Frontend
         $arrTrackData = array();
 
         $strType = $child->memberVisibility ? $child->memberVisibility : "all";
-        
+
         $arrMember = array();
         $arrVisibility = array();
-        
+
         $blnUseDatabaseStatus = false;
         if ($child->useDatabaseStatus)
         {
@@ -130,7 +130,7 @@ class TrackingFrontend extends \Frontend
                           $arrMember[] = $objMember->id;
                         }
                       }
-                    }                           
+                    }
                   }
                 }
                 $arrVisibility[] = "owngroups";
@@ -159,7 +159,7 @@ class TrackingFrontend extends \Frontend
                         $arrMember[] = $objMember->id;
                       }
                     }
-                  }                           
+                  }
                 }
               }
               $arrVisibility[] = "membergroups";
@@ -220,10 +220,10 @@ class TrackingFrontend extends \Frontend
         $arrPoiData = array();
 
         $strType = $child->memberVisibility ? $child->memberVisibility : "all";
-        
+
         $arrMember = array();
         $arrVisibility = array();
-        
+
         $blnUseDatabaseStatus = false;
         if ($child->useDatabaseStatus)
         {
@@ -268,7 +268,7 @@ class TrackingFrontend extends \Frontend
                           $arrMember[] = $objMember->id;
                         }
                       }
-                    }                           
+                    }
                   }
                 }
                 $arrVisibility[] = "owngroups";
@@ -297,7 +297,7 @@ class TrackingFrontend extends \Frontend
                         $arrMember[] = $objMember->id;
                       }
                     }
-                  }                           
+                  }
                 }
               }
               $arrVisibility[] = "membergroups";
@@ -349,9 +349,9 @@ class TrackingFrontend extends \Frontend
                     'layername' =>  $child->data_layername ? ($objPois->name . ' (' . \Date::parse('d.m.Y H:i', $objPois->tstamp) . ')') : '',
                     'hidelayer' => $child->data_hidelayer > 0 ? $child->data_hidelayer : ''
                 );
-                
 
-                
+
+
                 $blnUsePopUp = false;
                 $strPopUpInfo = "";
                 if ($child->popup_info && $child->popup_info!="")
@@ -366,13 +366,13 @@ class TrackingFrontend extends \Frontend
                   );
                   $strPopUpInfo = \String::parseSimpleTokens($child->popup_info, $arrDataForPopup);
                 }
-                
+
                 $arrPoiData[] = array
                 (
                     'parent' => $child->id . $objPois->id,
                     'geox' => $objPois->longitude,
                     'geoy' => $objPois->latitude,
-                    'locstyle' => $child->locstyle, 
+                    'locstyle' => $child->locstyle,
                     'label' => '',
                     'onclick_zoomto' => '0',
                     'minzoom' => '0',
@@ -387,7 +387,7 @@ class TrackingFrontend extends \Frontend
         return $arrPoiData;
 
     }
-    
+
     public function runCronJob()
     {
       $objPoisForDelete = $this->Database->prepare("SELECT * FROM tl_c4g_tracking_pois WHERE forDelete=?")
@@ -396,11 +396,11 @@ class TrackingFrontend extends \Frontend
       {
         $this->Database->prepare("DELETE FROM tl_c4g_tracking_pois WHERE forDelete=?")
                        ->execute('1');
-      }  
-      
+      }
+
       $objTracksForDelete = $this->Database->prepare("SELECT * FROM tl_c4g_tracking_tracks WHERE forDelete=?")
-                                         ->execute('1');                             
-    
+                                         ->execute('1');
+
       if ($objTracksForDelete->numRows > 0)
       {
         while ($objTracksForDelete->next())
@@ -411,8 +411,8 @@ class TrackingFrontend extends \Frontend
           $this->Database->prepare("DELETE FROM tl_c4g_tracking_tracks WHERE id=?")
                           ->execute($objTracksForDelete->id);
         }
-        
-      }                                   
+
+      }
     }
 
 }
