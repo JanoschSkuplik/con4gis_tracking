@@ -29,29 +29,10 @@ $GLOBALS['TL_DCA']['tl_c4g_maps']['subpalettes']['memberVisibility_specialGroups
 $GLOBALS['TL_DCA']['tl_c4g_maps']['subpalettes']['memberVisibility_specialMember'] = 'specialMembers';
 $GLOBALS['TL_DCA']['tl_c4g_maps']['subpalettes']['useDatabaseStatus'] = 'databaseStatus';
 
-$GLOBALS['TL_DCA']['tl_c4g_maps']['fields']['useDatabaseStatus'] = array
-(
-  'label'                   => &$GLOBALS['TL_LANG']['tl_module']['protected'],
-  'exclude'                 => true,
-  'filter'                  => true,
-  'inputType'               => 'checkbox',
-  'eval'                    => array('submitOnChange'=>true, 'tl_class'=>'clr'),
-  'sql'                     => "char(1) NOT NULL default ''"
-);
-
-$GLOBALS['TL_DCA']['tl_c4g_maps']['fields']['databaseStatus'] = array
-(
-    'label'                   => &$GLOBALS['TL_LANG']['tl_module']['databaseStatus'],
-    'exclude'                 => true,
-    'inputType'               => 'checkbox',
-    'options'                 => array('privat','membergroups','owngroups','public'),
-    'eval'                    => array('multiple'=>true, 'tl_class'=>'clr'),
-    'sql'                     => "blob NULL"
-);
 
 $GLOBALS['TL_DCA']['tl_c4g_maps']['fields']['tDontShowIfEmpty'] = array
 (
-  'label'                   => &$GLOBALS['TL_LANG']['tl_module']['tDontShowIfEmpty'],
+  'label'                   => &$GLOBALS['TL_LANG']['tl_c4g_maps']['tDontShowIfEmpty'],
   'exclude'                 => true,
   'filter'                  => true,
   'inputType'               => 'checkbox',
@@ -61,24 +42,46 @@ $GLOBALS['TL_DCA']['tl_c4g_maps']['fields']['tDontShowIfEmpty'] = array
 
 $GLOBALS['TL_DCA']['tl_c4g_maps']['fields']['memberVisibility'] = array
 (
-    'label'                   => &$GLOBALS['TL_LANG']['tl_module']['source'],
+    'label'                   => &$GLOBALS['TL_LANG']['tl_c4g_maps']['memberVisibility'],
     'exclude'                 => true,
     'inputType'               => 'select',
     'options'                 => array('own','ownGroups','specialGroups','specialMember','all'),
+    'reference'               => &$GLOBALS['TL_LANG']['tl_c4g_maps']['references']['memberVisibility'],
     'eval'                    => array('includeBlankOption'=>true, 'submitOnChange'=>true, 'tl_class'=>'w50'),
     'sql'                     => "varchar(32) NOT NULL default ''"
 );
 
 
-$GLOBALS['TL_DCA']['tl_c4g_maps']['fields']['specialGroups'] = array
+$GLOBALS['TL_DCA']['tl_c4g_maps']['fields']['useDatabaseStatus'] = array
 (
-			'label'                   => &$GLOBALS['TL_LANG']['tl_c4g_maps']['allowedGroups'],
-			'exclude'                 => true,
-			'inputType'               => 'checkbox',
-			'foreignKey'              => 'tl_member_group.name',
-			'eval'                    => array('mandatory'=>false, 'multiple'=>true, 'tl_class'=>'clr'),
-			'sql'                     => "blob NULL"
+  'label'                   => &$GLOBALS['TL_LANG']['tl_c4g_maps']['useDatabaseStatus'],
+  'exclude'                 => true,
+  'filter'                  => true,
+  'inputType'               => 'checkbox',
+  'eval'                    => array('submitOnChange'=>true, 'tl_class'=>'clr'),
+  'sql'                     => "char(1) NOT NULL default ''"
 );
+$GLOBALS['TL_DCA']['tl_c4g_maps']['fields']['databaseStatus'] = array
+(
+    'label'                   => &$GLOBALS['TL_LANG']['tl_c4g_maps']['databaseStatus'],
+    'exclude'                 => true,
+    'inputType'               => 'checkbox',
+    'options'                 => array('privat','membergroups','owngroups','public'),
+    'reference'               => &$GLOBALS['TL_LANG']['tl_c4g_maps']['references']['databaseStatus'],
+    'eval'                    => array('multiple'=>true, 'tl_class'=>'clr'),
+    'sql'                     => "blob NULL"
+);
+
+
+// $GLOBALS['TL_DCA']['tl_c4g_maps']['fields']['allowedGroups'] = array
+// (
+//       'label'                   => &$GLOBALS['TL_LANG']['tl_c4g_maps']['allowedGroups'],
+//       'exclude'                 => true,
+// 			'inputType'               => 'checkbox',
+// 			'foreignKey'              => 'tl_member_group.name',
+// 			'eval'                    => array('mandatory'=>false, 'multiple'=>true, 'tl_class'=>'clr'),
+// 			'sql'                     => "blob NULL"
+// );
 
 $GLOBALS['TL_DCA']['tl_c4g_maps']['fields']['specialMembers'] = array
 (

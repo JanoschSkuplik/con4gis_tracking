@@ -17,7 +17,7 @@
  * Global settings
  */
 $GLOBALS['con4gis_tracking_extension']['installed']    = true;
-$GLOBALS['con4gis_tracking_extension']['version']      = '1.0.0';
+$GLOBALS['con4gis_tracking_extension']['version']      = '1.0.1';
 
 /**
  * Frontend Modules
