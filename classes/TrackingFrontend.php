@@ -63,6 +63,7 @@ class TrackingFrontend extends \Frontend
                     $arrData[0]['parent'] = $level;
                     $arrData[0]['id'] = $child->id;
                     $arrData[0]['type'] = 'liveTracking';
+                    $arrData[0]['locstyle'] = $child->locstyle > 0 ? $child->locstyle : '';
                     $arrData[0]['layername'] = $child->data_layername;
                     $arrData[0]['hidelayer'] = $child->data_hidelayer > 0 ? $child->data_hidelayer : '';
 
@@ -204,10 +205,11 @@ class TrackingFrontend extends \Frontend
                     'parent' => $child->id,
                     'id' => $child->id . $objTracks->id,
                     'type' => 'ajax',
-                    'locstyle' => '3',
+                    'locstyle' => $child->locstyle > 0 ? $child->locstyle : '',
                     'url' => 'system/modules/con4gis_core/api/trackingService?method=getTrack&id=' . $objTracks->uuid,
                     'layername' => $child->data_layername ? ($objTracks->name . ' (' . \Date::parse('d.m.Y H:i', $objTracks->tstamp) . ')') : '',
-                    'hidelayer' => $child->data_hidelayer > 0 ? $child->data_hidelayer : ''
+                    'hidelayer' => $child->data_hidelayer > 0 ? $child->data_hidelayer : '',
+                    'popupInfo' => $objTracks->name
                 );
             }
         }
