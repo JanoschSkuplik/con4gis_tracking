@@ -73,7 +73,6 @@ class ModuleTrackEdit extends \Module
   		$this->strType = "poi";
   		$this->intPoiId = str_replace("poi_", "", $strItem);
 		}
-
 		if (!$this->strType || $this->strType=="")
 		{
 			global $objPage;
@@ -94,15 +93,21 @@ class ModuleTrackEdit extends \Module
 
     global $objPage;
 
+
+		if (FE_USER_LOGGED_IN)
+    {
+      $this->import('FrontendUser', 'User');
+    }
+
     switch ($this->strType)
     {
       case "track":
-        $objData = $this->Database->prepare("SELECT * FROM tl_c4g_tracking_tracks WHERE id=? AND member=3")
-                               ->execute($this->intTrackId);
+        $objData = $this->Database->prepare("SELECT * FROM tl_c4g_tracking_tracks WHERE id=? AND member=?")
+                               ->execute($this->intTrackId, $this->User->id);
         break;
       case "poi":
-        $objData = $this->Database->prepare("SELECT * FROM tl_c4g_tracking_pois WHERE id=? AND member=3")
-                               ->execute($this->intPoiId);
+        $objData = $this->Database->prepare("SELECT * FROM tl_c4g_tracking_pois WHERE id=? AND member=?")
+                               ->execute($this->intPoiId, $this->User->id);
         break;
     }
 
@@ -118,10 +123,6 @@ class ModuleTrackEdit extends \Module
 			return;
 		}
 
-		if (FE_USER_LOGGED_IN)
-    {
-      $this->import('FrontendUser', 'User');
-    }
 
 		if (!$this->editWithoutFilter && (FE_USER_LOGGED_IN && $this->User->id!=$objData->member))
 		{
