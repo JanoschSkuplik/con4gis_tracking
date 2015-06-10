@@ -355,6 +355,13 @@ class TrackingService extends \Controller
         return true;
     }
 
+    private function trackingGetConfiguration()
+    {
+        $this->arrReturn['error'] = false;
+        $this->arrReturn['trackingConfig'] = \Tracking::getTrackingConfig();
+        return true;
+    }
+
     private function trackingTest()
     {
         $this->arrReturn = array

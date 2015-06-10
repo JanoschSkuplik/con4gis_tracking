@@ -167,6 +167,10 @@ $GLOBALS['TL_DCA']['tl_c4g_tracking_positions'] = array
             'eval'                    => array('tl_class'=>'w50', 'mandatory'=>true),
             'sql'                     => "float NULL"
         ),
+        'positiontype' => array
+        (
+            'sql'                     => "varchar(32) NOT NULL default ''"
+        ),
 	)
 );
 

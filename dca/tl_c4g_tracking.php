@@ -105,7 +105,16 @@ $GLOBALS['TL_DCA']['tl_c4g_tracking'] = array
 	// Palettes
 	'palettes' => array
 	(
-		'default'                     => '{title_legend},name;{config_legend}'
+        '__selector__'                => array('useSmsGateway', 'adjustAdditionalData', 'usePushNotifications'),
+		'default'                     => '{title_legend},name;{config_legend},httpGatewayInterval;{sms_gateway_legend},useSmsGateway;{additional_data_legend},adjustAdditionalData;{push_notofications_legend},usePushNotifications'
+	),
+
+	// Subpalettes
+	'subpalettes' => array
+	(
+		'useSmsGateway'               => 'smsGatewayInterval,smsGatewayNumber,disableHttpGateway',
+		'adjustAdditionalData'        => 'additionalData',
+		'usePushNotifications'        => ''
 	),
 
 	// Fields
@@ -130,6 +139,78 @@ $GLOBALS['TL_DCA']['tl_c4g_tracking'] = array
 			'eval'                    => array('mandatory'=>true, 'unique'=>true, 'decodeEntities'=>true, 'maxlength'=>128, 'tl_class'=>'w50'),
 			'sql'                     => "varchar(128) NOT NULL default ''"
 		),
+        'httpGatewayInterval' => array
+        (
+            'label'                   => &$GLOBALS['TL_LANG']['tl_c4g_tracking']['httpGatewayInterval'],
+            'default'                 => '10',
+            'exclude'                 => true,
+            'inputType'               => 'select',
+            'options'                 => array('0', '1', '2', '3', '5', '10', '30', '60', '120'),
+            'reference'               => &$GLOBALS['TL_LANG']['tl_c4g_tracking']['gatewayIntervalOptions'],
+            'eval'                    => array('tl_class'=>'w50', 'mandatory'=>true),
+            'sql'                     => "varchar(32) NOT NULL default ''"
+        ),
+        'useSmsGateway' => array
+        (
+            'label'                   => &$GLOBALS['TL_LANG']['tl_c4g_tracking']['useSmsGateway'],
+           	'exclude'                 => true,
+           	'inputType'               => 'checkbox',
+           	'eval'                    => array('submitOnChange'=>true, 'tl_class'=>'w50'),
+           	'sql'                     => "char(1) NOT NULL default ''"
+        ),
+        'smsGatewayInterval' => array
+        (
+            'label'                   => &$GLOBALS['TL_LANG']['tl_c4g_tracking']['smsGatewayInterval'],
+            'default'                 => '60',
+            'exclude'                 => true,
+            'inputType'               => 'select',
+            'options'                 => array('5', '10', '30', '60', '120'),
+            'reference'               => &$GLOBALS['TL_LANG']['tl_c4g_tracking']['gatewayIntervalOptions'],
+            'eval'                    => array('tl_class'=>'w50 clr', 'mandatory'=>true),
+            'sql'                     => "varchar(32) NOT NULL default ''"
+        ),
+        'smsGatewayNumber' => array
+        (
+            'label'                   => &$GLOBALS['TL_LANG']['tl_c4g_tracking']['smsGatewayNumber'],
+            'exclude'                 => true,
+            'inputType'               => 'text',
+            'eval'                    => array('maxlength'=>64, 'mandatory'=>true, 'tl_class'=>'w50'),
+            'sql'                     => "varchar(64) NOT NULL default ''"
+        ),
+        'disableHttpGateway' => array
+        (
+            'label'                   => &$GLOBALS['TL_LANG']['tl_c4g_tracking']['disableHttpGateway'],
+           	'exclude'                 => true,
+           	'inputType'               => 'checkbox',
+           	'eval'                    => array('tl_class'=>'w50'),
+           	'sql'                     => "char(1) NOT NULL default ''"
+        ),
+        'adjustAdditionalData' => array
+        (
+            'label'                   => &$GLOBALS['TL_LANG']['tl_c4g_tracking']['adjustAdditionalData'],
+           	'exclude'                 => true,
+           	'inputType'               => 'checkbox',
+           	'eval'                    => array('submitOnChange'=>true, 'tl_class'=>'w50'),
+           	'sql'                     => "char(1) NOT NULL default ''"
+        ),
+        'additionalData' => array
+        (
+            'label'                   => &$GLOBALS['TL_LANG']['tl_c4g_tracking']['additionalData'],
+            'exclude'                 => true,
+            'inputType'               => 'checkboxWizard',
+            'options'                 => array('imei', 'batterystatus', 'networkinfo', 'positionaccuracy', 'positionspeed', 'positiontype'),
+            'reference'               => &$GLOBALS['TL_LANG']['tl_c4g_tracking']['additionalDataOptions'],
+            'eval'                    => array('multiple'=>true, 'tl_class'=>'clr'),
+            'sql'                     => "blob NULL"
+        ),
+        'usePushNotifications' => array
+        (
+            'label'                   => &$GLOBALS['TL_LANG']['tl_c4g_tracking']['usePushNotifications'],
+           	'exclude'                 => true,
+           	'inputType'               => 'checkbox',
+           	'eval'                    => array('submitOnChange'=>true, 'tl_class'=>'w50'),
+           	'sql'                     => "char(1) NOT NULL default ''"
+        )
 
 	)
 );

@@ -21,7 +21,7 @@ class Tracking extends \Controller
      */
     const VERSION = '0.0.1';
 
-    public static function setNewPosition($intTrackUuid, $dblLatitude, $dblLongitude, $longAccuracy=0, $longSpeed=0, $timeStamp=false)
+    public static function setNewPosition($intTrackUuid, $dblLatitude, $dblLongitude, $longAccuracy=0, $longSpeed=0, $timeStamp=false, $arrAdditionalData=array())
     {
         $arrTrackingPosition = array();
         $time = $timeStamp ? $timeStamp : time();
@@ -46,7 +46,7 @@ class Tracking extends \Controller
         return $arrTrackingPosition;
     }
 
-    public static function setNewPoi($intConfiguration, $intUserId, $dblLatitude, $dblLongitude, $longAccuracy=0, $longSpeed=0, $strName="", $timeStamp=false, $strVisibility="privat", $intTrackUuid=0)
+    public static function setNewPoi($intConfiguration, $intUserId, $dblLatitude, $dblLongitude, $longAccuracy=0, $longSpeed=0, $strName="", $timeStamp=false, $strVisibility="privat", $intTrackUuid=0, $arrAdditionalData=array())
     {
         $arrTrackingPoi = array();
         $time = $timeStamp ? $timeStamp : time();
@@ -78,7 +78,7 @@ class Tracking extends \Controller
         return $arrTrackingPoi;
     }
 
-    public static function setNewTrack($intConfiguration, $intUserId, $strName="", $timeStamp=false, $strVisibility="privat")
+    public static function setNewTrack($intConfiguration, $intUserId, $strName="", $timeStamp=false, $strVisibility="privat", $arrAdditionalData=array())
     {
         $arrTrackingTrack = array();
         $time = $timeStamp ? $timeStamp : time();
@@ -128,6 +128,12 @@ class Tracking extends \Controller
                 foreach ($arrTrackingInformation as $key=>$value)
                 {
                     $arrTrackingConfig[$key] = self::manipulateTrackingInfo($key, $value);
+
+                    if (is_array(deserialize($arrTrackingConfig[$key])))
+                    {
+                        $arrTrackingConfig[$key] = deserialize($arrTrackingConfig[$key]);
+                    }
+
                 }
 
             }

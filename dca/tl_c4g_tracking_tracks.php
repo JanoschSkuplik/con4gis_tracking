@@ -188,7 +188,16 @@ $GLOBALS['TL_DCA']['tl_c4g_tracking_tracks'] = array
           	'inputType'               => 'checkbox',
           	'eval'                    => array('tl_class'=>'w50'),
           	'sql'                     => "char(1) NOT NULL default '0'"
-        )
+        ),
+        'imei' => array(
+            'sql'                     => "varchar(32) NOT NULL default ''"
+        ),
+        'batterystatus' => array(
+            'sql'                     => "varchar(32) NOT NULL default ''"
+        ),
+        'networkinfo' => array(
+            'sql'                     => "varchar(32) NOT NULL default ''"
+        ),
 	)
 );
 

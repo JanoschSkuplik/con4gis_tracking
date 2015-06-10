@@ -35,7 +35,41 @@ $GLOBALS['TL_LANG']['tl_c4g_tracking']['show'] = array('Details','Details der Ko
 
 $GLOBALS['TL_LANG']['tl_c4g_tracking']['title_legend'] = 'Titel der Tracking-Konfiguration';
 $GLOBALS['TL_LANG']['tl_c4g_tracking']['config_legend'] = 'Konfigurationseinstellungen';
+$GLOBALS['TL_LANG']['tl_c4g_tracking']['sms_gateway_legend'] = 'SMS Gateway Einstellungen';
+$GLOBALS['TL_LANG']['tl_c4g_tracking']['additional_data_legend'] = 'Zusätzliche Daten';
+$GLOBALS['TL_LANG']['tl_c4g_tracking']['push_notifications_legend'] = 'Push-Nachrichten Einstellungen';
+
 
 $GLOBALS['TL_LANG']['tl_c4g_tracking']['name'] = array('Name der Konfiguration','Der Name der Konfiguration kann in der App angezeigt werden');
 
+$GLOBALS['TL_LANG']['tl_c4g_tracking']['httpGatewayInterval'] = array('Interval des HTTP-Gateways', 'Interval des HTTP-Gateways');
+$GLOBALS['TL_LANG']['tl_c4g_tracking']['useSmsGateway'] = array('SMS Gateway verwenden', 'SMS Gateway verwenden');
+$GLOBALS['TL_LANG']['tl_c4g_tracking']['smsGatewayInterval'] = array('Interval des SMS-Gateways', 'Interval des SMS-Gateways');
+$GLOBALS['TL_LANG']['tl_c4g_tracking']['smsGatewayNumber'] = array('SMS-Gateway Nummer', 'SMS-Gateway Nummer');
+$GLOBALS['TL_LANG']['tl_c4g_tracking']['disableHttpGateway'] = array('HTTP-Gateway deaktivieren', 'HTTP-Gateway deaktivieren');
+$GLOBALS['TL_LANG']['tl_c4g_tracking']['adjustAdditionalData'] = array('zusätzliche Daten senden', 'Hier können zusätzlichen Daten von den Apps aktiviert werden, die an das Backend übermittelt werden sollen');
+$GLOBALS['TL_LANG']['tl_c4g_tracking']['additionalData'] = array('Zusätzliche Daten', 'Zusätzliche Daten, die ggf. mit übermittelt werden sollen.');
+$GLOBALS['TL_LANG']['tl_c4g_tracking']['usePushNotifications'] = array('Push-Nachrichten aktivieren', 'Sollen die Apps Push-Nachrichten erhalten können');
 
+$GLOBALS['TL_LANG']['tl_c4g_tracking']['gatewayIntervalOptions'] = array
+(
+    '0' => 'kein Intervall – bei Positionsänderung',
+    '1' => '1 Sekunde',
+    '2' => '2 Sekunden',
+    '3' => '3 Sekunden',
+    '5' => '5 Sekunden',
+    '10' => '10 Sekunden',
+    '30' => '30 Sekunden',
+    '60' => '1 Minute',
+    '120' => '2 Minuten'
+);
+
+$GLOBALS['TL_LANG']['tl_c4g_tracking']['additionalDataOptions'] = array
+(
+    'imei' => 'IMEI-Nummer',
+    'batterystatus' => 'Akku-Stand',
+    'networkinfo' => 'Netzwerk Stärke',
+    'positionaccuracy' => 'Genauigkeit der Position',
+    'positionspeed' => 'Geschwindigkeit der Position',
+    'positiontype' => 'Positions-Typ'
+);
