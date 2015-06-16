@@ -22,6 +22,8 @@ $GLOBALS['TL_LANG']['c4gTracking']['no_track'] = "Kein Track übermittelt.";
 $GLOBALS['TL_LANG']['c4gTracking']['no_config'] = "Keine Konfiguration übermittelt.";
 $GLOBALS['TL_LANG']['c4gTracking']['no_latitude'] = "Keine Latitude übermittelt.";
 $GLOBALS['TL_LANG']['c4gTracking']['no_longitude'] = "Keine Longitude übermittelt.";
+$GLOBALS['TL_LANG']['c4gTracking']['no_data'] = "Keine Daten übermittelt.";
+$GLOBALS['TL_LANG']['c4gTracking']['data_error'] = "Daten-Fehler";
 $GLOBALS['TL_LANG']['c4gTracking']['method_error'] = "Fehler in Methode: ";
 
 

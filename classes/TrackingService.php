@@ -56,7 +56,7 @@ class TrackingService extends \Controller
         $strTimeSelect = $time - (60*60);
         //$strTimeSelect = 0;
 
-        $objPositions = $this->Database->prepare("SELECT * FROM(SELECT tl_c4g_tracking_positions.*, tl_c4g_tracking_tracks.name, tl_c4g_tracking_tracks.comment, tl_c4g_tracking_tracks.visibility FROM tl_c4g_tracking_positions  LEFT JOIN tl_c4g_tracking_tracks ON tl_c4g_tracking_positions.pid=tl_c4g_tracking_tracks.id WHERE tl_c4g_tracking_positions.tstamp>? ORDER BY tl_c4g_tracking_positions.tstamp DESC) as inv GROUP BY pid")
+        $objPositions = $this->Database->prepare("SELECT * FROM (SELECT tl_c4g_tracking_positions.*, tl_c4g_tracking_tracks.name, tl_c4g_tracking_tracks.comment, tl_c4g_tracking_tracks.visibility FROM tl_c4g_tracking_positions  LEFT JOIN tl_c4g_tracking_tracks ON tl_c4g_tracking_positions.track_uuid=tl_c4g_tracking_tracks.uuid WHERE tl_c4g_tracking_positions.tstamp>? ORDER BY tl_c4g_tracking_positions.tstamp DESC) as inv GROUP BY track_uuid")
                                                ->execute($strTimeSelect);
         if ($objPositions->numRows)
         {
@@ -64,8 +64,6 @@ class TrackingService extends \Controller
             $arrFeatures = array();
             while ($objPositions->next())
             {
-
-                //print_r($objPositions->row());
 
                 $arrFeatures[] = array
                 (
@@ -166,6 +164,7 @@ class TrackingService extends \Controller
         return true;
     }
 
+
     private function trackingNewPoi()
     {
 
@@ -218,6 +217,54 @@ class TrackingService extends \Controller
         }
 
         return true;
+    }
+
+    private function trackingNewPositionFromSms()
+    {
+        // sender
+        // timestamp, wann SMS-Gateway die SMS empfangen hat YYYYmmddHHiiss
+        // text -> Inhalt der SMS
+        // msgid
+        // apikey
+
+        $blnHasError = false;
+
+        if (!\Input::post('text'))
+        {
+            $this->arrReturn = $this->getErrorReturn($GLOBALS['TL_LANG']['c4gTracking']['no_data']);
+            $blnHasError = true;
+        }
+
+        $strSmsContent = \Input::post('text');
+
+        $arrSmsContent = explode(';', $strSmsContent);
+
+        if (!is_array($arrSmsContent) || sizeof($arrSmsContent) == 0)
+        {
+            $this->arrReturn = $this->getErrorReturn($GLOBALS['TL_LANG']['c4gTracking']['data_error']);
+            $blnHasError = true;
+        }
+
+        if (!$blnHasError)
+        {
+
+            if ($arrSmsContent[0] == "newPosition")
+            {
+                $strTrackId = $arrSmsContent[1];
+                $strLatitude = $arrSmsContent[2];
+                $strLongitude = $arrSmsContent[3];
+                $strTimestamp = $arrSmsContent[4];
+                $strBatterystatus = $arrSmsContent[5];
+
+                $this->arrReturn['error'] = false;
+                $this->arrReturn['track'] = \Tracking::setNewPosition($strTrackId, $strLatitude, $strLongitude);
+
+            }
+        }
+
+
+        return true;
+
     }
 
     private function trackingNewPosition()
@@ -385,5 +432,46 @@ class TrackingService extends \Controller
         return $arrReturn;
     }
 
+    private function trackingGetLastPositionForMember()
+    {
+        $intMemberId = \Input::get('member');
+        $intMaxAge = \Input::get('max') ? \Input::get('max') : 0;
+
+        $this->arrReturn['error'] = false;
+        $this->arrReturn['position'] = $this->getLastPositionForMember($intMemberId, $intMaxAge);
+
+        return true;
+    }
+
+
+    public function getLastPositionForMember($intMemberId, $intMaxAge=0)
+    {
+
+        $this->import('Database');
+
+        if ($intMaxAge == 0)
+        {
+            $strTimeStamp = 0;
+        }
+        else
+        {
+            $strTimeStamp = time() - (60*$intMaxAge);
+        }
+
+        $objPositionsFromTracks = $this->Database->prepare("SELECT * FROM
+        (SELECT tl_c4g_tracking_positions.*, tl_c4g_tracking_tracks.name, tl_c4g_tracking_tracks.member, tl_c4g_tracking_tracks.visibility FROM tl_c4g_tracking_positions  LEFT JOIN tl_c4g_tracking_tracks ON tl_c4g_tracking_positions.track_uuid=tl_c4g_tracking_tracks.uuid WHERE tl_c4g_tracking_positions.tstamp>? ORDER BY tl_c4g_tracking_positions.tstamp DESC) as inv WHERE member=? GROUP BY track_uuid ORDER BY tstamp DESC")
+                                       ->limit(1)
+                                       ->execute($strTimeStamp, $intMemberId);
+
+        if ($objPositionsFromTracks->numRows > 0)
+        {
+            return $objPositionsFromTracks->row();
+        }
+        else
+        {
+            return false;
+        }
+
+    }
 
 }
