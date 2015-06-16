@@ -16,10 +16,7 @@ namespace JanoschOltmanns;
 class Tracking extends \Controller
 {
 
-    /**
-     * Tracking version
-     */
-    const VERSION = '0.0.1';
+
 
     public static function setNewPosition($intTrackUuid, $dblLatitude, $dblLongitude, $longAccuracy=0, $longSpeed=0, $timeStamp=false, $arrAdditionalData=array())
     {
@@ -41,7 +38,7 @@ class Tracking extends \Controller
 
         $arrTrackingPosition['positionId'] = $objPosition->id;
 
-        $arrTrackingConfig['version'] = self::VERSION;
+        $arrTrackingConfig['version'] = $GLOBALS['con4gis_tracking_extension']['version'];
 
         return $arrTrackingPosition;
     }
@@ -73,7 +70,7 @@ class Tracking extends \Controller
         $arrTrackingPoi['poiId'] = $objPoi->id;
         $arrTrackingPoi['poiUuid'] = $strUuid;
 
-        $arrTrackingPoi['version'] = self::VERSION;
+        $arrTrackingPoi['version'] = $GLOBALS['con4gis_tracking_extension']['version'];
 
         return $arrTrackingPoi;
     }
@@ -100,7 +97,7 @@ class Tracking extends \Controller
         $arrTrackingTrack['trackId'] = $objTrack->id;
         $arrTrackingTrack['trackUuid'] = $strUuid;
 
-        $arrTrackingTrack['version'] = self::VERSION;
+        $arrTrackingTrack['version'] = $GLOBALS['con4gis_tracking_extension']['version'];
 
         return $arrTrackingTrack;
     }
@@ -148,7 +145,7 @@ class Tracking extends \Controller
             $arrTrackingConfig['message'] = "no tracking configuration";
         }
 
-        $arrTrackingConfig['version'] = self::VERSION;
+        $arrTrackingConfig['version'] = $GLOBALS['con4gis_tracking_extension']['version'];
 
         return $arrTrackingConfig;
 
