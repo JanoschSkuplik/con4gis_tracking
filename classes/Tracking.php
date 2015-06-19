@@ -220,4 +220,66 @@ class Tracking extends \Controller
         return $strValue;
     }
 
+    public static function sendPushNotificationByToken($strType, $strToken, $strContent)
+    {
+
+        switch ($strType)
+        {
+            case "android":
+                self::sendGoogleCloudMessage($strToken, $strContent);
+                break;
+        }
+
+    }
+
+    private static function sendGoogleCloudMessage($strToken, $strContent)
+    {
+        $strGoogleApiKey = "AIzaSyAaJRdSPfsOuYm-SbL5qdClKGC65FlX53I"; // Todo get from DCA
+        $strGoogleGcmUrl = 'https://android.googleapis.com/gcm/send';
+
+
+        $arrGcmHeaders = array
+        (
+            'Authorization: key=' . $strGoogleApiKey,
+            'Content-Type: application/json'
+        );
+
+        $arrGcmFields = array
+        (
+            'registration_ids' => array
+            (
+                $strToken
+            ),
+            'data' => array
+            (
+                'message' => $strContent
+            )
+        );
+
+        // Open connection
+        $ch = curl_init();
+
+        // Set the url, number of POST vars, POST data
+        curl_setopt($ch, CURLOPT_URL, $strGoogleGcmUrl);
+
+ 	    curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $arrGcmHeaders);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+        // Disabling SSL Certificate support temporarly
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($arrGcmFields));
+
+        // Execute post
+        $result = curl_exec($ch);
+        if ($result === FALSE) {
+    	    //CakeLog::write('log','Gc,notofication failed. Id:' . $id . '; Msg: ' . curl_error($ch));
+    	    //die('Curl failed: ' . curl_error($ch));
+        }
+
+        // Close connection
+        curl_close($ch);
+    }
+
 }

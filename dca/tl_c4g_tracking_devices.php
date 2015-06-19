@@ -28,6 +28,10 @@ $GLOBALS['TL_DCA']['tl_c4g_tracking_devices'] = array
 		(
 			//array('tl_module', 'checkPermission')
 		),
+        'onsubmit_callback' => array
+        (
+            array('tl_c4g_tracking_devices', 'checkForPushNotifications')
+        ),
 		'sql' => array
 		(
 			'keys' => array
@@ -42,13 +46,20 @@ $GLOBALS['TL_DCA']['tl_c4g_tracking_devices'] = array
 	(
 		'sorting' => array
 		(
-			'mode'                    => 4,
-			'fields'                  => array('name'),
+			'mode'                    => 2,
+            'flag'                    => 8,
+			'fields'                  => array('tstamp'),
 			'panelLayout'             => 'filter;sort,search,limit',
-			'headerFields'            => array('name', 'author', 'tstamp'),
+			'headerFields'            => array('name', 'tstamp'),
 			//'child_record_callback'   => array('tl_module', 'listModule'),
 			//'child_record_class'      => 'no_padding'
 		),
+        'label' => array
+      		(
+      			'fields'                  => array('imei'),
+      			'format'                  => '%s',
+      			//'label_callback'          => array('tl_theme', 'addPreviewImage')
+      		),
 		'global_operations' => array
 		(
 			'all' => array
@@ -100,13 +111,14 @@ $GLOBALS['TL_DCA']['tl_c4g_tracking_devices'] = array
 	// Palettes
 	'palettes' => array
 	(
-		'__selector__'                => array(),
-		'default'                     => '{title_legend},name,type,imei',
+		'__selector__'                => array('sendPushNotification'),
+		'default'                     => '{title_legend},name,type,imei,token;{send_push_legend},sendPushNotification;',
 	),
 
 	// Subpalettes
 	'subpalettes' => array
 	(
+        'sendPushNotification' => 'pushNotificationContent'
 	),
 
 	// Fields
@@ -134,7 +146,7 @@ $GLOBALS['TL_DCA']['tl_c4g_tracking_devices'] = array
 			'flag'                    => 1,
 			'search'                  => true,
 			'inputType'               => 'text',
-			'eval'                    => array('mandatory'=>true, 'maxlength'=>255),
+			'eval'                    => array('mandatory'=>false, 'maxlength'=>255),
 			'sql'                     => "varchar(255) NOT NULL default ''"
 		),
 		'type' => array
@@ -147,7 +159,7 @@ $GLOBALS['TL_DCA']['tl_c4g_tracking_devices'] = array
 			'inputType'               => 'select',
 			'options_callback'        => array('tl_c4g_tracking_devices', 'getTypes'),
 			'reference'               => &$GLOBALS['TL_LANG']['FMD'],
-			'eval'                    => array('mandatory'=>true, 'helpwizard'=>false, 'chosen'=>true, 'submitOnChange'=>false, 'tl_class'=>'w50', 'includeBlankOption'=>true),
+			'eval'                    => array('mandatory'=>true, 'helpwizard'=>false, 'chosen'=>false, 'submitOnChange'=>false, 'tl_class'=>'w50 clr', 'includeBlankOption'=>false),
 			'sql'                     => "varchar(64) NOT NULL default ''"
 		),
         'imei' => array
@@ -156,9 +168,35 @@ $GLOBALS['TL_DCA']['tl_c4g_tracking_devices'] = array
             'exclude'                 => true,
             'search'                  => true,
             'inputType'               => 'text',
-            'eval'                    => array('mandatory'=>true, 'maxlength'=>15, 'doNotCopy'=>false),
+            'eval'                    => array('tl_class'=>'w50 clr', 'mandatory'=>true, 'maxlength'=>15, 'doNotCopy'=>false),
             'sql'                     => "varchar(32) NOT NULL default ''"
         ),
+        'token' => array
+        (
+            'label'                   => &$GLOBALS['TL_LANG']['tl_c4g_tracking_devices']['token'],
+            'exclude'                 => true,
+            'search'                  => true,
+            'inputType'               => 'text',
+            'eval'                    => array('tl_class'=>'w50', 'mandatory'=>true, 'maxlength'=>255, 'doNotCopy'=>false),
+            'sql'                     => "varchar(255) NOT NULL default ''"
+        ),
+        'sendPushNotification' => array
+        (
+            'label'                   => &$GLOBALS['TL_LANG']['tl_c4g_tracking_devices']['sendPushNotification'],
+           	'exclude'                 => true,
+           	'inputType'               => 'checkbox',
+           	'eval'                    => array('submitOnChange'=>true, 'tl_class'=>'w50'),
+           	'sql'                     => "char(1) NOT NULL default ''",
+        ),
+        'pushNotificationContent' => array
+        (
+            'label'                   => &$GLOBALS['TL_LANG']['tl_c4g_tracking_devices']['pushNotificationContent'],
+            'exclude'                 => true,
+            'inputType'               => 'textarea',
+            'search'                  => true,
+            'eval'                    => array('tl_class'=>'clr'),
+            'sql'                     => "text NULL",
+        )
 	)
 );
 
@@ -182,6 +220,7 @@ class tl_c4g_tracking_devices extends Backend
 		parent::__construct();
 		$this->import('BackendUser', 'User');
 	}
+
 
 
 	/**
@@ -208,17 +247,11 @@ class tl_c4g_tracking_devices extends Backend
 	 */
 	public function getTypes()
 	{
-		$groups = array();
+		$arrTypes = array();
 
-		foreach ($GLOBALS['FE_MOD'] as $k=>$v)
-		{
-			foreach (array_keys($v) as $kk)
-			{
-				$groups[$k][] = $kk;
-			}
-		}
+        $arrTypes['android'] = 'Android';
 
-		return $groups;
+		return $arrTypes;
 	}
 
 
@@ -231,4 +264,21 @@ class tl_c4g_tracking_devices extends Backend
 	{
 		return '<div style="float:left">'. $row['name'] .' <span style="color:#b3b3b3;padding-left:3px">['. (isset($GLOBALS['TL_LANG']['FMD'][$row['type']][0]) ? $GLOBALS['TL_LANG']['FMD'][$row['type']][0] : $row['type']) .']</span>' . "</div>\n";
 	}
+
+    public function checkForPushNotifications($dc)
+    {
+        if (\Input::post('sendPushNotification') && \Input::post('pushNotificationContent')  && \Input::post('token'))
+        {
+
+            \Tracking::sendPushNotificationByToken($dc->activeRecord->type, \Input::post('token'), \Input::post('pushNotificationContent'));
+        }
+
+
+
+        $objDevice = \C4gTrackingDevicesModel::findBy('id', $dc->id);
+        $objDevice->sendPushNotification = "";
+        $objDevice->pushNotificationContent = "";
+        $objDevice->save();
+
+    }
 }

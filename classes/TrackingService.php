@@ -550,6 +550,42 @@ class TrackingService extends \Controller
         return false;
     }
 
+    private function trackingRegisterDevice()
+    {
+
+        $blnHasError = false;
+        if (!\Input::post('configuration'))
+        {
+            $this->arrReturn = $this->getErrorReturn($GLOBALS['TL_LANG']['c4gTracking']['no_config']);
+            $blnHasError = true;
+        }
+
+        if (!$blnHasError)
+        {
+            $strType = \Input::post('type');
+            $strImei = \Input::post('imei');
+            $strToken = \Input::post('token');
+            $intCofingId = \Input::post('configuration');
+
+
+            $arrSet = array
+            (
+                'pid' => $intCofingId,
+                'tstamp' => time(),
+                'type' => $strType,
+                'imei' => $strImei,
+                'token' => $strToken
+            );
+
+            $objDevice = new \C4gTrackingDevicesModel();
+            $objDevice->setRow($arrSet)->save();
+
+            $this->arrReturn['error'] = false;
+        }
+
+        return true;
+    }
+
     private function getErrorReturn($strMessage)
     {
         $arrReturn = array();

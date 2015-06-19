@@ -22,11 +22,12 @@ $GLOBALS['TL_DCA']['tl_c4g_tracking'] = array
 	'config' => array
 	(
 		'dataContainer'               => 'Table',
-        'ctable'                      => array('tl_c4g_tracking_pois', 'tl_c4g_tracking_tracks'),
+        'ctable'                      => array('tl_c4g_tracking_pois', 'tl_c4g_tracking_tracks', 'tl_c4g_tracking_devices'),
         'enableVersioning'            => true,
         'onload_callback'             => array
         (
-            array('tl_c4g_tracking', 'showConfigHint')
+            array('tl_c4g_tracking', 'showConfigHint'),
+            array('tl_c4g_tracking', 'adjustOperationDca')
         ),
 		'sql' => array
 		(
@@ -78,6 +79,13 @@ $GLOBALS['TL_DCA']['tl_c4g_tracking'] = array
                 'href'                => 'table=tl_c4g_tracking_tracks',
                 'icon'                => 'system/modules/con4gis_tracking/assets/location_track.png',
                 //'button_callback'     => array('tl_theme', 'editLayout')
+            ),
+            'devices' => array
+            (
+                'label'               => &$GLOBALS['TL_LANG']['tl_c4g_tracking']['devices'],
+                'href'                => 'table=tl_c4g_tracking_devices',
+                'icon'                => 'system/modules/con4gis_tracking/assets/icon-devices.gif',
+                'button_callback'     => array('tl_c4g_tracking', 'deviceButton')
             ),
             'edit' => array
             (
@@ -242,6 +250,26 @@ class tl_c4g_tracking extends Backend
 		parent::__construct();
 		$this->import('BackendUser', 'User');
 	}
+
+    public function deviceButton($row, $href, $label, $title, $icon, $attributes)
+    {
+
+        if($row['usePushNotifications'])
+        {
+            $href .= '&amp;id='.$row['id'];
+
+            return '<a href="'.$this->addToUrl($href).'" title="'.specialchars($title).'"'.$attributes.'>'.Image::getHtml($icon, $label).'</a> ';
+        }
+        else
+        {
+            return '';
+        }
+    }
+
+    public function adjustOperationDca($dc)
+    {
+
+    }
 
     /**
      * Show a hint if a track-configuration is not set in the root-page-settings

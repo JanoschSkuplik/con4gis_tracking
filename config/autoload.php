@@ -40,6 +40,7 @@ ClassLoader::addClasses(array
 	'JanoschOltmanns\C4gTrackingTracksModel'    => 'system/modules/con4gis_tracking/models/C4gTrackingTracksModel.php',
 	'JanoschOltmanns\C4gTrackingModel'          => 'system/modules/con4gis_tracking/models/C4gTrackingModel.php',
 	'JanoschOltmanns\C4gTrackingPositionsModel' => 'system/modules/con4gis_tracking/models/C4gTrackingPositionsModel.php',
+    'JanoschOltmanns\C4gTrackingDevicesModel'   => 'system/modules/con4gis_tracking/models/C4gTrackingDevicesModel.php',
 ));
 
 
