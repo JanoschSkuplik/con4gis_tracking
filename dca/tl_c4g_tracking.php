@@ -106,7 +106,7 @@ $GLOBALS['TL_DCA']['tl_c4g_tracking'] = array
 	'palettes' => array
 	(
         '__selector__'                => array('useSmsGateway', 'adjustAdditionalData', 'usePushNotifications'),
-		'default'                     => '{title_legend},name;{config_legend},httpGatewayInterval;{sms_gateway_legend},useSmsGateway;{additional_data_legend},adjustAdditionalData;{push_notofications_legend},usePushNotifications'
+		'default'                     => '{title_legend},name;{config_legend},httpGatewayInterval;{sms_gateway_legend},useSmsGateway;{additional_data_legend},adjustAdditionalData;{push_notifications_legend},usePushNotifications'
 	),
 
 	// Subpalettes
@@ -114,7 +114,7 @@ $GLOBALS['TL_DCA']['tl_c4g_tracking'] = array
 	(
 		'useSmsGateway'               => 'smsGatewayInterval,smsGatewayNumber,disableHttpGateway',
 		'adjustAdditionalData'        => 'additionalData',
-		'usePushNotifications'        => ''
+		'usePushNotifications'        => 'pushGcmApiKey'
 	),
 
 	// Fields
@@ -210,8 +210,15 @@ $GLOBALS['TL_DCA']['tl_c4g_tracking'] = array
            	'inputType'               => 'checkbox',
            	'eval'                    => array('submitOnChange'=>true, 'tl_class'=>'w50'),
            	'sql'                     => "char(1) NOT NULL default ''"
-        )
-
+        ),
+        'pushGcmApiKey' => array
+        (
+            'label'                   => &$GLOBALS['TL_LANG']['tl_c4g_tracking']['pushGcmApiKey'],
+            'exclude'                 => true,
+            'inputType'               => 'text',
+            'eval'                    => array('maxlength'=>64, 'mandatory'=>true, 'tl_class'=>'w50 clr'),
+            'sql'                     => "varchar(64) NOT NULL default ''"
+        ),
 	)
 );
 

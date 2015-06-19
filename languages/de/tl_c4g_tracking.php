@@ -52,6 +52,7 @@ $GLOBALS['TL_LANG']['tl_c4g_tracking']['disableHttpGateway'] = array('HTTP-Gatew
 $GLOBALS['TL_LANG']['tl_c4g_tracking']['adjustAdditionalData'] = array('zusätzliche Daten senden', 'Hier können zusätzlichen Daten von den Apps aktiviert werden, die an das Backend übermittelt werden sollen');
 $GLOBALS['TL_LANG']['tl_c4g_tracking']['additionalData'] = array('Zusätzliche Daten', 'Zusätzliche Daten, die ggf. mit übermittelt werden sollen.');
 $GLOBALS['TL_LANG']['tl_c4g_tracking']['usePushNotifications'] = array('Push-Nachrichten aktivieren', 'Sollen die Apps Push-Nachrichten erhalten können');
+$GLOBALS['TL_LANG']['tl_c4g_tracking']['pushGcmApiKey'] = array('GCM Api Key','API Key der Google Cloud Messaging-Schnittstelle');
 
 $GLOBALS['TL_LANG']['tl_c4g_tracking']['gatewayIntervalOptions'] = array
 (
