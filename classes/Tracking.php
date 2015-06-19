@@ -33,6 +33,26 @@ class Tracking extends \Controller
             'speed' => $longSpeed
         );
 
+        if ($arrAdditionalData && sizeof($arrAdditionalData)>0)
+        {
+            if ($arrAdditionalData['positiontype'])
+            {
+                $arrSet['positiontype'] = $arrAdditionalData['positiontype'];
+            }
+            if ($arrAdditionalData['imei'])
+            {
+                $arrSet['imei'] = $arrAdditionalData['imei'];
+            }
+            if ($arrAdditionalData['batterystatus'])
+            {
+                $arrSet['batterystatus'] = $arrAdditionalData['batterystatus'];
+            }
+            if ($arrAdditionalData['networkinfo'])
+            {
+                $arrSet['networkinfo'] = $arrAdditionalData['networkinfo'];
+            }
+        }
+
         $objPosition = new \C4gTrackingPositionsModel();
         $objPosition->setRow($arrSet)->save();
 
@@ -64,6 +84,27 @@ class Tracking extends \Controller
             'trackUuid' => $intTrackUuid
         );
 
+
+        if ($arrAdditionalData && sizeof($arrAdditionalData)>0)
+        {
+            if ($arrAdditionalData['positiontype'])
+            {
+                $arrSet['positiontype'] = $arrAdditionalData['positiontype'];
+            }
+            if ($arrAdditionalData['imei'])
+            {
+                $arrSet['imei'] = $arrAdditionalData['imei'];
+            }
+            if ($arrAdditionalData['batterystatus'])
+            {
+                $arrSet['batterystatus'] = $arrAdditionalData['batterystatus'];
+            }
+            if ($arrAdditionalData['networkinfo'])
+            {
+                $arrSet['networkinfo'] = $arrAdditionalData['networkinfo'];
+            }
+        }
+
         $objPoi = new \C4gTrackingPoisModel();
         $objPoi->setRow($arrSet)->save();
 
@@ -90,6 +131,22 @@ class Tracking extends \Controller
             'name' => $strName,
             'visibility' => $strVisibility
         );
+
+        if ($arrAdditionalData && sizeof($arrAdditionalData)>0)
+        {
+            if ($arrAdditionalData['imei'])
+            {
+                $arrSet['imei'] = $arrAdditionalData['imei'];
+            }
+            /*if ($arrAdditionalData['batterystatus'])
+            {
+                $arrSet['batterystatus'] = $arrAdditionalData['batterystatus'];
+            }
+            if ($arrAdditionalData['networkinfo'])
+            {
+                $arrSet['networkinfo'] = $arrAdditionalData['networkinfo'];
+            }*/
+        }
 
         $objTrack = new \C4gTrackingTracksModel();
         $objTrack->setRow($arrSet)->save();

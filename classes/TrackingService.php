@@ -82,6 +82,7 @@ class TrackingService extends \Controller
                         )
                     )
                 );
+                // Todo: alle Daten im properties-objekt bereit stellen
             }
             $arrReturn = array();
             $arrReturn['type'] = "FeatureCollection";
@@ -129,6 +130,7 @@ class TrackingService extends \Controller
                 'projection' => 'EPSG:4326'
             )
         );
+        // Todo: alle Daten im properties-objekt bereit stellen
 
         $objPois = $this->Database->prepare("SELECT * FROM tl_c4g_tracking_pois WHERE trackUuid=?")
                                        ->execute($trackId);
@@ -153,6 +155,7 @@ class TrackingService extends \Controller
                     )
                 )
             );
+              // Todo: alle Daten im properties-objekt bereit stellen
           }
         }
 
@@ -212,20 +215,65 @@ class TrackingService extends \Controller
 
         if (!$blnHasError)
         {
+
+            // optional data
+            $longAccuracy = 0;
+            $longSpeed = 0;
+            $timeStamp = false;
+            $arrAdditionalData = array();
+
+            if (\Input::post('accuracy'))
+            {
+                $longAccuracy = \Input::post('accuracy');
+            }
+            if (\Input::post('speed'))
+            {
+                $longAccuracy = \Input::post('speed');
+            }
+            if (\Input::post('timestamp'))
+            {
+                $timeStamp = \Input::post('timestamp');
+            }
+
+            if (\Input::post('positiontype'))
+            {
+                $arrAdditionalData['positiontype'] = \Input::post('positiontype');
+            }
+            if (\Input::post('imei'))
+            {
+                $arrAdditionalData['imei'] = \Input::post('imei');
+            }
+            if (\Input::post('batterystatus'))
+            {
+                $arrAdditionalData['batterystatus'] = \Input::post('batterystatus');
+            }
+            if (\Input::post('networkinfo'))
+            {
+                $arrAdditionalData['networkinfo'] = \Input::post('networkinfo');
+            }
+
             $this->arrReturn['error'] = false;
-            $this->arrReturn['track'] = \Tracking::setNewPoi(\Input::post('configuration'), \Input::post('user'), \Input::post('latitude'), \Input::post('longitude'), 0, 0, $strName, false, \Input::post('privacy'), $intTrackId);
+            $this->arrReturn['track'] = \Tracking::setNewPoi(\Input::post('configuration'), \Input::post('user'), \Input::post('latitude'), \Input::post('longitude'), $longAccuracy, $longSpeed, $strName, $timeStamp, \Input::post('privacy'), $intTrackId, $arrAdditionalData);
+
         }
 
         return true;
     }
 
+
+    /**
+     *
+     * @GET-Parameter vom SMS-Gateway
+     * sender
+     * timestamp (wann SMS-Gateway die SMS empfangen hat YYYYmmddHHiiss)
+     * text -> Inhalt der SMS
+     * msgid
+     * apikey
+     *
+     * @return bool
+     */
     private function trackingNewPositionFromSms()
     {
-        // sender
-        // timestamp, wann SMS-Gateway die SMS empfangen hat YYYYmmddHHiiss
-        // text -> Inhalt der SMS
-        // msgid
-        // apikey
 
         $blnHasError = false;
 
@@ -254,10 +302,16 @@ class TrackingService extends \Controller
                 $strLatitude = $arrSmsContent[2];
                 $strLongitude = $arrSmsContent[3];
                 $strTimestamp = $arrSmsContent[4];
-                $strBatterystatus = $arrSmsContent[5];
+
+                $arrAdditionalData = array();
+                if ($arrSmsContent[5])
+                {
+                    $strBatterystatus = $arrSmsContent[5];
+                    $arrAdditionalData['batterystatus'] = $strBatterystatus;
+                }
 
                 $this->arrReturn['error'] = false;
-                $this->arrReturn['track'] = \Tracking::setNewPosition($strTrackId, $strLatitude, $strLongitude);
+                $this->arrReturn['track'] = \Tracking::setNewPosition($strTrackId, $strLatitude, $strLongitude, 0, 0, $strTimestamp, $arrAdditionalData);
 
             }
         }
@@ -295,8 +349,45 @@ class TrackingService extends \Controller
         }
         if (!$blnHasError)
         {
+            // optional data
+            $longAccuracy = 0;
+            $longSpeed = 0;
+            $timeStamp = false;
+            $arrAdditionalData = array();
+
+            if (\Input::post('accuracy'))
+            {
+                $longAccuracy = \Input::post('accuracy');
+            }
+            if (\Input::post('speed'))
+            {
+                $longAccuracy = \Input::post('speed');
+            }
+            if (\Input::post('timestamp'))
+            {
+                $timeStamp = \Input::post('timestamp');
+            }
+
+            if (\Input::post('positiontype'))
+            {
+                $arrAdditionalData['positiontype'] = \Input::post('positiontype');
+            }
+            if (\Input::post('imei'))
+            {
+                $arrAdditionalData['imei'] = \Input::post('imei');
+            }
+            if (\Input::post('batterystatus'))
+            {
+                $arrAdditionalData['batterystatus'] = \Input::post('batterystatus');
+            }
+            if (\Input::post('networkinfo'))
+            {
+                $arrAdditionalData['networkinfo'] = \Input::post('networkinfo');
+            }
+
             $this->arrReturn['error'] = false;
-            $this->arrReturn['track'] = \Tracking::setNewPosition(\Input::post('track'), \Input::post('latitude'), \Input::post('longitude'));
+            $this->arrReturn['track'] = \Tracking::setNewPosition(\Input::post('track'), \Input::post('latitude'), \Input::post('longitude'), $longAccuracy, $longSpeed, $timeStamp, $arrAdditionalData);
+
         }
 
         return true;
@@ -329,14 +420,49 @@ class TrackingService extends \Controller
         }
         if (!$blnHasError)
         {
+            $longAccuracy = 0;
+            $longSpeed = 0;
+            $timeStamp = false;
+            $arrAdditionalData = array();
+
+            if (\Input::post('accuracy'))
+            {
+                $longAccuracy = \Input::post('accuracy');
+            }
+            if (\Input::post('speed'))
+            {
+                $longAccuracy = \Input::post('speed');
+            }
+            if (\Input::post('timestamp'))
+            {
+                $timeStamp = \Input::post('timestamp');
+            }
+            if (\Input::post('positiontype'))
+            {
+                $arrAdditionalData['positiontype'] = \Input::post('positiontype');
+            }
+            if (\Input::post('imei'))
+            {
+                $arrAdditionalData['imei'] = \Input::post('imei');
+            }
+            if (\Input::post('batterystatus'))
+            {
+                $arrAdditionalData['batterystatus'] = \Input::post('batterystatus');
+            }
+            if (\Input::post('networkinfo'))
+            {
+                $arrAdditionalData['networkinfo'] = \Input::post('networkinfo');
+            }
+
             $this->arrReturn['error'] = false;
-            $arrTrackData = \Tracking::setNewTrack(\Input::post('configuration'), \Input::post('user'), $strName, false, \Input::post('privacy'));
+            $arrTrackData = \Tracking::setNewTrack(\Input::post('configuration'), \Input::post('user'), $strName, $timeStamp, \Input::post('privacy'), $arrAdditionalData);
+
             $this->arrReturn['track'] = $arrTrackData;
 
             /* Store start location */
             if ($arrTrackData['trackId'] && \Input::post('latitude') && \Input::post('longitude'))
             {
-              \Tracking::setNewPosition($arrTrackData['trackUuid'], \Input::post('latitude'), \Input::post('longitude'));
+              \Tracking::setNewPosition($arrTrackData['trackUuid'], \Input::post('latitude'), \Input::post('longitude'), $longAccuracy, $longSpeed, $timeStamp, $arrAdditionalData);
             }
 
         }
@@ -442,7 +568,6 @@ class TrackingService extends \Controller
 
         return true;
     }
-
 
     public function getLastPositionForMember($intMemberId, $intMaxAge=0)
     {

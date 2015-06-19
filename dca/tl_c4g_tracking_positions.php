@@ -171,6 +171,15 @@ $GLOBALS['TL_DCA']['tl_c4g_tracking_positions'] = array
         (
             'sql'                     => "varchar(32) NOT NULL default ''"
         ),
+        'imei' => array(
+            'sql'                     => "varchar(32) NOT NULL default ''"
+        ),
+        'batterystatus' => array(
+            'sql'                     => "varchar(32) NOT NULL default ''"
+        ),
+        'networkinfo' => array(
+            'sql'                     => "varchar(32) NOT NULL default ''"
+        ),
 	)
 );
 
