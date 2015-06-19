@@ -270,7 +270,7 @@ class tl_c4g_tracking_devices extends Backend
         if (\Input::post('sendPushNotification') && \Input::post('pushNotificationContent')  && \Input::post('token'))
         {
 
-            \Tracking::sendPushNotificationByToken($dc->activeRecord->type, \Input::post('token'), \Input::post('pushNotificationContent'));
+            \Tracking::sendPushNotificationByToken($dc->activeRecord->pid, $dc->activeRecord->type, \Input::post('token'), \Input::post('pushNotificationContent'));
         }
 
 

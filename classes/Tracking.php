@@ -220,21 +220,27 @@ class Tracking extends \Controller
         return $strValue;
     }
 
-    public static function sendPushNotificationByToken($strType, $strToken, $strContent)
+    public static function sendPushNotificationByToken($intConfiguraion, $strType, $strToken, $strContent)
     {
+
+        $objTracking = \C4gTrackingModel::findBy('id', $intConfiguraion);
+        if ($objTracking === null)
+        {
+            return;
+        }
 
         switch ($strType)
         {
             case "android":
-                self::sendGoogleCloudMessage($strToken, $strContent);
+                self::sendGoogleCloudMessage($strToken, $strContent, $objTracking);
                 break;
         }
 
     }
 
-    private static function sendGoogleCloudMessage($strToken, $strContent)
+    private static function sendGoogleCloudMessage($strToken, $strContent, $objTracking)
     {
-        $strGoogleApiKey = "AIzaSyAaJRdSPfsOuYm-SbL5qdClKGC65FlX53I"; // Todo get from DCA
+        $strGoogleApiKey = $objTracking->pushGcmApiKey;
         $strGoogleGcmUrl = 'https://android.googleapis.com/gcm/send';
 
 
