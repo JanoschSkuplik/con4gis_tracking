@@ -626,7 +626,7 @@ class TrackingService extends \Controller
 
         if ($objPositionsFromTracks->numRows > 0)
         {
-            return $objPositionsFromTracks->row();
+            return $objPositionsFromTracks;
         }
         else
         {
