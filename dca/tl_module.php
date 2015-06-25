@@ -18,6 +18,7 @@
 
 $GLOBALS['TL_DCA']['tl_module']['palettes']['c4g_tracklist'] = '{title_legend},name,headline,type;{config_legend},jumpTo,showTracks,showPois,showWithoutFilter,editWithoutFilter;{template_legend:hide},customTpl;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID,space';
 $GLOBALS['TL_DCA']['tl_module']['palettes']['c4g_trackedit'] = '{title_legend},name,headline,type;{config_legend},jumpTo,editWithoutFilter;{template_legend:hide},customTpl;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID,space';
+$GLOBALS['TL_DCA']['tl_module']['palettes']['c4g_ssologin'] = '{title_legend},name,type;{config_legend},jumpTo';
 
 $GLOBALS['TL_DCA']['tl_module']['fields']['showTracks'] = array
 (
