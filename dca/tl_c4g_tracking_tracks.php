@@ -177,7 +177,7 @@ $GLOBALS['TL_DCA']['tl_c4g_tracking_tracks'] = array
             'exclude'                 => true,
             'inputType'               => 'checkbox',
             'foreignKey'              => 'tl_member_group.name',
-            'eval'                    => array('mandatory'=>true, 'multiple'=>true),
+            'eval'                    => array('mandatory'=>false, 'multiple'=>true),
             'sql'                     => "blob NULL",
             'relation'                => array('type'=>'hasMany', 'load'=>'lazy')
         ),
