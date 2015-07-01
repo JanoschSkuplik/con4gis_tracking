@@ -43,7 +43,7 @@ class ModuleSsoLogin extends \Module
       return $objTemplate->parse();
     }
 
-    if (TL_MODE == "BE" || FE_USER_LOGGED_IN)
+    if (TL_MODE == "BE")
     {
       return '';
     }
