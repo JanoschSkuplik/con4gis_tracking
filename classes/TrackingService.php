@@ -577,7 +577,18 @@ class TrackingService extends \Controller
                 'token' => $strToken
             );
 
-            $objDevice = new \C4gTrackingDevicesModel();
+            $objDevice = \C4gTrackingDevicesModel::findBy('imei', $strImei);
+
+            if ($objDevice !== null)
+            {
+                
+            }
+            else
+            {
+                $objDevice = new \C4gTrackingDevicesModel();
+            }
+
+
             $objDevice->setRow($arrSet)->save();
 
             $this->arrReturn['error'] = false;
