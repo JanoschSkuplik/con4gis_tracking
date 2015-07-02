@@ -58,7 +58,7 @@ $GLOBALS['TL_DCA']['tl_c4g_tracking_devices'] = array
       		(
       			'fields'                  => array('imei'),
       			'format'                  => '%s',
-      			//'label_callback'          => array('tl_theme', 'addPreviewImage')
+      			'label_callback'          => array('tl_c4g_tracking_devices', 'listDevices')
       		),
 		'global_operations' => array
 		(
@@ -249,7 +249,7 @@ class tl_c4g_tracking_devices extends Backend
 	{
 		$arrTypes = array();
 
-        $arrTypes['android'] = 'Android';
+        $arrTypes['android'] = $GLOBALS['TL_LANG']['tl_c4g_tracking_devices']['types']['android'];
 
 		return $arrTypes;
 	}
@@ -262,7 +262,7 @@ class tl_c4g_tracking_devices extends Backend
 	 */
 	public function listDevices($row)
 	{
-		return '<div style="float:left">'. $row['name'] .' <span style="color:#b3b3b3;padding-left:3px">['. (isset($GLOBALS['TL_LANG']['FMD'][$row['type']][0]) ? $GLOBALS['TL_LANG']['FMD'][$row['type']][0] : $row['type']) .']</span>' . "</div>\n";
+		return '<div style="float:left">'. ($row['name'] ? ('<strong>Name: </strong>' . $row['name'] . '<br>') : '') . '<strong>IMEI: </strong>' . $row['imei'] .' <span style="color:#b3b3b3;padding-left:3px">['. $GLOBALS['TL_LANG']['tl_c4g_tracking_devices']['types'][$row['type']] .']</span>' . "</div>\n";
 	}
 
     public function checkForPushNotifications($dc)
