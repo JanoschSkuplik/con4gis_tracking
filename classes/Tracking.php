@@ -11,7 +11,7 @@
  * @link      http://janosch-oltmanns.de https://www.kuestenschmiede.de
  */
 
-namespace JanoschOltmanns;
+namespace c4g;
 
 class Tracking extends \Controller
 {

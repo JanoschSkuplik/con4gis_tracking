@@ -16,7 +16,7 @@
  */
 ClassLoader::addNamespaces(array
 (
-	'JanoschOltmanns',
+	'c4g',
 ));
 
 
@@ -26,21 +26,21 @@ ClassLoader::addNamespaces(array
 ClassLoader::addClasses(array
 (
 	// Classes
-	'JanoschOltmanns\TrackingFrontend'          => 'system/modules/con4gis_tracking/classes/TrackingFrontend.php',
-	'JanoschOltmanns\TrackingService'           => 'system/modules/con4gis_tracking/classes/TrackingService.php',
-	'JanoschOltmanns\Tracking'                  => 'system/modules/con4gis_tracking/classes/Tracking.php',
+	'c4g\TrackingFrontend'          => 'system/modules/con4gis_tracking/classes/TrackingFrontend.php',
+	'c4g\TrackingService'           => 'system/modules/con4gis_tracking/classes/TrackingService.php',
+	'c4g\Tracking'                  => 'system/modules/con4gis_tracking/classes/Tracking.php',
 
 	// Modules
-	'JanoschOltmanns\ModuleTrackEdit'           => 'system/modules/con4gis_tracking/modules/ModuleTrackEdit.php',
-	'JanoschOltmanns\ModuleTrackList'           => 'system/modules/con4gis_tracking/modules/ModuleTrackList.php',
-	'JanoschOltmanns\ModuleSsoLogin'            => 'system/modules/con4gis_tracking/modules/ModuleSsoLogin.php',
+	'c4g\ModuleTrackEdit'           => 'system/modules/con4gis_tracking/modules/ModuleTrackEdit.php',
+	'c4g\ModuleTrackList'           => 'system/modules/con4gis_tracking/modules/ModuleTrackList.php',
+	'c4g\ModuleSsoLogin'            => 'system/modules/con4gis_tracking/modules/ModuleSsoLogin.php',
 
 	// Models
-	'JanoschOltmanns\C4gTrackingPoisModel'      => 'system/modules/con4gis_tracking/models/C4gTrackingPoisModel.php',
-	'JanoschOltmanns\C4gTrackingTracksModel'    => 'system/modules/con4gis_tracking/models/C4gTrackingTracksModel.php',
-	'JanoschOltmanns\C4gTrackingModel'          => 'system/modules/con4gis_tracking/models/C4gTrackingModel.php',
-	'JanoschOltmanns\C4gTrackingPositionsModel' => 'system/modules/con4gis_tracking/models/C4gTrackingPositionsModel.php',
-    'JanoschOltmanns\C4gTrackingDevicesModel'   => 'system/modules/con4gis_tracking/models/C4gTrackingDevicesModel.php',
+	'c4g\C4gTrackingPoisModel'      => 'system/modules/con4gis_tracking/models/C4gTrackingPoisModel.php',
+	'c4g\C4gTrackingTracksModel'    => 'system/modules/con4gis_tracking/models/C4gTrackingTracksModel.php',
+	'c4g\C4gTrackingModel'          => 'system/modules/con4gis_tracking/models/C4gTrackingModel.php',
+	'c4g\C4gTrackingPositionsModel' => 'system/modules/con4gis_tracking/models/C4gTrackingPositionsModel.php',
+    'c4g\C4gTrackingDevicesModel'   => 'system/modules/con4gis_tracking/models/C4gTrackingDevicesModel.php',
 ));
 
 
