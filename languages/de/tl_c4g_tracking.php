@@ -16,6 +16,7 @@ $GLOBALS['TL_LANG']['c4gTracking']['tracking_hint'] = "Damit das Tracking funkti
 
 $GLOBALS['TL_LANG']['c4gTracking']['no_username'] = "Kein Benutzername übermittelt.";
 $GLOBALS['TL_LANG']['c4gTracking']['wrong_login'] = "Falscher Benutzername oder falsches Passwort.";
+$GLOBALS['TL_LANG']['c4gTracking']['no_group_access'] = "Kein Zugriff auf das Tracking.";
 $GLOBALS['TL_LANG']['c4gTracking']['no_password'] = "Kein Passwort übermittelt.";
 $GLOBALS['TL_LANG']['c4gTracking']['no_user_password'] = "Kein Benutzername und Passwort übermittelt.";
 $GLOBALS['TL_LANG']['c4gTracking']['no_track'] = "Kein Track übermittelt.";
@@ -40,6 +41,7 @@ $GLOBALS['TL_LANG']['tl_c4g_tracking']['config_legend'] = 'Konfigurationseinstel
 $GLOBALS['TL_LANG']['tl_c4g_tracking']['sms_gateway_legend'] = 'SMS Gateway Einstellungen';
 $GLOBALS['TL_LANG']['tl_c4g_tracking']['additional_data_legend'] = 'Zusätzliche Daten';
 $GLOBALS['TL_LANG']['tl_c4g_tracking']['push_notifications_legend'] = 'Push-Nachrichten Einstellungen';
+$GLOBALS['TL_LANG']['tl_c4g_tracking']['access_legend'] = 'Zugriff-Einstellungen';
 
 
 $GLOBALS['TL_LANG']['tl_c4g_tracking']['name'] = array('Name der Konfiguration','Der Name der Konfiguration kann in der App angezeigt werden');
@@ -53,6 +55,9 @@ $GLOBALS['TL_LANG']['tl_c4g_tracking']['adjustAdditionalData'] = array('zusätzl
 $GLOBALS['TL_LANG']['tl_c4g_tracking']['additionalData'] = array('Zusätzliche Daten', 'Zusätzliche Daten, die ggf. mit übermittelt werden sollen.');
 $GLOBALS['TL_LANG']['tl_c4g_tracking']['usePushNotifications'] = array('Push-Nachrichten aktivieren', 'Sollen die Apps Push-Nachrichten erhalten können');
 $GLOBALS['TL_LANG']['tl_c4g_tracking']['pushGcmApiKey'] = array('GCM Api Key','API Key der Google Cloud Messaging-Schnittstelle');
+
+$GLOBALS['TL_LANG']['tl_c4g_tracking']['limitAccess'] = array('Zugriff auf das Tracking beschränken', 'Zugriff auf das Tracking beschränken');
+$GLOBALS['TL_LANG']['tl_c4g_tracking']['accessGroups'] = array('Erlaubte Gruppen', 'Erlaubte Gruppen. Alle anderen können sich in der App nicht einloggen.');
 
 $GLOBALS['TL_LANG']['tl_c4g_tracking']['gatewayIntervalOptions'] = array
 (

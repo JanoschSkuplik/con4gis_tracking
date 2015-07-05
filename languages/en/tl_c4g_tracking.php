@@ -16,6 +16,7 @@ $GLOBALS['TL_LANG']['c4gTracking']['tracking_hint'] = "For the tracking to work,
 
 $GLOBALS['TL_LANG']['c4gTracking']['no_username'] = "No username sent.";
 $GLOBALS['TL_LANG']['c4gTracking']['wrong_login'] = "Wrong login.";
+$GLOBALS['TL_LANG']['c4gTracking']['no_group_access'] = "No group access.";
 $GLOBALS['TL_LANG']['c4gTracking']['no_password'] = "No password sent.";
 $GLOBALS['TL_LANG']['c4gTracking']['no_user_password'] = "No username and password sent.";
 $GLOBALS['TL_LANG']['c4gTracking']['no_track'] = "No track sent.";

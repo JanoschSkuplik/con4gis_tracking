@@ -511,17 +511,44 @@ class TrackingService extends \Controller
         }
         else
         {
-            $this->import('Database');
-            $strUniqId = md5(uniqid());
-            $this->Database->prepare("UPDATE tl_member SET ssoHash=? WHERE id=?")->execute($strUniqId,$this->User->id);
 
-            $this->arrReturn['error'] = false;
-            $this->arrReturn['userId'] = $this->User->id;
-            $this->arrReturn['userName'] = $this->User->username;
-            $this->arrReturn['userHash'] = $strUniqId;
-            $this->arrReturn['userRealName'] = ($this->User->firstname ? ($this->User->firstname . " ") : '') . $this->User->lastname;
-            $this->arrReturn['trackingConfig'] = \Tracking::getTrackingConfig();
+            $arrTrackingConfig = \Tracking::getTrackingConfig();
 
+            if ($arrTrackingConfig['limitAccess'])
+            {
+                $arrAllowedGroups = $arrTrackingConfig['accessGroups'];
+
+                $blnIsInAccessGroup = false;
+
+                foreach ($arrAllowedGroups as $group)
+                {
+                    if ($this->User->isMemberOf($group))
+                    {
+                        $blnIsInAccessGroup = true;
+                    }
+                }
+
+                if (!$blnIsInAccessGroup)
+                {
+                    $this->arrReturn = $this->getErrorReturn($GLOBALS['TL_LANG']['c4gTracking']['no_group_access']);
+                    $blnHasError = true;
+                }
+
+            }
+
+            if (!$blnHasError)
+            {
+                $this->import('Database');
+                $strUniqId = md5(uniqid());
+                $this->Database->prepare("UPDATE tl_member SET ssoHash=? WHERE id=?")->execute($strUniqId,$this->User->id);
+
+                $this->arrReturn['error'] = false;
+                $this->arrReturn['userId'] = $this->User->id;
+                $this->arrReturn['userName'] = $this->User->username;
+                $this->arrReturn['userHash'] = $strUniqId;
+                $this->arrReturn['userRealName'] = ($this->User->firstname ? ($this->User->firstname . " ") : '') . $this->User->lastname;
+                $this->arrReturn['trackingConfig'] = $arrTrackingConfig;
+            }
 
         }
 
@@ -581,7 +608,7 @@ class TrackingService extends \Controller
 
             if ($objDevice !== null)
             {
-                
+
             }
             else
             {

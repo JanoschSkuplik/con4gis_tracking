@@ -113,8 +113,8 @@ $GLOBALS['TL_DCA']['tl_c4g_tracking'] = array
 	// Palettes
 	'palettes' => array
 	(
-        '__selector__'                => array('useSmsGateway', 'adjustAdditionalData', 'usePushNotifications'),
-		'default'                     => '{title_legend},name;{config_legend},httpGatewayInterval;{sms_gateway_legend},useSmsGateway;{additional_data_legend},adjustAdditionalData;{push_notifications_legend},usePushNotifications'
+        '__selector__'                => array('useSmsGateway', 'adjustAdditionalData', 'usePushNotifications', 'limitAccess'),
+		'default'                     => '{title_legend},name;{config_legend},httpGatewayInterval;{sms_gateway_legend},useSmsGateway;{additional_data_legend},adjustAdditionalData;{push_notifications_legend},usePushNotifications;{access_legend:hide},limitAccess'
 	),
 
 	// Subpalettes
@@ -122,7 +122,8 @@ $GLOBALS['TL_DCA']['tl_c4g_tracking'] = array
 	(
 		'useSmsGateway'               => 'smsGatewayInterval,smsGatewayNumber,disableHttpGateway',
 		'adjustAdditionalData'        => 'additionalData',
-		'usePushNotifications'        => 'pushGcmApiKey'
+		'usePushNotifications'        => 'pushGcmApiKey',
+        'limitAccess'                 => 'accessGroups'
 	),
 
 	// Fields
@@ -227,6 +228,24 @@ $GLOBALS['TL_DCA']['tl_c4g_tracking'] = array
             'eval'                    => array('maxlength'=>64, 'mandatory'=>true, 'tl_class'=>'w50 clr'),
             'sql'                     => "varchar(64) NOT NULL default ''"
         ),
+        'limitAccess' => array
+        (
+            'label'                   => &$GLOBALS['TL_LANG']['tl_c4g_tracking']['limitAccess'],
+           	'exclude'                 => true,
+           	'inputType'               => 'checkbox',
+           	'eval'                    => array('submitOnChange'=>true, 'tl_class'=>'w50'),
+           	'sql'                     => "char(1) NOT NULL default ''"
+        ),
+        'accessGroups' => array
+        (
+            'label'                   => &$GLOBALS['TL_LANG']['tl_c4g_tracking']['accessGroups'],
+            'exclude'                 => true,
+            'inputType'               => 'checkbox',
+            'foreignKey'              => 'tl_member_group.name',
+            'eval'                    => array('mandatory'=>true, 'multiple'=>true, 'tl_class'=>'clr'),
+            'sql'                     => "blob NULL",
+            'relation'                => array('type'=>'hasMany', 'load'=>'lazy')
+        )
 	)
 );
 
