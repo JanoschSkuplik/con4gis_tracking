@@ -110,8 +110,8 @@ class TrackingService extends \Controller
           {
             $arrCoordinates[] = array
             (
-                $objPositions->longitude,
-                $objPositions->latitude
+                (float) $objPositions->longitude,
+                (float) $objPositions->latitude
             );
           }
         }
@@ -150,8 +150,8 @@ class TrackingService extends \Controller
                     'type' => 'Point',
                     'coordinates' => array
                     (
-                        $objPois->longitude,
-                        $objPois->latitude
+                        (float) $objPois->longitude,
+                        (float) $objPois->latitude
                     )
                 )
             );
