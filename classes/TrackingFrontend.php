@@ -26,46 +26,58 @@ class TrackingFrontend extends \Frontend
     public function addLocations($level, $child)
     {
 
-        if (in_array($child->location_type, $this->arrAllowedLocationTypes))
+        if (in_array($child['type'], $this->arrAllowedLocationTypes))
         {
             $arrData = array();
 
-            switch ($child->location_type)
+            switch ($child['type'])
             {
                 case "tPois":
-                    $arrData[0]['parent'] = $level;
-                    $arrData[0]['id'] = $child->id;
-                    $arrData[0]['type'] = 'struct';
-                    $arrData[0]['layername'] = $child->data_layername;
-                    $arrData[0]['hidelayer'] = $child->data_hidelayer > 0 ? $child->data_hidelayer : '';
+                    $arrData['pid'] = $level;
+                    $arrData['id'] = $child['id'];
+                    $arrData['type'] = 'none';
+                    $arrData['display'] = $child['display'];
+                    $arrData['name'] = $child['name'];
+                    $arrData['hide'] = $child['hide'] > 0 ? $child['hide'] : '';
                     $arrChildData = $this->getPoiData($child);
                     if (sizeof($arrChildData) == 0 && $child->tDontShowIfEmpty)
                     {
                       return;
                     }
-                    $arrData = array_merge($arrData, $arrChildData);
+                    else
+                    {
+                        $arrData['hasChilds'] = true;
+                        $arrData['childsCount'] = sizeof($arrChildData);
+                        $arrData['childs'] = $arrChildData;
+                    }
                     break;
                 case "tTracks":
-                    $arrData[0]['parent'] = $level;
-                    $arrData[0]['id'] = $child->id;
-                    $arrData[0]['type'] = 'struct';
-                    $arrData[0]['layername'] = $child->data_layername;
-                    $arrData[0]['hidelayer'] = $child->data_hidelayer > 0 ? $child->data_hidelayer : '';
+                    $arrData['pid'] = $level;
+                    $arrData['id'] = $child['id'];
+                    $arrData['type'] = 'none';
+                    $arrData['display'] = $child['display'];
+                    $arrData['name'] = $child['name'];
+                    $arrData['hide'] = $child['hide'] > 0 ? $child['hide'] : '';
                     $arrChildData = $this->getTrackData($child);
                     if (sizeof($arrChildData) == 0 && $child->tDontShowIfEmpty)
                     {
                       return;
                     }
-                    $arrData = array_merge($arrData, $arrChildData);
+                    else
+                    {
+                        $arrData['hasChilds'] = true;
+                        $arrData['childsCount'] = sizeof($arrChildData);
+                        $arrData['childs'] = $arrChildData;
+                    }
                     break;
 
                 case "tLive":
                     $arrData[0]['parent'] = $level;
-                    $arrData[0]['id'] = $child->id;
+                    $arrData[0]['id'] = $child['id'];
                     $arrData[0]['type'] = 'liveTracking';
                     $arrData[0]['locstyle'] = $child->locstyle > 0 ? $child->locstyle : '';
-                    $arrData[0]['layername'] = $child->data_layername;
-                    $arrData[0]['hidelayer'] = $child->data_hidelayer > 0 ? $child->data_hidelayer : '';
+                    $arrData[0]['name'] = $child->data_layername;
+                    $arrData[0]['hide'] = $child->data_hidelayer > 0 ? $child->data_hidelayer : '';
 
                     $GLOBALS['TL_BODY'][] = '<script src="system/modules/con4gis_tracking/assets/liveTracking.js"></script>';
 
@@ -80,17 +92,18 @@ class TrackingFrontend extends \Frontend
 
     protected function getTrackData($child)
     {
+
         $arrTrackData = array();
 
-        $strType = $child->memberVisibility ? $child->memberVisibility : "all";
+        $strType = $child['raw']->memberVisibility ? $child['raw']->memberVisibility : "all";
 
         $arrMember = array();
         $arrVisibility = array();
 
         $blnUseDatabaseStatus = false;
-        if ($child->useDatabaseStatus)
+        if ($child['raw']->useDatabaseStatus)
         {
-          $arrAllowedStatus = deserialize($child->databaseStatus);
+          $arrAllowedStatus = deserialize($child['raw']->databaseStatus);
           if (is_array($arrAllowedStatus) && sizeof($arrAllowedStatus)>0)
           {
             $blnUseDatabaseStatus = true;
@@ -184,6 +197,7 @@ class TrackingFrontend extends \Frontend
               $objTracks = \C4gTrackingTracksModel::findWithPositions($arrMember, $arrVisibility);
               break;
             case "all":
+
                 $arrVisibility[] = "public";
                 if ($blnUseDatabaseStatus)
                 {
@@ -202,14 +216,39 @@ class TrackingFrontend extends \Frontend
             {
                 $arrTrackData[] = array
                 (
-                    'parent' => $child->id,
-                    'id' => $child->id . $objTracks->id,
+                    'parent' => $child['id'],
+                    'id' => $child['id'] . $objTracks->id,
                     'type' => 'ajax',
-                    'locstyle' => $child->locstyle > 0 ? $child->locstyle : '',
                     'url' => 'system/modules/con4gis_core/api/trackingService?method=getTrack&id=' . $objTracks->uuid,
-                    'layername' => $child->data_layername ? ($objTracks->name . ' (' . \Date::parse('d.m.Y H:i', $objTracks->tstamp) . ')') : '',
-                    'hidelayer' => $child->data_hidelayer > 0 ? $child->data_hidelayer : '',
-                    'popupInfo' => $objTracks->name
+                    'name' => $child['name'] ? ($objTracks->name . ' (' . \Date::parse('d.m.Y H:i', $objTracks->tstamp) . ')') : '',
+                    'hide' => $child['hide'] > 0 ? $child['hide'] : '',
+                    'display' => $child['display'],
+                    'popupInfo' => $objTracks->name,
+                    'content' => array
+                    (
+                        array
+                        (
+                            'id' => '',
+                            'type' => 'urlData',
+                            'format' => 'GeoJSON',
+                            'locationStyle' => $child['raw']->locstyle,
+                            'data' => array
+                            (
+                                'url' => 'system/modules/con4gis_core/api/trackingService?method=getTrack&id=' . $objTracks->uuid,
+                                'popup' => array
+                                (
+                                    'content' => ''
+                                )
+                            ),
+                            'settings' => array
+                            (
+                                'loadAsync' => true,
+                                'refresh' => false,
+                                'crossOrigine' => false,
+                                'boundingBox' => false
+                            )
+                        )
+                    )
                 );
             }
         }
@@ -221,15 +260,15 @@ class TrackingFrontend extends \Frontend
     {
         $arrPoiData = array();
 
-        $strType = $child->memberVisibility ? $child->memberVisibility : "all";
+        $strType = $child['raw']->memberVisibility ? $child['raw']->memberVisibility : "all";
 
         $arrMember = array();
         $arrVisibility = array();
 
         $blnUseDatabaseStatus = false;
-        if ($child->useDatabaseStatus)
+        if ($child['raw']->useDatabaseStatus)
         {
-          $arrAllowedStatus = deserialize($child->databaseStatus);
+          $arrAllowedStatus = deserialize($child['raw']->databaseStatus);
           if (is_array($arrAllowedStatus) && sizeof($arrAllowedStatus)>0)
           {
             $blnUseDatabaseStatus = true;
@@ -345,11 +384,36 @@ class TrackingFrontend extends \Frontend
                 }
                 $arrPoiData[] = array
                 (
-                    'parent' => $child->id,
-                    'id' => $child->id . $objPois->id,
-                    'type' => 'geojson',
-                    'layername' =>  $child->data_layername ? ($objPois->name . ' (' . \Date::parse('d.m.Y H:i', $objPois->tstamp) . ')') : '',
-                    'hidelayer' => $child->data_hidelayer > 0 ? $child->data_hidelayer : ''
+                    'pid' => $child['id'],
+                    'id' => $child['id'] . $objPois->id,
+                    'type' => 'single',
+                    'display' => true,
+                    'name' =>  $child['name'] ? ($objPois->name . ' (' . \Date::parse('d.m.Y H:i', $objPois->tstamp) . ')') : '',
+                    'hide' => $child['hide'],
+                    'content' => array
+                    (
+                        array(
+                            'id' => '3',
+                            'type' => 'GeoJSON',
+                            'format' => 'GeoJSON',
+                            'origType' => 'single',
+                            'locationStyle' => '4',
+                            'data' => array(
+                                'type' => 'Feature',
+                                'geometry' => array(
+                                    'type' => 'Point',
+                                    'coordinates' => array (
+                                        (float) $objPois->longitude,
+                                        (float) $objPois->latitude
+                                    )
+                                ),
+                                'properties' => array
+                                (
+                                    'projection' => 'EPSG:4326',
+                                )
+                            )
+                        )
+                    )
                 );
 
 
@@ -369,7 +433,7 @@ class TrackingFrontend extends \Frontend
                   $strPopUpInfo = \String::parseSimpleTokens($child->popup_info, $arrDataForPopup);
                 }
 
-                $arrPoiData[] = array
+                /*$arrPoiData[] = array
                 (
                     'parent' => $child->id . $objPois->id,
                     'geox' => $objPois->longitude,
@@ -382,7 +446,7 @@ class TrackingFrontend extends \Frontend
                     'graphicTitle' => '',
                     'popupInfo' => $strPopUpInfo,
                     'linkurl' => ''
-                );
+                );*/
             }
         }
 
