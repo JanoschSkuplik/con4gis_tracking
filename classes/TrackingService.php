@@ -77,8 +77,8 @@ class TrackingService extends \Controller
                         'type' => 'Point',
                         'coordinates' => array
                         (
-                            $objPositions->longitude,
-                            $objPositions->latitude
+                            (float) $objPositions->longitude,
+                            (float) $objPositions->latitude
                         )
                     )
                 );

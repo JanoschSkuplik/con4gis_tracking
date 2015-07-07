@@ -57,7 +57,7 @@ class TrackingFrontend extends \Frontend
                     $arrData['type'] = 'none';
                     $arrData['display'] = $child['display'];
                     $arrData['name'] = $child['name'];
-                    $arrData['hide'] = $child['hide'] > 0 ? $child['hide'] : '';
+                    $arrData['hide'] = $child['hide'];
                     $arrChildData = $this->getTrackData($child);
                     if (sizeof($arrChildData) == 0 && $child->tDontShowIfEmpty)
                     {
@@ -72,14 +72,35 @@ class TrackingFrontend extends \Frontend
                     break;
 
                 case "tLive":
-                    $arrData[0]['parent'] = $level;
-                    $arrData[0]['id'] = $child['id'];
-                    $arrData[0]['type'] = 'liveTracking';
-                    $arrData[0]['locstyle'] = $child->locstyle > 0 ? $child->locstyle : '';
-                    $arrData[0]['name'] = $child->data_layername;
-                    $arrData[0]['hide'] = $child->data_hidelayer > 0 ? $child->data_hidelayer : '';
+                    $arrData['pid'] = $level;
+                    $arrData['id'] = $child['id'];
+                    $arrData['origType'] = 'liveTracking';
+                    $arrData['locstyle'] = $child['raw']->locstyle;
+                    $arrData['display'] = $child['display'];
+                    $arrData['name'] = $child['name'];
+                    $arrData['hide'] = $child['hide'];
+                    $arrData['content'] = array
+                    (
+                        array
+                        (
+                            "type" => 'urlData',
+                            "format" => 'GeoJSON',
+                            "locationStyle" => $child['raw']->locstyle,
+                            "data" => array
+                            (
+                                "url" => "system/modules/con4gis_core/api/trackingService?method=getLive"
+                            ),
+                            "settings" => array
+                            (
+                                "loadAsync" => true,
+                                "refresh" => true,
+                                "crossOrigine" => false
+                            )
+                        )
+                    );
 
-                    $GLOBALS['TL_BODY'][] = '<script src="system/modules/con4gis_tracking/assets/liveTracking.js"></script>';
+
+                    //$GLOBALS['TL_BODY'][] = '<script src="system/modules/con4gis_tracking/assets/liveTracking.js"></script>';
 
                     break;
             }
