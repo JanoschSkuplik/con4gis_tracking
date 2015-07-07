@@ -23,6 +23,17 @@ class TrackingFrontend extends \Frontend
         'tLive'
     );
 
+    public function __construct()
+   	{
+   		parent::__construct();
+        if (FE_USER_LOGGED_IN)
+        {
+            $this->import('FrontendUser', 'User');
+            $this->User->authenticate();
+        }
+
+    }
+
     public function addLocations($level, $child)
     {
 
