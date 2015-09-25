@@ -58,8 +58,7 @@ class TrackingService extends \Controller
 
         $objPositions = $this->Database->prepare("SELECT * FROM (SELECT tl_c4g_tracking_positions.*, tl_c4g_tracking_tracks.name, tl_c4g_tracking_tracks.comment, tl_c4g_tracking_tracks.visibility FROM tl_c4g_tracking_positions  LEFT JOIN tl_c4g_tracking_tracks ON tl_c4g_tracking_positions.track_uuid=tl_c4g_tracking_tracks.uuid WHERE tl_c4g_tracking_positions.tstamp>? ORDER BY tl_c4g_tracking_positions.tstamp DESC) as inv GROUP BY track_uuid")
                                                ->execute($strTimeSelect);
-        if ($objPositions->numRows)
-        {
+        if ($objPositions->numRows) {
 
             $arrFeatures = array();
             while ($objPositions->next())
@@ -91,7 +90,8 @@ class TrackingService extends \Controller
             $this->arrReturn = $arrReturn;
             return true;
         }
-        return false;
+        $this->arrReturn = array();
+        return true;
     }
 
     private function trackingGetTrack()

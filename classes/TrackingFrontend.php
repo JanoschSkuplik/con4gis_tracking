@@ -105,7 +105,8 @@ class TrackingFrontend extends \Frontend
                             (
                                 "loadAsync" => true,
                                 "refresh" => true,
-                                "crossOrigine" => false
+                                // "interval" => getTrackingConfig -> getHTTPInterval
+                                "crossOrigin" => false
                             )
                         )
                     );
