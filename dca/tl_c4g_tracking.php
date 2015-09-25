@@ -87,6 +87,12 @@ $GLOBALS['TL_DCA']['tl_c4g_tracking'] = array
                 'icon'                => 'system/modules/con4gis_tracking/assets/icon-devices.gif',
                 'button_callback'     => array('tl_c4g_tracking', 'deviceButton')
             ),
+            'boxes' => array
+            (
+                'label'               => &$GLOBALS['TL_LANG']['tl_c4g_tracking']['boxes'],
+                'href'                => 'table=tl_c4g_tracking_boxes',
+                'icon'                => 'system/modules/con4gis_tracking/assets/icon-devices.gif',
+            ),
             'edit' => array
             (
                 'label'               => &$GLOBALS['TL_LANG']['tl_c4g_tracking']['edit'],
@@ -114,7 +120,7 @@ $GLOBALS['TL_DCA']['tl_c4g_tracking'] = array
 	'palettes' => array
 	(
         '__selector__'                => array('useSmsGateway', 'adjustAdditionalData', 'usePushNotifications', 'limitAccess'),
-		'default'                     => '{title_legend},name;{config_legend},httpGatewayInterval;{sms_gateway_legend},useSmsGateway;{additional_data_legend},adjustAdditionalData;{push_notifications_legend},usePushNotifications;{access_legend:hide},limitAccess'
+		'default'                     => '{title_legend},name;{config_legend},httpGatewayInterval,apiKey;{sms_gateway_legend},useSmsGateway;{additional_data_legend},adjustAdditionalData;{push_notifications_legend},usePushNotifications;{access_legend:hide},limitAccess'
 	),
 
 	// Subpalettes
@@ -158,6 +164,17 @@ $GLOBALS['TL_DCA']['tl_c4g_tracking'] = array
             'reference'               => &$GLOBALS['TL_LANG']['tl_c4g_tracking']['gatewayIntervalOptions'],
             'eval'                    => array('tl_class'=>'w50', 'mandatory'=>true),
             'sql'                     => "varchar(32) NOT NULL default ''"
+        ),
+        'apiKey' => array
+        (
+            'label'                   => &$GLOBALS['TL_LANG']['tl_c4g_tracking']['apiKey'],
+            'inputType'               => 'text',
+            'exclude'                 => true,
+            'sorting'                 => true,
+            'flag'                    => 1,
+            'search'                  => true,
+            'eval'                    => array('mandatory'=>true, 'unique'=>true, 'decodeEntities'=>false, 'maxlength'=>128, 'tl_class'=>'w50'),
+            'sql'                     => "varchar(128) NOT NULL default ''"
         ),
         'useSmsGateway' => array
         (

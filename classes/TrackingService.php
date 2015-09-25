@@ -261,6 +261,65 @@ class TrackingService extends \Controller
     }
 
 
+    private function trackingNewPositionFromBox()
+    {
+
+        if ($this->blnDebugMode)
+        {
+            $arrParams = array('api_key','date','imei','latitude','longitude','phoneNo','speed','mileage','driverId','temperature','status');
+
+            foreach ($arrParams as $strParam)
+            {
+                if (\Input::get($strParam))
+                {
+                    \Input::setPost($strParam, \Input::get($strParam));
+                }
+            }
+        }
+
+        // check mandatory params
+        if (!\Input::post('api_key') || !\Input::post('date') || !\Input::post('imei') || !\Input::post('latitude') || !\Input::post('longitude'))
+        {
+            return false;
+        }
+
+        // check api_key
+        $objTracking = \C4gTrackingModel::findBy('apiKey', \Input::post('api_key'));
+        if ($objTracking === null)
+        {
+            return false;
+        }
+
+        // check imei number
+        $objTrackingBox = \C4gTrackingBoxesModel::findBy('imei', \Input::post('imei'));
+        if ($objTrackingBox === null)
+        {
+            return false;
+        }
+
+        $arrSet = array
+        (
+            'pid' => $objTrackingBox->id,
+            'tstamp' => \Input::post('date'),
+            'latitude' => \Input::post('latitude'),
+            'longitude' => \Input::post('longitude'),
+            'accuracy' => '',
+            'speed' => '',
+            'phoneNo' => \Input::post('phoneNo') ? \Input::post('phoneNo') : '',
+            'mileage' => \Input::post('mileage') ? \Input::post('mileage') : '',
+            'driverId' => \Input::post('driverId') ? \Input::post('driverId') : '',
+            'temperature' => \Input::post('temperature') ? \Input::post('temperature') : '',
+            'status' => \Input::post('status') ? \Input::post('status') : '',
+            'imei' => \Input::post('imei')
+
+        );
+
+        $objBoxLocation = new \C4gTrackingBoxlocationModel();
+        $objBoxLocation->setRow($arrSet)->save();
+
+        return true;
+    }
+
     /**
      *
      * @GET-Parameter vom SMS-Gateway
