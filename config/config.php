@@ -66,4 +66,5 @@ $GLOBALS['TL_API']['trackingService'] = 'TrackingService';
 
 $GLOBALS['c4g_locationtypes'][] = 'tPois';
 $GLOBALS['c4g_locationtypes'][] = 'tTracks';
+$GLOBALS['c4g_locationtypes'][] = 'tBoxes';
 $GLOBALS['c4g_locationtypes'][] = 'tLive';

@@ -20,7 +20,8 @@ class TrackingFrontend extends \Frontend
     (
         'tPois',
         'tTracks',
-        'tLive'
+        'tLive',
+        'tBoxes'
     );
 
     public function __construct()
@@ -81,7 +82,26 @@ class TrackingFrontend extends \Frontend
                         $arrData['childs'] = $arrChildData;
                     }
                     break;
-
+                case "tBoxes":
+                    $arrData['pid'] = $level;
+                    $arrData['id'] = $child['id'];
+                    $arrData['type'] = 'none';
+                    $arrData['display'] = $child['display'];
+                    $arrData['name'] = $child['name'];
+                    $arrData['hide'] = $child['hide'];
+                    $arrData['content'] = '';//$child['hide'];
+                    $arrChildData = $this->getBoxTrackData($child);
+                    if (sizeof($arrChildData) == 0 && $child->tDontShowIfEmpty)
+                    {
+                        return;
+                    }
+                    else
+                    {
+                        $arrData['hasChilds'] = true;
+                        $arrData['childsCount'] = sizeof($arrChildData);
+                        $arrData['childs'] = $arrChildData;
+                    }
+                    break;
                 case "tLive":
                     $arrData['pid'] = $level;
                     $arrData['id'] = $child['id'];
@@ -121,6 +141,58 @@ class TrackingFrontend extends \Frontend
         }
 
         return;
+    }
+
+    protected function getBoxTrackData($child)
+    {
+        $arrTrackData = array();
+
+        $objBoxes = \C4gTrackingBoxesModel::findAll();
+
+        if ($objBoxes !== null)
+        {
+            while($objBoxes->next())
+            {
+                $arrTrackData[] = array
+                (
+                    'parent' => $child['id'],
+                    'id' => $child['id'] . $objBoxes->id,
+                    'type' => 'ajax',
+                    'url' => 'system/modules/con4gis_core/api/trackingService?method=getBoxTrack&id=' . $objBoxes->id,
+                    'name' => $child['name'] ? ($objBoxes->name . ' (' . \Date::parse('d.m.Y H:i', $objBoxes->tstamp) . ')') : '',
+                    'hide' => $child['hide'] > 0 ? $child['hide'] : '',
+                    'display' => $child['display'],
+                    'popupInfo' => $objBoxes->name,
+                    'content' => array
+                    (
+                        array
+                        (
+                            'id' => '',
+                            'type' => 'urlData',
+                            'format' => 'GeoJSON',
+                            'locationStyle' => $child['raw']->locstyle,
+                            'data' => array
+                            (
+                                'url' => 'system/modules/con4gis_core/api/trackingService?method=getBoxTrack&id=' . $objBoxes->id,
+                                'popup' => array
+                                (
+                                    'content' => ''
+                                )
+                            ),
+                            'settings' => array
+                            (
+                                'loadAsync' => true,
+                                'refresh' => false,
+                                'crossOrigine' => false,
+                                'boundingBox' => false
+                            )
+                        )
+                    )
+                );
+            }
+        }
+
+        return $arrTrackData;
     }
 
     protected function getTrackData($child)

@@ -94,6 +94,53 @@ class TrackingService extends \Controller
         return true;
     }
 
+    private function trackingGetBoxTrack()
+    {
+
+        $arrCoordinates = array();
+
+        $this->import('Database');
+        $boxId = \Input::get('id');
+
+        $objPositions = $this->Database->prepare("SELECT * FROM tl_c4g_tracking_boxlocations WHERE pid=?")
+                                        ->execute($boxId);
+
+        if ($objPositions->numRows)
+        {
+            while ($objPositions->next())
+            {
+                $arrCoordinates[] = array
+                (
+                    (float) $objPositions->longitude,
+                    (float) $objPositions->latitude
+                );
+            }
+        }
+
+        $arrGeometry = array();
+        $arrGeometry['type'] = 'LineString';
+        $arrGeometry['coordinates'] = $arrCoordinates;
+
+        $arrFeatures = array();
+        $arrFeatures[] = array
+        (
+            'type' => 'Feature',
+            'geometry' => $arrGeometry,
+            'properties' => array
+            (
+                'projection' => 'EPSG:4326'
+            )
+        );
+
+        $arrReturn = array();
+        $arrReturn['type'] = "FeatureCollection";
+        $arrReturn['features'] = $arrFeatures;
+
+        $this->arrReturn = $arrReturn;
+        return true;
+
+    }
+
     private function trackingGetTrack()
     {
         $this->import('Database');
@@ -259,7 +306,6 @@ class TrackingService extends \Controller
 
         return true;
     }
-
 
     private function trackingNewPositionFromBox()
     {
