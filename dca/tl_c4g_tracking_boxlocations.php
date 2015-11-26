@@ -32,7 +32,8 @@ $GLOBALS['TL_DCA']['tl_c4g_tracking_boxlocations'] = array
         (
             'keys' => array
             (
-                'id' => 'primary'
+                'id' => 'primary',
+                'pid' => 'index'
             )
         )
     ),

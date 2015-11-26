@@ -16,9 +16,156 @@ namespace c4g;
 class Tracking extends \Controller
 {
 
+    public static function setNewPosition($strParentTable, $dblLatitude, $dblLongitude, $longAccuracy=0, $longSpeed=0, $timeStamp=false, $arrAdditionalData=array())
+    {
+
+        $time = $timeStamp ? $timeStamp : time();
+
+        $arrSet = array
+        (
+            'pTable'   => $strParentTable,
+            'tstamp'    => $time,
+            'latitude' => $dblLatitude,
+            'longitude' => $dblLongitude,
+            'accuracy' => $longAccuracy,
+            'speed' => $longSpeed
+        );
+
+        $objDatabase = \Database::getInstance();
+
+        $blnHasDevice = false;
+
+        if ($arrAdditionalData['imei'])
+        {
+            $arrSet['imei'] = $arrAdditionalData['imei'];
+
+            $intDeviceId = self::getDeviceIdByImei($arrAdditionalData['imei']);
+
+            if ($intDeviceId)
+            {
+                $arrSet['device'] = $intDeviceId;
+                $blnHasDevice = true;
+            }
+        }
+
+        if ($arrAdditionalData && sizeof($arrAdditionalData)>0)
+        {
+            $dataForBlob = array();
+            foreach ($arrAdditionalData as $key=>$varValue)
+            {
+                if ($objDatabase->fieldExists($key, "tl_c4g_tracking_positions"))
+                {
+                    $arrSet[$key] = $varValue;
+                }
+                else
+                {
+                    $dataForBlob[$key] = $varValue;
+                }
+            }
+
+            if ($dataForBlob && sizeof($dataForBlob)>0)
+            {
+                $arrSet['additionalData'] = $dataForBlob;
+            }
+        }
+
+        $objPosition = new \C4gTrackingPositionsModel();
+        $objPosition->setRow($arrSet)->save();
 
 
-    public static function setNewPosition($intTrackUuid, $dblLatitude, $dblLongitude, $longAccuracy=0, $longSpeed=0, $timeStamp=false, $arrAdditionalData=array())
+        if ($blnHasDevice)
+        {
+            // UPDATE DEVICE TABLE REFERENCE
+            \Database::getInstance()->prepare("UPDATE tl_c4g_tracking_devices SET lastPositionId=? WHERE id=?")
+                ->execute($objPosition->id, $intDeviceId);
+        }
+
+        return $objPosition->id;
+
+    }
+
+    public static function setNewDevicePositions()
+    {
+        echo self::setNewPosition("test", 12, 12, 0, 0, false, array('pid'=>'dfdf','test'=>'dfgdfg'));
+    }
+
+    public static function setNewPoi($intConfiguration, $intMemberId, $strVisibility="privat", $strName="", $intTrackUuid=0, $timeStamp, $arrPositionData=array())
+    {
+
+        $strUuid = uniqid('', true);
+        $timeStamp = $timeStamp ? $timeStamp : time();
+
+        // Save Position into position-table
+        $intPositionId = self::setNewPosition("pois", $arrPositionData['latitude'], $arrPositionData['longitude'], $arrPositionData['longitude'], $arrPositionData['longitude'], $timeStamp, $arrPositionData['additionalData']);
+
+        $arrSet = array
+        (
+            'tstamp'    => $timeStamp,
+            'pid'    => $intConfiguration,
+            'uuid'  => $strUuid,
+            'member' => $intMemberId,
+            'name' => $strName,
+            'visibility' => $strVisibility,
+            'trackUuid' => $intTrackUuid
+        );
+
+        $arrSet['positionId'] = $intPositionId;
+
+        if ($arrPositionData['additionalData']['imei'])
+        {
+
+            $intDeviceId = self::getDeviceIdByImei($arrPositionData['additionalData']['imei']);
+
+            if ($intDeviceId)
+            {
+                $arrSet['device'] = $intDeviceId;
+            }
+        }
+
+
+        $objPoi = new \C4gTrackingPoisModel();
+        $objPoi->setRow($arrSet)->save();
+
+
+        $arrTrackingPoi = array();
+        $arrTrackingPoi['poiId'] = $objPoi->id;
+        $arrTrackingPoi['poiUuid'] = $strUuid;
+
+        $arrTrackingPoi['version'] = $GLOBALS['con4gis_tracking_extension']['version'];
+
+        return $arrTrackingPoi;
+
+    }
+
+    public static function setNewTrack($intConfiguration, $intMemberId, $strVisibility="privat", $strName="", $timeStamp, $arrPositionData=array())
+    {
+
+        $timeStamp = $timeStamp ? $timeStamp : time();
+        $strUuid = uniqid('', true);
+
+        $intPositionId = self::setNewPosition("tracks", $arrPositionData['latitude'], $arrPositionData['longitude'], $arrPositionData['longitude'], $arrPositionData['longitude'], $timeStamp, $arrPositionData['additionalData']);
+
+        $arrSet = array
+        (
+            'tstamp'    => $timeStamp,
+            'pid'    => $intConfiguration,
+            'uuid'  => $strUuid,
+            'member' => $intMemberId,
+            'name' => $strName,
+            'visibility' => $strVisibility
+        );
+
+        $arrSet['lastPositionId'] = $intPositionId;
+
+        if ($arrPositionData['imei'])
+        {
+            $arrSet['imei'] = $arrPositionData['imei'];
+        }
+
+    }
+
+
+    public static function xsetNewPosition($intTrackUuid, $dblLatitude, $dblLongitude, $longAccuracy=0, $longSpeed=0, $timeStamp=false, $arrAdditionalData=array())
     {
         $arrTrackingPosition = array();
         $time = $timeStamp ? $timeStamp : time();
@@ -63,7 +210,7 @@ class Tracking extends \Controller
         return $arrTrackingPosition;
     }
 
-    public static function setNewPoi($intConfiguration, $intUserId, $dblLatitude, $dblLongitude, $longAccuracy=0, $longSpeed=0, $strName="", $timeStamp=false, $strVisibility="privat", $intTrackUuid=0, $arrAdditionalData=array())
+    public static function xsetNewPoi($intConfiguration, $intUserId, $dblLatitude, $dblLongitude, $longAccuracy=0, $longSpeed=0, $strName="", $timeStamp=false, $strVisibility="privat", $intTrackUuid=0, $arrAdditionalData=array())
     {
         $arrTrackingPoi = array();
         $time = $timeStamp ? $timeStamp : time();
@@ -116,7 +263,7 @@ class Tracking extends \Controller
         return $arrTrackingPoi;
     }
 
-    public static function setNewTrack($intConfiguration, $intUserId, $strName="", $timeStamp=false, $strVisibility="privat", $arrAdditionalData=array())
+    public static function xsetNewTrack($intConfiguration, $intUserId, $strName="", $timeStamp=false, $strVisibility="privat", $arrAdditionalData=array())
     {
         $arrTrackingTrack = array();
         $time = $timeStamp ? $timeStamp : time();
@@ -205,6 +352,19 @@ class Tracking extends \Controller
         $arrTrackingConfig['version'] = $GLOBALS['con4gis_tracking_extension']['version'];
 
         return $arrTrackingConfig;
+
+    }
+
+    private static function getDeviceIdByImei($strImei)
+    {
+        $objDevice = \C4gTrackingDevicesModel::findBy('imei', $strImei);
+
+        if ($objDevice !== null)
+        {
+            return $objDevice->id;
+        }
+
+        return false;
 
     }
 

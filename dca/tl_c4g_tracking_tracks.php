@@ -189,7 +189,12 @@ $GLOBALS['TL_DCA']['tl_c4g_tracking_tracks'] = array
           	'eval'                    => array('tl_class'=>'w50'),
           	'sql'                     => "char(1) NOT NULL default '0'"
         ),
-        'imei' => array(
+		'lastPositionId' => array(
+			'foreignKey'              => 'tl_c4g_tracking_positions.id',
+			'sql'                     => "int(10) unsigned NOT NULL default '0'",
+			'relation'                => array('type'=>'hasOne', 'load'=>'eager')
+		),
+		/*'imei' => array(
             'sql'                     => "varchar(32) NOT NULL default ''"
         ),
         'batterystatus' => array(
@@ -197,7 +202,7 @@ $GLOBALS['TL_DCA']['tl_c4g_tracking_tracks'] = array
         ),
         'networkinfo' => array(
             'sql'                     => "varchar(32) NOT NULL default ''"
-        ),
+        ),*/
 	)
 );
 

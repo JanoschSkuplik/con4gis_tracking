@@ -87,12 +87,12 @@ $GLOBALS['TL_DCA']['tl_c4g_tracking'] = array
                 'icon'                => 'system/modules/con4gis_tracking/assets/icon-devices.gif',
                 'button_callback'     => array('tl_c4g_tracking', 'deviceButton')
             ),
-            'boxes' => array
+            /*'boxes' => array
             (
                 'label'               => &$GLOBALS['TL_LANG']['tl_c4g_tracking']['boxes'],
                 'href'                => 'table=tl_c4g_tracking_boxes',
                 'icon'                => 'system/modules/con4gis_tracking/assets/icon-devices.gif',
-            ),
+            ),*/
             'edit' => array
             (
                 'label'               => &$GLOBALS['TL_LANG']['tl_c4g_tracking']['edit'],
@@ -290,7 +290,7 @@ class tl_c4g_tracking extends Backend
     public function deviceButton($row, $href, $label, $title, $icon, $attributes)
     {
 
-        if($row['usePushNotifications'])
+        if (is_dir(TL_ROOT . '/system/modules/con4gis_tracking_android') || is_dir(TL_ROOT . '/system/modules/con4gis_tracking_boxes'))
         {
             $href .= '&amp;id='.$row['id'];
 
@@ -300,6 +300,7 @@ class tl_c4g_tracking extends Backend
         {
             return '';
         }
+
     }
 
     public function adjustOperationDca($dc)

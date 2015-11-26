@@ -22,7 +22,8 @@ $GLOBALS['TL_DCA']['tl_c4g_tracking_positions'] = array
 	'config' => array
 	(
 		'dataContainer'               => 'Table',
-		'ptable'                      => 'tl_c4g_tracking_tracks',
+		'ptable'                      => '',
+		'dynamicPtable'               => true,
 		'enableVersioning'            => true,
 		'onload_callback' => array
 		(
@@ -105,15 +106,17 @@ $GLOBALS['TL_DCA']['tl_c4g_tracking_positions'] = array
 		),
 		'pid' => array
 		(
-			'foreignKey'              => 'tl_c4g_tracking_track.name',
-			'sql'                     => "int(10) unsigned NOT NULL default '0'",
-			'relation'                => array('type'=>'belongsTo', 'load'=>'eager')
+			'sql'                     => "int(10) unsigned NOT NULL default '0'"
+		),
+		'ptable' => array
+		(
+			'sql'                     => "varchar(64) NOT NULL default ''"
 		),
 		'tstamp' => array
 		(
 			'sql'                     => "int(10) unsigned NOT NULL default '0'"
 		),
-        'track_uuid' => array
+        'trackUuid' => array
         (
             'label'                   => &$GLOBALS['TL_LANG']['tl_c4g_tracking_pois']['name'],
             'exclude'                 => true,
@@ -167,19 +170,10 @@ $GLOBALS['TL_DCA']['tl_c4g_tracking_positions'] = array
             'eval'                    => array('tl_class'=>'w50', 'mandatory'=>true),
             'sql'                     => "float NULL"
         ),
-        'positiontype' => array
-        (
-            'sql'                     => "varchar(32) NOT NULL default ''"
-        ),
-        'imei' => array(
-            'sql'                     => "varchar(32) NOT NULL default ''"
-        ),
-        'batterystatus' => array(
-            'sql'                     => "varchar(32) NOT NULL default ''"
-        ),
-        'networkinfo' => array(
-            'sql'                     => "varchar(32) NOT NULL default ''"
-        ),
+		'additionalData' => array
+		(
+			'sql'                     => "blob NULL"
+		)
 	)
 );
 

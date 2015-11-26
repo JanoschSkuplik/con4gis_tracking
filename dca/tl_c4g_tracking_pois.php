@@ -141,55 +141,6 @@ $GLOBALS['TL_DCA']['tl_c4g_tracking_pois'] = array
             'eval'                    => array('tl_class'=>'w50', 'mandatory'=>true, 'maxlength'=>23, 'readonly'=>true),
             'sql'                     => "varchar(23) NOT NULL default ''"
         ),
-        'latitude' => array
-        (
-            'label'                   => &$GLOBALS['TL_LANG']['tl_c4g_tracking_pois']['latitude'],
-            'exclude'                 => true,
-            'search'                  => true,
-            'inputType'               => 'text',
-            'eval'                    => array('tl_class'=>'w50', 'mandatory'=>true),
-            'sql'                     => "double NULL"
-        ),
-        'longitude' => array
-        (
-            'label'                   => &$GLOBALS['TL_LANG']['tl_c4g_tracking_pois']['longitude'],
-            'exclude'                 => true,
-            'search'                  => true,
-            'inputType'               => 'text',
-            'eval'                    => array('tl_class'=>'w50', 'mandatory'=>true),
-            'sql'                     => "double NULL"
-        ),
-        'location' => array
-        (
-            'label'                   => &$GLOBALS['TL_LANG']['tl_c4g_tracking_pois']['location'],
-            'exclude'                 => true,
-            'search'                  => true,
-            'inputType'               => 'text',
-            'eval'                    => array('tl_class'=>'w50', 'mandatory'=>true),
-            'sql'                     => "point NOT NULL"
-        ),
-        'accuracy' => array
-        (
-            'label'                   => &$GLOBALS['TL_LANG']['tl_c4g_tracking_pois']['accuracy'],
-            'exclude'                 => true,
-            'search'                  => true,
-            'inputType'               => 'text',
-            'eval'                    => array('tl_class'=>'w50', 'mandatory'=>true),
-            'sql'                     => "float NULL"
-        ),
-        'speed' => array
-        (
-            'label'                   => &$GLOBALS['TL_LANG']['tl_c4g_tracking_pois']['speed'],
-            'exclude'                 => true,
-            'search'                  => true,
-            'inputType'               => 'text',
-            'eval'                    => array('tl_class'=>'w50', 'mandatory'=>true),
-            'sql'                     => "float NULL"
-        ),
-        'positiontype' => array
-        (
-            'sql'                     => "varchar(32) NOT NULL default ''"
-        ),
         'comment' => array
         (
             'label'                   => &$GLOBALS['TL_LANG']['tl_c4g_tracking_pois']['comment'],
@@ -231,10 +182,10 @@ $GLOBALS['TL_DCA']['tl_c4g_tracking_pois'] = array
             'relation'                => array('type'=>'hasMany', 'load'=>'lazy')
         ),
         'trackUuid' => array
-    		(
-    			'foreignKey'              => 'tl_c4g_tracking_track.name',
-    			'sql'                     => "varchar(23) NOT NULL default ''"
-    		),
+		(
+			'foreignKey'              => 'tl_c4g_tracking_track.name',
+			'sql'                     => "varchar(23) NOT NULL default ''"
+		),
         'forDelete' => array
         (
           	'label'                   => &$GLOBALS['TL_LANG']['tl_c4g_tracking_pois']['forDelete'],
@@ -243,7 +194,12 @@ $GLOBALS['TL_DCA']['tl_c4g_tracking_pois'] = array
           	'eval'                    => array('tl_class'=>'w50'),
           	'sql'                     => "char(1) NOT NULL default '0'"
         ),
-        'imei' => array(
+		'positionId' => array(
+			'foreignKey'              => 'tl_c4g_tracking_positions.id',
+			'sql'                     => "int(10) unsigned NOT NULL default '0'",
+			'relation'                => array('type'=>'hasOne', 'load'=>'eager')
+		),
+        /*'imei' => array(
             'sql'                     => "varchar(32) NOT NULL default ''"
         ),
         'batterystatus' => array(
@@ -251,7 +207,7 @@ $GLOBALS['TL_DCA']['tl_c4g_tracking_pois'] = array
         ),
         'networkinfo' => array(
             'sql'                     => "varchar(32) NOT NULL default ''"
-        ),
+        ),*/
 	)
 );
 

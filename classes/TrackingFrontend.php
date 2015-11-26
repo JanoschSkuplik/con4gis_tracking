@@ -35,6 +35,44 @@ class TrackingFrontend extends \Frontend
 
     }
 
+    public function getInfoWindowContent($strTable, $intId, $arrData)
+    {
+
+        if ($strTable == "devices")
+        {
+            $arrTrackingData = array();
+
+            if(strpos($intId,";")!==false)
+            {
+                $arrTrackingInfoSettings = explode(';',$intId);
+
+                $strType = $arrTrackingInfoSettings[0];
+                $intPositionId = $arrTrackingInfoSettings[1];
+
+                $objPositions = \C4gTrackingPositionsModel::findBy('id', $intPositionId);
+
+                $arrDeviceData = array();
+                if ($objPositions !== null)
+                {
+                    if (($objDevice = $objPositions->getRelated('device')) !== null)
+                    {
+                        $arrDeviceData = $objDevice->row();
+                    }
+                }
+
+                $arrPositionData = $objPositions->row();
+
+                $arrTemplateData = array_merge($arrPositionData, $arrDeviceData);
+                //print_r($arrTemplateData);
+
+                $arrData['content'] = $arrTemplateData['name'];
+
+            }
+        }
+
+        return $arrData;
+    }
+
     public function addLocations($level, $child)
     {
 
