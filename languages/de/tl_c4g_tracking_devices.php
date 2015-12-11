@@ -22,6 +22,7 @@ $GLOBALS['TL_LANG']['tl_c4g_tracking_devices']['show'] = array('Details','Detail
 
 $GLOBALS['TL_LANG']['tl_c4g_tracking_devices']['title_legend'] = "Titel";
 $GLOBALS['TL_LANG']['tl_c4g_tracking_devices']['send_push_legend'] = "Push-Nachrichten";
+$GLOBALS['TL_LANG']['tl_c4g_tracking_devices']['position_info_legend'] = "Positionsinformationen";
 
 $GLOBALS['TL_LANG']['tl_c4g_tracking_devices']['name'] = array("Name","Name");
 $GLOBALS['TL_LANG']['tl_c4g_tracking_devices']['type'] = array("Typ","Typ des Gerätes");
@@ -33,3 +34,7 @@ $GLOBALS['TL_LANG']['tl_c4g_tracking_devices']['pushNotificationContent'] = arra
 $GLOBALS['TL_LANG']['tl_c4g_tracking_devices']['types'] = array(
     'android' => 'Android'
 );
+
+$GLOBALS['TL_LANG']['tl_c4g_tracking_devices']['locationStyle'] = array('Lokations-Stil', 'Lokations-Stil');
+$GLOBALS['TL_LANG']['tl_c4g_tracking_devices']['mapStructureId'] = array('zugewiesene Gruppe', 'Zugewiese Gruppe. Hierzu müssen zunächst entsprechende Kartenstrukturen definiert werden');
+$GLOBALS['TL_LANG']['tl_c4g_tracking_devices']['lastPositionId'] = array('Letzte Position (#ID)', 'Gespeicherter Refernenz-Datensatz für die letzte Position');

@@ -34,6 +34,35 @@ class C4gTrackingDevicesModel extends \Model
 	 */
 	protected static $strTable = 'tl_c4g_tracking_devices';
 
+	public static function findMultipleByIds($arrIds)
+	{
+		if (!is_array($arrIds) || empty($arrIds))
+		{
+			return null;
+		}
+		$arrIds = implode(',', array_map('intval', $arrIds));
+		$t = static::$strTable;
+		$db = \Database::getInstance();
+		return static::findBy
+		(
+			array("$t.id IN(" . $arrIds . ")"),
+			null,
+			array('order' => $db->findInSet("$t.id", $arrIds))
+		);
+	}
+
+	public static function findByImeiEndpiece($strImei)
+	{
+		if (empty($strImei))
+		{
+			return null;
+		}
+
+		$t = static::$strTable;
+
+		return static::findOneBy(array("$t.imei LIKE ?"), '%' . $strImei);
+	}
+
 }
 
 

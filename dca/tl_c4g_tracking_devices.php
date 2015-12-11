@@ -1,3 +1,4 @@
+
 <?php
 
 /**
@@ -48,7 +49,7 @@ $GLOBALS['TL_DCA']['tl_c4g_tracking_devices'] = array
 		(
 			'mode'                    => 2,
             'flag'                    => 8,
-			'fields'                  => array('tstamp'),
+			'fields'                  => array('name'),
 			'panelLayout'             => 'filter;sort,search,limit',
 			'headerFields'            => array('name', 'tstamp'),
 			//'child_record_callback'   => array('tl_module', 'listModule'),
@@ -111,15 +112,12 @@ $GLOBALS['TL_DCA']['tl_c4g_tracking_devices'] = array
 	// Palettes
 	'palettes' => array
 	(
-		'__selector__'                => array('sendPushNotification'),
-		'default'                     => '{title_legend},name,type,imei,token;{send_push_legend},sendPushNotification;',
+		'__selector__'			      => array('type'),
+		'default'                     => '{title_legend},name,type',
 	),
 
 	// Subpalettes
-	'subpalettes' => array
-	(
-        'sendPushNotification' => 'pushNotificationContent'
-	),
+
 
 	// Fields
 	'fields' => array
@@ -158,45 +156,52 @@ $GLOBALS['TL_DCA']['tl_c4g_tracking_devices'] = array
 			'filter'                  => true,
 			'inputType'               => 'select',
 			'options_callback'        => array('tl_c4g_tracking_devices', 'getTypes'),
-			'reference'               => &$GLOBALS['TL_LANG']['FMD'],
-			'eval'                    => array('mandatory'=>true, 'helpwizard'=>false, 'chosen'=>false, 'submitOnChange'=>false, 'tl_class'=>'w50 clr', 'includeBlankOption'=>false),
+			'reference'               => &$GLOBALS['TL_LANG']['tl_c4g_tracking_devices']['types'] ,
+			'eval'                    => array('mandatory'=>true, 'helpwizard'=>false, 'chosen'=>false, 'submitOnChange'=>true, 'tl_class'=>'w50 clr', 'includeBlankOption'=>true),
 			'sql'                     => "varchar(64) NOT NULL default ''"
 		),
-        'imei' => array
-        (
-            'label'                   => &$GLOBALS['TL_LANG']['tl_c4g_tracking_devices']['imei'],
-            'exclude'                 => true,
-            'search'                  => true,
-            'inputType'               => 'text',
-            'eval'                    => array('tl_class'=>'w50 clr', 'mandatory'=>true, 'maxlength'=>15, 'doNotCopy'=>false),
-            'sql'                     => "varchar(32) NOT NULL default ''"
-        ),
-        'token' => array
-        (
-            'label'                   => &$GLOBALS['TL_LANG']['tl_c4g_tracking_devices']['token'],
-            'exclude'                 => true,
-            'search'                  => true,
-            'inputType'               => 'text',
-            'eval'                    => array('tl_class'=>'w50', 'mandatory'=>true, 'maxlength'=>255, 'doNotCopy'=>false),
-            'sql'                     => "varchar(255) NOT NULL default ''"
-        ),
-        'sendPushNotification' => array
-        (
-            'label'                   => &$GLOBALS['TL_LANG']['tl_c4g_tracking_devices']['sendPushNotification'],
-           	'exclude'                 => true,
-           	'inputType'               => 'checkbox',
-           	'eval'                    => array('submitOnChange'=>true, 'tl_class'=>'w50'),
-           	'sql'                     => "char(1) NOT NULL default ''",
-        ),
-        'pushNotificationContent' => array
-        (
-            'label'                   => &$GLOBALS['TL_LANG']['tl_c4g_tracking_devices']['pushNotificationContent'],
-            'exclude'                 => true,
-            'inputType'               => 'textarea',
-            'search'                  => true,
-            'eval'                    => array('tl_class'=>'clr'),
-            'sql'                     => "text NULL",
-        )
+		'lastPositionId' => array
+		(
+			'label'					  => &$GLOBALS['TL_LANG']['tl_c4g_tracking_devices']['lastPositionId'],
+			'inputType'			      => 'text',
+			'eval'					  => array('readonly'=>true),
+			'foreignKey'              => 'tl_c4g_tracking_positions.id',
+			'sql'                     => "int(10) unsigned NOT NULL default '0'",
+			'relation'                => array('type'=>'hasOne', 'load'=>'eager')
+		),
+		'mapStructureId' => array
+		(
+			'label'                   => &$GLOBALS['TL_LANG']['tl_c4g_tracking_devices']['mapStructureId'],
+			'exclude'                 => true,
+			'search'                  => true,
+			'inputType'               => 'select',
+			'foreignKey'              => 'tl_c4g_maps.name',
+			'eval'                    => array('tl_class'=>'w50', 'chosen'=>true, 'includeBlankOption'=>true),
+			'sql'                     => "int(10) unsigned NOT NULL default '0'",
+			'relation'                => array('type'=>'hasOne', 'load'=>'eager')
+		),
+		'timeZone' => array
+		(
+			'label'                   => &$GLOBALS['TL_LANG']['tl_c4g_tracking_devices']['timeZone'],
+			'inputType'               => 'select',
+			'default'			      => \Config::get('timeZone'),
+			'options'                 => System::getTimeZones(),
+			'eval'                    => array('chosen'=>true, 'tl_class'=>'w50'),
+			'sql'                     => "varchar(255) NOT NULL default ''"
+		),
+		'locationStyle' => array
+		(
+			'label'                   => &$GLOBALS['TL_LANG']['tl_c4g_tracking_devices']['locationStyle'],
+			'exclude'                 => true,
+			'inputType'               => 'select',
+			'options_callback'        => array('tl_c4g_tracking_devices','getLocStyles'),
+			'eval'                    => array('tl_class'=>'w50'),
+			'wizard' => array
+			(
+				array('tl_c4g_tracking_devices', 'editLocationStyle')
+			),
+			'sql'                     => "int(10) unsigned NOT NULL default '0'"
+		),
 	)
 );
 
@@ -221,6 +226,26 @@ class tl_c4g_tracking_devices extends Backend
 		$this->import('BackendUser', 'User');
 	}
 
+
+	public function getLocStyles(DataContainer $dc)
+	{
+		$profile = $this->Database->prepare("SELECT locstyles FROM tl_c4g_map_profiles WHERE id=?")->execute($dc->activeRecord->profile);
+		$ids = deserialize($profile->locstyles,true);
+		if (count($ids)>0) {
+			$locStyles = $this->Database->prepare("SELECT id,name FROM tl_c4g_map_locstyles WHERE id IN (".implode(',',$ids).") ORDER BY name")->execute();
+		} else {
+			$locStyles = $this->Database->prepare("SELECT id,name FROM tl_c4g_map_locstyles ORDER BY name")->execute();
+		}
+		while ($locStyles->next()) {
+			$return[$locStyles->id] = $locStyles->name;
+		}
+		return $return;
+	}
+
+	public function editLocationStyle(DataContainer $dc)
+	{
+		return ($dc->value < 1) ? '' : ' <a href="contao/main.php?do=c4g_map_locstyles&amp;act=edit&amp;id=' . $dc->value . '&amp;popup=1&amp;nb=1&amp;rt=' . REQUEST_TOKEN . '" title="' . sprintf(specialchars($GLOBALS['TL_LANG']['tl_c4g_maps']['editalias'][1]), $dc->value) . '" style="padding-left:3px" onclick="Backend.openModalIframe({\'width\':768,\'title\':\'' . specialchars(str_replace("'", "\\'", sprintf($GLOBALS['TL_LANG']['tl_c4g_maps']['editalias'][1], $dc->value))) . '\',\'url\':this.href});return false">' . Image::getHtml('alias.gif', $GLOBALS['TL_LANG']['tl_c4g_maps']['editalias'][0], 'style="vertical-align:top"') . '</a>';
+	}
 
 
 	/**
@@ -247,11 +272,9 @@ class tl_c4g_tracking_devices extends Backend
 	 */
 	public function getTypes()
 	{
-		$arrTypes = array();
 
-        $arrTypes['android'] = $GLOBALS['TL_LANG']['tl_c4g_tracking_devices']['types']['android'];
+		return $GLOBALS['c4g_tracking_devicetypes'];
 
-		return $arrTypes;
 	}
 
 

@@ -19,10 +19,26 @@ $GLOBALS['TL_LANG']['tl_c4g_maps']['specialGroups'] = array('Ausgewählte Gruppe
 $GLOBALS['TL_LANG']['tl_c4g_maps']['useDatabaseStatus'] = array('Benutzerdefinierte Sichtbarkeit überschreiben', 'Überschreibt die vom Mitglied eingestellte Sichtbarkeiten seiner Trackingdaten. (Nicht empfohlen!)');
 $GLOBALS['TL_LANG']['tl_c4g_maps']['databaseStatus'] = array('Mit folgendem Wert überschreiben', 'Der Wert mit dem die benutzerdefinierten Sichtbarkeiten überschrieben werden sollen.');
 
+$GLOBALS['TL_LANG']['tl_c4g_maps']['liveTrackingType'] = array('Live-Tracking-Typ', 'Einträge gruppieren, zusammenfassen oder nur einzelne Geräte auswählen');
+$GLOBALS['TL_LANG']['tl_c4g_maps']['liveTrackingDevices'] = array('Geräte','Geräte');
+$GLOBALS['TL_LANG']['tl_c4g_maps']['isFilterable'] = array('Strukturelement ist filterbar', 'Zeigt am Strukturelement den Filter-Button an und initialisiert den Filter');
 
 $GLOBALS['TL_LANG']['tl_c4g_maps']['references']['tPois'] = 'Tracking – POIs';
 $GLOBALS['TL_LANG']['tl_c4g_maps']['references']['tTracks'] = 'Tracking – Tracks';
 $GLOBALS['TL_LANG']['tl_c4g_maps']['references']['tLive'] = 'Tracking – Live-Ansicht';
+
+
+
+
+$GLOBALS['TL_LANG']['tl_c4g_maps']['references']['liveTrackingTypes']['tLive_all'] = "Alle Geräte zusammengefasst";
+$GLOBALS['TL_LANG']['tl_c4g_maps']['references']['liveTrackingTypes']['tLive_alleach'] = "Alle Geräte einzeln aufgelistet";
+$GLOBALS['TL_LANG']['tl_c4g_maps']['references']['liveTrackingTypes']['tLive_group'] = "Gruppierte Geräte zusammengefasst";
+$GLOBALS['TL_LANG']['tl_c4g_maps']['references']['liveTrackingTypes']['tLive_groupeach'] = "Gruppierte Geräte einzeln aufgelistet";
+$GLOBALS['TL_LANG']['tl_c4g_maps']['references']['liveTrackingTypes']['tLive_device'] = "Einzelne Geräte zusammengefasst";
+$GLOBALS['TL_LANG']['tl_c4g_maps']['references']['liveTrackingTypes']['tLive_deviceeach'] = "Einzelne Geräte einzeln aufgelistet";
+
+
+$GLOBALS['TL_LANG']['tl_c4g_maps']['live_tracking_legend'] = "Live-Tracking Einstellungen";
 
 $GLOBALS['TL_LANG']['tl_c4g_maps']['references']['memberVisibility'] = array
 (

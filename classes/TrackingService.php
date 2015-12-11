@@ -51,13 +51,56 @@ class TrackingService extends \Controller
 
     private function trackingGetLive()
     {
+
+        if (\Input::get('maps'))
+        {
+            $intMapsItem = \Input::get('maps');
+        }
+
         $this->import('Database');
         $time = time();
         $strTimeSelect = $time - (60*60);
         //$strTimeSelect = 0;
 
-        $objPositions = $this->Database->prepare("SELECT * FROM (SELECT tl_c4g_tracking_positions.*, tl_c4g_tracking_tracks.name, tl_c4g_tracking_tracks.comment, tl_c4g_tracking_tracks.visibility FROM tl_c4g_tracking_positions  LEFT JOIN tl_c4g_tracking_tracks ON tl_c4g_tracking_positions.track_uuid=tl_c4g_tracking_tracks.uuid WHERE tl_c4g_tracking_positions.tstamp>? ORDER BY tl_c4g_tracking_positions.tstamp DESC) as inv GROUP BY track_uuid")
-                                               ->execute($strTimeSelect);
+        /*$objPositions = $this->Database->prepare("SELECT * FROM (SELECT tl_c4g_tracking_positions.*, tl_c4g_tracking_tracks.name, tl_c4g_tracking_tracks.comment, tl_c4g_tracking_tracks.visibility FROM tl_c4g_tracking_positions  LEFT JOIN tl_c4g_tracking_tracks ON tl_c4g_tracking_positions.track_uuid=tl_c4g_tracking_tracks.uuid WHERE tl_c4g_tracking_positions.tstamp>? ORDER BY tl_c4g_tracking_positions.tstamp DESC) as inv GROUP BY track_uuid")
+                                               ->execute($strTimeSelect);*/
+
+        if (\Input::get('id'))
+        {
+
+            if (is_array(\Input::get('id')))
+            {
+                // multiple devices
+                $arrDevices = \Input::get('id');
+
+                $arrIds = implode(',', array_map('intval', $arrDevices));
+
+                $objPositions = $this->Database->prepare("SELECT tl_c4g_tracking_devices.name, tl_c4g_tracking_positions.* FROM tl_c4g_tracking_devices LEFT JOIN tl_c4g_tracking_positions ON tl_c4g_tracking_devices.lastPositionId=tl_c4g_tracking_positions.id WHERE tl_c4g_tracking_devices.lastPositionId>0 AND tl_c4g_tracking_devices.id IN (" . $arrIds . ")")
+                  ->execute();
+            }
+            else
+            {
+                // single devices
+                $intDeviceId = \Input::get('id');
+                $objPositions = $this->Database->prepare("SELECT tl_c4g_tracking_devices.name, tl_c4g_tracking_positions.* FROM tl_c4g_tracking_devices LEFT JOIN tl_c4g_tracking_positions ON tl_c4g_tracking_devices.lastPositionId=tl_c4g_tracking_positions.id WHERE tl_c4g_tracking_devices.lastPositionId>0 AND tl_c4g_tracking_devices.id=?")
+                  ->execute($intDeviceId);
+            }
+        }
+        elseif (\Input::get('useGroup'))
+        {
+            $intGroupId = \Input::get('useGroup');
+            $objPositions = $this->Database->prepare("SELECT tl_c4g_tracking_devices.name, tl_c4g_tracking_positions.* FROM tl_c4g_tracking_devices LEFT JOIN tl_c4g_tracking_positions ON tl_c4g_tracking_devices.lastPositionId=tl_c4g_tracking_positions.id WHERE tl_c4g_tracking_devices.lastPositionId>0 AND tl_c4g_tracking_devices.groupId=?")
+                                            ->execute($intGroupId);
+        }
+        else
+        {
+            // Fallback: keine weiteren Einstellungen -> alle Geräte mit Positionsdaten
+            $objPositions = $this->Database->prepare("SELECT tl_c4g_tracking_devices.name, tl_c4g_tracking_positions.* FROM tl_c4g_tracking_devices LEFT JOIN tl_c4g_tracking_positions ON tl_c4g_tracking_devices.lastPositionId=tl_c4g_tracking_positions.id WHERE tl_c4g_tracking_devices.lastPositionId>0")
+              ->execute();
+        }
+
+
+
         if ($objPositions->numRows) {
 
             $arrFeatures = array();
@@ -69,7 +112,10 @@ class TrackingService extends \Controller
                     'type' => 'Feature',
                     'properties' => array
                     (
-                      'name' => $objPositions->name ? $objPositions->name : $objPositions->comment
+                        'name' => $objPositions->name ? $objPositions->name : $objPositions->comment,
+                        'popup' => array(
+                            'content' => 'devices:live;id,' . $objPositions->id . ';maps,' . $intMapsItem
+                        )
                     ),
                     'geometry' => array
                     (
@@ -92,6 +138,110 @@ class TrackingService extends \Controller
         }
         $this->arrReturn = array();
         return true;
+    }
+
+    private function trackingGetBoxTrack()
+    {
+
+
+        $blnUseFromFilter = false;
+        $blnUseToFilter = false;
+
+        $this->import('Database');
+        $varBoxId = \Input::get('id');
+
+        if (!is_array($varBoxId))
+        {
+            $varBoxId = array(
+                0 => $varBoxId
+            );
+        }
+
+
+
+        if (\Input::get('filterFrom'))
+        {
+            $blnUseFromFilter = true;
+            $strFromFilter = \Input::get('filterFrom');
+        }
+        if (\Input::get('filterTo'))
+        {
+            $blnUseToFilter = true;
+            $strToFilter = \Input::get('filterTo');
+        }
+        //filterFrom=1421017200&filterTo=1434060000
+
+        $arrFeatures = array();
+
+        foreach ($varBoxId as $intBoxId)
+        {
+            //echo $intBoxId;
+            $arrCoordinates = array();
+
+            $strAdditionalWhere = "";
+
+            $arrParams = array();
+
+            $arrParams[] = $intBoxId;
+
+            if ($blnUseFromFilter)
+            {
+                $strAdditionalWhere .= " AND tstamp>?";
+                $arrParams[] = $strFromFilter;
+            }
+
+            if ($blnUseToFilter)
+            {
+                $strAdditionalWhere .= " AND tstamp<?";
+                $arrParams[] = $strToFilter;
+            }
+
+
+            $objPositions = $this->Database->prepare("SELECT * FROM tl_c4g_tracking_positions WHERE device=?" . $strAdditionalWhere . " ORDER BY tstamp DESC")
+                                           ->execute($arrParams);
+
+            if ($objPositions->numRows)
+            {
+                while ($objPositions->next())
+                {
+                    $arrCoordinates[] = array
+                    (
+                        (float) $objPositions->longitude,
+                        (float) $objPositions->latitude
+                    );
+                }
+
+                $arrGeometry = array();
+                $arrGeometry['type'] = 'LineString';
+                $arrGeometry['coordinates'] = $arrCoordinates;
+
+
+                $arrFeatures[] = array
+                (
+                    'type' => 'Feature',
+                    'geometry' => $arrGeometry,
+                    'properties' => array
+                    (
+                        'projection' => 'EPSG:4326'
+                    )
+                );
+
+
+
+
+            }
+
+        }
+
+        $arrReturn = array(
+            'type' => 'FeatureCollection',
+            'features' => $arrFeatures
+        );
+
+
+        $this->arrReturn = $arrReturn;
+        return true;
+
     }
 
     private function trackingGetTrack()
@@ -171,12 +321,18 @@ class TrackingService extends \Controller
     private function trackingNewPoi()
     {
 
+        $arrPositionData = array();
+
         if ($this->blnDebugMode)
         {
             \Input::setPost('user',\Input::get('user'));
             \Input::setPost('configuration',\Input::get('configuration'));
             \Input::setPost('latitude',\Input::get('latitude'));
             \Input::setPost('longitude',\Input::get('longitude'));
+            \Input::setPost('trackid',\Input::get('trackid'));
+            \Input::setPost('accuracy',\Input::get('accuracy'));
+            \Input::setPost('speed',\Input::get('speed'));
+            \Input::setPost('imei',\Input::get('imei'));
         }
 
         $blnHasError = false;
@@ -210,25 +366,26 @@ class TrackingService extends \Controller
         $intTrackId = 0;
         if (\Input::post('trackid'))
         {
-          $intTrackId = \Input::post('trackid');
+            $intTrackId = \Input::post('trackid');
         }
 
         if (!$blnHasError)
         {
 
+            $arrPositionData['latitude'] = \Input::post('latitude');
+            $arrPositionData['longitude'] = \Input::post('longitude');
+
             // optional data
-            $longAccuracy = 0;
-            $longSpeed = 0;
             $timeStamp = false;
             $arrAdditionalData = array();
 
             if (\Input::post('accuracy'))
             {
-                $longAccuracy = \Input::post('accuracy');
+                $arrPositionData['accuracy'] = \Input::post('accuracy');
             }
             if (\Input::post('speed'))
             {
-                $longAccuracy = \Input::post('speed');
+                $arrPositionData['speed'] = \Input::post('speed');
             }
             if (\Input::post('timestamp'))
             {
@@ -252,14 +409,17 @@ class TrackingService extends \Controller
                 $arrAdditionalData['networkinfo'] = \Input::post('networkinfo');
             }
 
+            $arrPositionData['additionalData'] = $arrAdditionalData;
+
             $this->arrReturn['error'] = false;
-            $this->arrReturn['track'] = \Tracking::setNewPoi(\Input::post('configuration'), \Input::post('user'), \Input::post('latitude'), \Input::post('longitude'), $longAccuracy, $longSpeed, $strName, $timeStamp, \Input::post('privacy'), $intTrackId, $arrAdditionalData);
+
+            $this->arrReturn['track'] = \Tracking::setNewPoi(\Input::post('configuration'), \Input::post('user'), (\Input::post('privacy') ? \Input::post('privacy') : "privat"), $strName, $intTrackId, $timeStamp, $arrPositionData);
+
 
         }
 
         return true;
     }
-
 
     private function trackingNewPositionFromBox()
     {
@@ -291,31 +451,23 @@ class TrackingService extends \Controller
         }
 
         // check imei number
-        $objTrackingBox = \C4gTrackingBoxesModel::findBy('imei', \Input::post('imei'));
+        $objTrackingBox = \C4gTrackingDevicesModel::findByImeiEndpiece(\Input::post('imei'));
         if ($objTrackingBox === null)
         {
             return false;
         }
 
-        $arrSet = array
-        (
-            'pid' => $objTrackingBox->id,
-            'tstamp' => \Input::post('date'),
-            'latitude' => \Input::post('latitude'),
-            'longitude' => \Input::post('longitude'),
-            'accuracy' => '',
-            'speed' => '',
-            'phoneNo' => \Input::post('phoneNo') ? \Input::post('phoneNo') : '',
-            'mileage' => \Input::post('mileage') ? \Input::post('mileage') : '',
-            'driverId' => \Input::post('driverId') ? \Input::post('driverId') : '',
-            'temperature' => \Input::post('temperature') ? \Input::post('temperature') : '',
-            'status' => \Input::post('status') ? \Input::post('status') : '',
+        $arrAdditionalData = array(
+            'boxPhoneNo' => \Input::post('phoneNo') ? \Input::post('phoneNo') : '',
+            'boxMileage' => \Input::post('mileage') ? \Input::post('mileage') : '',
+            'boxDriverId' => \Input::post('driverId') ? \Input::post('driverId') : '',
+            'boxTemperature' => \Input::post('temperature') ? \Input::post('temperature') : '',
+            'boxStatus' => \Input::post('status') ? \Input::post('status') : '',
             'imei' => \Input::post('imei')
-
         );
 
-        $objBoxLocation = new \C4gTrackingBoxlocationModel();
-        $objBoxLocation->setRow($arrSet)->save();
+        \Tracking::setNewPosition("devices", \Input::post('latitude'), \Input::post('longitude'), \Input::post('accuracy'), \Input::post('speed'), \Input::post('date'), $arrAdditionalData);
+
 
         return true;
     }
@@ -335,6 +487,11 @@ class TrackingService extends \Controller
     {
 
         $blnHasError = false;
+
+        if ($this->blnDebugMode)
+        {
+            \Input::setPost('text',\Input::get('text'));
+        }
 
         if (!\Input::post('text'))
         {
@@ -357,7 +514,10 @@ class TrackingService extends \Controller
 
             if ($arrSmsContent[0] == "newPosition")
             {
-                $strTrackId = $arrSmsContent[1];
+
+                $arrAdditionalData = array();
+
+                $arrAdditionalData['trackUuid'] = $arrSmsContent[1];
                 $strLatitude = $arrSmsContent[2];
                 $strLongitude = $arrSmsContent[3];
                 $strTimestamp = $arrSmsContent[4];
@@ -370,7 +530,9 @@ class TrackingService extends \Controller
                 }
 
                 $this->arrReturn['error'] = false;
-                $this->arrReturn['track'] = \Tracking::setNewPosition($strTrackId, $strLatitude, $strLongitude, 0, 0, $strTimestamp, $arrAdditionalData);
+
+                $this->arrReturn['track'] = \Tracking::setNewPosition("tracks", $strLatitude, $strLongitude, 0, 0, $strTimestamp, $arrAdditionalData);
+
 
             }
         }

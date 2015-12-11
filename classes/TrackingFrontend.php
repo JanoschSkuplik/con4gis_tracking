@@ -20,7 +20,8 @@ class TrackingFrontend extends \Frontend
     (
         'tPois',
         'tTracks',
-        'tLive'
+        'tLive',
+        'tBoxes'
     );
 
     public function __construct()
@@ -32,6 +33,182 @@ class TrackingFrontend extends \Frontend
             $this->User->authenticate();
         }
 
+    }
+
+    public function getInfoWindowContent($strTable, $intId, $arrData)
+    {
+
+        if ($strTable == "devices")
+        {
+            $arrTrackingData = array();
+
+            $blnUseTimeZoneSettings = false;
+
+            if (strpos($intId,";")!==false)
+            {
+
+                $arrTrackingInfoSettings = explode(';',$intId);
+
+                if (is_array($arrTrackingInfoSettings))
+                {
+                  foreach ($arrTrackingInfoSettings as $varTrackingInfo)
+                  {
+
+                    if (strpos($varTrackingInfo, ",")!==false)
+                    {
+                      $arrTrackingSingleInfo = explode(',', $varTrackingInfo);
+                      if (is_array($arrTrackingSingleInfo))
+                      {
+                        if ($arrTrackingSingleInfo[0] == "id")
+                        {
+                          $intPositionId = $arrTrackingSingleInfo[1];
+                        }
+                        if ($arrTrackingSingleInfo[0] == "maps")
+                        {
+                          $intMapsItem = $arrTrackingSingleInfo[1];
+                        }
+                      }
+
+
+                    }
+                  }
+                }
+
+              $objLayer = \C4gMapsModel::findById($intMapsItem);
+
+              $strPopupContentRaw = "";
+
+              $objPositions = \C4gTrackingPositionsModel::findBy('id', $intPositionId);
+              if ($objPositions !== null)
+              {
+                $arrPositionData = $objPositions->row();
+
+                $arrTemplateData = array();
+
+                if (($objDevice = $objPositions->getRelated('device')) !== null)
+                {
+                  $arrDeviceData = $objDevice->row();
+
+                    if ($arrDeviceData['timeZone'] && $arrDeviceData['timeZone']!=\Config::get('timeZone'))
+                    {
+                        $blnUseTimeZoneSettings = true;
+                        $strTimeZoneSettings = $arrDeviceData['timeZone'];
+                    }
+
+                  foreach ($arrDeviceData as $key=>$varValue)
+                  {
+                    $arrTemplateData["device" . ucfirst($key)] = $varValue;
+                  }
+
+                }
+
+                foreach ($arrPositionData as $key=>$varValue)
+                {
+                  $arrTemplateData["position" . ucfirst($key)] = $varValue;
+                }
+
+              }
+
+              if ($objLayer !== null)
+              {
+                if ($objLayer->popup_info)
+                {
+
+                  $strPopupContentRaw = $objLayer->popup_info;
+
+                  foreach ($arrTemplateData as $key=>$varValue)
+                  {
+                      if(strpos(strtolower($key), "tstamp")!==false)
+                      {
+                          if ($key == "positionTstamp")
+                          {
+                              if ($blnUseTimeZoneSettings)
+                              {
+
+                                  // store local and device timezone
+                                  $dateTimeZoneDevice = new \DateTimeZone($strTimeZoneSettings);
+                                  $dateTimeZoneServer = new \DateTimeZone(\Config::get('timeZone'));
+
+                                  // get one date-time-object for device timezone
+                                  $dateTimeDevice = new \DateTime("now", $dateTimeZoneDevice);
+
+                                  // get the offset of the timezone
+                                  $timeOffset = $dateTimeZoneServer->getOffset($dateTimeDevice);
+
+                                  // recalculate timestamp with given offset
+                                  $varTimeStamp = $varValue + $timeOffset;
+
+                                  $arrTemplateData[$key] = \Date::parse(\Config::get('datimFormat'), $varTimeStamp);
+
+                              }
+                              else
+                              {
+                                  $arrTemplateData[$key] = \Date::parse(\Config::get('datimFormat'), $varValue);
+                              }
+                          }
+                          else
+                          {
+                              $arrTemplateData[$key] = \Date::parse(\Config::get('datimFormat'), $varValue);
+                          }
+
+                      }
+
+                    if (is_array(deserialize($varValue)))
+                    {
+                      unset($arrTemplateData[$key]);
+                      $arrArrayData = deserialize($varValue, true);
+
+                      foreach ($arrArrayData as $dataKey=>$dataVarValue)
+                      {
+                        $arrTemplateData[$key . ucfirst($dataKey)] = $dataVarValue;
+                      }
+
+                    }
+
+                  }
+
+                  //print_r($arrTemplateData);
+
+                  $regSearch = '/(\$\{\w*\})/';
+
+                  if (preg_match_all($regSearch, $strPopupContentRaw, $arrPlaceholder, PREG_PATTERN_ORDER))
+                  {
+
+                    foreach ($arrPlaceholder[0] as $strPlaceholder)
+                    {
+
+                      if ($strPlaceholder == '${allData}')
+                      {
+
+                        $strAllData = "<dl>";
+
+                        foreach ($arrTemplateData as $key=>$varValue)
+                        {
+                          $strAllData .= "<dt>" . $key . "<dt>";
+                          $strAllData .= "<dd>" . $varValue . "<dd>";
+                        }
+                        $strAllData .= "</dl>";
+
+                        $strPopupContentRaw = str_replace($strPlaceholder, $strAllData, $strPopupContentRaw);
+                      }
+
+                      else
+                      {
+                        $strPlaceholderRaw = str_replace(array('${', '}'), '', $strPlaceholder);
+                        $strPopupContentRaw = str_replace($strPlaceholder, $arrTemplateData[$strPlaceholderRaw], $strPopupContentRaw);
+                      }
+
+                    }
+                  }
+                }
+              }
+
+              $arrData['content'] = $strPopupContentRaw;
+
+            }
+        }
+
+        return $arrData;
     }
 
     public function addLocations($level, $child)
@@ -48,7 +225,7 @@ class TrackingFrontend extends \Frontend
                     $arrData['id'] = $child['id'];
                     $arrData['type'] = 'none';
                     $arrData['display'] = $child['display'];
-                    $arrData['name'] = $child['name'];
+                    $arrData['name'] = \String::decodeEntities($child['name']);
                     $arrData['hide'] = $child['hide'] > 0 ? $child['hide'] : '';
                     $arrChildData = $this->getPoiData($child);
                     if (sizeof($arrChildData) == 0 && $child->tDontShowIfEmpty)
@@ -67,7 +244,7 @@ class TrackingFrontend extends \Frontend
                     $arrData['id'] = $child['id'];
                     $arrData['type'] = 'none';
                     $arrData['display'] = $child['display'];
-                    $arrData['name'] = $child['name'];
+                    $arrData['name'] = \String::decodeEntities($child['name']);
                     $arrData['hide'] = $child['hide'];
                     $arrChildData = $this->getTrackData($child);
                     if (sizeof($arrChildData) == 0 && $child->tDontShowIfEmpty)
@@ -81,35 +258,108 @@ class TrackingFrontend extends \Frontend
                         $arrData['childs'] = $arrChildData;
                     }
                     break;
-
+                case "tBoxes":
+                    $arrData['pid'] = $level;
+                    $arrData['id'] = $child['id'];
+                    $arrData['type'] = 'none';
+                    $arrData['display'] = $child['display'];
+                    $arrData['name'] = \String::decodeEntities($child['name']);
+                    $arrData['hide'] = $child['hide'];
+                    $arrData['content'] = '';//$child['hide'];
+                    $arrChildData = $this->getBoxTrackData($child);
+                    if (sizeof($arrChildData) == 0 && $child->tDontShowIfEmpty)
+                    {
+                        return;
+                    }
+                    else
+                    {
+                        $arrData['hasChilds'] = true;
+                        $arrData['childsCount'] = sizeof($arrChildData);
+                        $arrData['childs'] = $arrChildData;
+                    }
+                    break;
                 case "tLive":
                     $arrData['pid'] = $level;
                     $arrData['id'] = $child['id'];
                     $arrData['origType'] = 'liveTracking';
                     $arrData['locstyle'] = $child['raw']->locstyle;
                     $arrData['display'] = $child['display'];
-                    $arrData['name'] = $child['name'];
+                    $arrData['name'] = \String::decodeEntities($child['name']);
                     $arrData['hide'] = $child['hide'];
-                    $arrData['content'] = array
-                    (
+                    $arrData['filterable'] = $child['raw']->isFilterable ? 1 : 0;
+
+
+                    if ($child['raw']->liveTrackingType == "tLive_alleach" || $child['raw']->liveTrackingType == "tLive_groupeach" || $child['raw']->liveTrackingType == "tLive_deviceeach")
+                    {
+
+
+                      $arrChildData = $this->getLiveChildData($child);
+                      $arrData['hasChilds'] = true;
+                      $arrData['childsCount'] = sizeof($arrChildData);
+                      $arrData['childs'] = $arrChildData;
+
+                        if ($child['raw']->isFilterable)
+                        {
+                            $arrData['filterable'] = 0;//"&maps=" . $child['id'];
+                        }
+
+                    }
+                    else
+                    {
+
+                      if ($child['raw']->liveTrackingType == "tLive_group")
+                      {
+
+                        $strUrl = "system/modules/con4gis_core/api/trackingService?method=getLive&maps=" . $child['id'] . "&useGroup=" . $child['id'];
+                          if ($child['raw']->isFilterable)
+                          {
+                              $arrData['filterable'] = "&maps=" . $child['id'] . "&useGroup=" . $child['id'];
+                          }
+                      }
+                      elseif ($child['raw']->liveTrackingType == "tLive_device")
+                      {
+
+                        $arrDevices = deserialize($child['raw']->liveTrackingDevices, true);
+                        $strUrl = "system/modules/con4gis_core/api/trackingService?method=getLive&maps=" . $child['id'] . "&id[]=" . implode('&id[]=', $arrDevices);
+                          if ($child['raw']->isFilterable)
+                          {
+                              $arrData['filterable'] = array(
+                                  "type" => "tLive_device",
+                                  "maps" => $child['id'],
+                                  "devices" => $arrDevices
+                              );//"maps=" . $child['id'] . "&id[]=" . implode('&id[]=', $arrDevices);
+                          }
+                      }
+                      else
+                      {
+                        $strUrl = "system/modules/con4gis_core/api/trackingService?method=getLive&maps=" . $child['id'] . "";
+                          if ($child['raw']->isFilterable)
+                          {
+                              $arrData['filterable'] = "&maps=" . $child['id'];
+                          }
+                      }
+
+                      $arrData['content'] = array
+                      (
                         array
                         (
-                            "type" => 'urlData',
-                            "format" => 'GeoJSON',
-                            "locationStyle" => $child['raw']->locstyle,
-                            "data" => array
-                            (
-                                "url" => "system/modules/con4gis_core/api/trackingService?method=getLive"
-                            ),
-                            "settings" => array
-                            (
-                                "loadAsync" => true,
-                                "refresh" => true,
-                                // "interval" => getTrackingConfig -> getHTTPInterval
-                                "crossOrigin" => false
-                            )
+                          "type" => 'urlData',
+                          "format" => 'GeoJSON',
+                          "locationStyle" => $child['raw']->locstyle,
+                          "data" => array
+                          (
+                            "url" => $strUrl
+                          ),
+                          "settings" => array
+                          (
+                            "loadAsync" => true,
+                            "refresh" => true,
+                            // "interval" => getTrackingConfig -> getHTTPInterval
+                            "crossOrigin" => false
+                          )
                         )
-                    );
+                      );
+                    }
 
 
                     //$GLOBALS['TL_BODY'][] = '<script src="system/modules/con4gis_tracking/assets/liveTracking.js"></script>';
@@ -121,6 +371,121 @@ class TrackingFrontend extends \Frontend
         }
 
         return;
+    }
+
+    protected function getLiveChildData($child)
+    {
+      //var_dump($child);
+      $arrTrackData = array();
+
+
+      if ($child['raw']->liveTrackingType == "tLive_group" || $child['raw']->liveTrackingType == "tLive_groupeach")
+      {
+        // 'tLive_all', 'tLive_alleach', 'tLive_group', 'tLive_group', 'tLive_device'
+        $objDevice = \C4gTrackingDevicesModel::findBy('mapStructureId', $child['id'], array('order'=>'name'));
+      }
+      elseif ($child['raw']->liveTrackingType == "tLive_device" || $child['raw']->liveTrackingType == "tLive_deviceeach")
+      {
+        //print_r($child['raw']->liveTrackingDevices);
+        $arrDevices = deserialize($child['raw']->liveTrackingDevices, true);
+        $objDevice = \C4gTrackingDevicesModel::findMultipleByIds($arrDevices);
+      }
+      else
+      {
+        $objDevice = \C4gTrackingDevicesModel::findAll(array('order'=>'name'));
+      }
+
+
+      if ($objDevice !== null)
+      {
+
+        while ($objDevice->next())
+        {
+          $arrTrackData[] = array
+          (
+            'parent' => $child['id'],
+            'id' => $child['id'] . $objDevice->id,
+            'name' => $objDevice->name ? \String::decodeEntities($objDevice->name) : $objDevice->id,
+            'hide' => $child['hide'] > 0 ? $child['hide'] : '',
+            'filterable' => $child['raw']->isFilterable ? ("&maps=" . $child['id'] . "&id=" . $objDevice->id) : 0,
+            'display' => $child['display'],
+            'content' => array
+            (
+              array
+              (
+                'id' => '',
+                'type' => 'urlData',
+                'format' => 'GeoJSON',
+                'locationStyle' => $objDevice->locationStyle ? $objDevice->locationStyle : $child['raw']->locstyle,
+                'data' => array
+                (
+                  'url' => "system/modules/con4gis_core/api/trackingService?method=getLive&maps=" . $child['id'] . "&id=" . $objDevice->id
+                ),
+                'settings' => array
+                (
+                  'loadAsync' => true,
+                  'refresh' => true,
+                  'crossOrigine' => false,
+
+                )
+              )
+            )
+          );
+        }
+      }
+      return $arrTrackData;
+    }
+
+    protected function getBoxTrackData($child)
+    {
+        $arrTrackData = array();
+
+        $objBoxes = \C4gTrackingBoxesModel::findAll();
+
+        if ($objBoxes !== null)
+        {
+            while($objBoxes->next())
+            {
+                $arrTrackData[] = array
+                (
+                    'parent' => $child['id'],
+                    'id' => $child['id'] . $objBoxes->id,
+                    'type' => 'ajax',
+                    'url' => 'system/modules/con4gis_core/api/trackingService?method=getBoxTrack&id=' . $objBoxes->id,
+                    'name' => $child['name'] ? ($objBoxes->name . ' (' . \Date::parse('d.m.Y H:i', $objBoxes->tstamp) . ')') : '',
+                    'hide' => $child['hide'] > 0 ? $child['hide'] : '',
+                    'display' => $child['display'],
+                    'popupInfo' => $objBoxes->name,
+                    'content' => array
+                    (
+                        array
+                        (
+                            'id' => '',
+                            'type' => 'urlData',
+                            'format' => 'GeoJSON',
+                            'locationStyle' => $child['raw']->locstyle,
+                            'data' => array
+                            (
+                                'url' => 'system/modules/con4gis_core/api/trackingService?method=getBoxTrack&id=' . $objBoxes->id,
+                                'popup' => array
+                                (
+                                    'content' => ''
+                                )
+                            ),
+                            'settings' => array
+                            (
+                                'loadAsync' => true,
+                                'refresh' => false,
+                                'crossOrigine' => false,
+                                'boundingBox' => false
+                            )
+                        )
+                    )
+                );
+            }
+        }
+
+        return $arrTrackData;
     }
 
     protected function getTrackData($child)

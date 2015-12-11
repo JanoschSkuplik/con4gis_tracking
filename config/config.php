@@ -52,11 +52,15 @@ array_insert($GLOBALS['BE_MOD']['con4gis'], 5, array
     )
 ));
 
+
+$GLOBALS['c4g_tracking_devicetypes'] = array();
+
 /**
  * Hooks
  */
 //$GLOBALS['TL_HOOKS']['dispatchAjax']['trackingDispatchAjax'] = array('TrackingService', 'trackingDispatchAjax');
 $GLOBALS['TL_HOOKS']['c4gAddLocationsParent']['tracking'] = array('TrackingFrontend','addLocations');
+$GLOBALS['TL_HOOKS']['c4gPostGetInfoWindowContent']['tracking'] = array('TrackingFrontend','getInfoWindowContent');
 $GLOBALS['TL_CRON']['daily'][] = array('TrackingFrontend', 'runCronJob');
 
 /**
@@ -66,4 +70,5 @@ $GLOBALS['TL_API']['trackingService'] = 'TrackingService';
 
 $GLOBALS['c4g_locationtypes'][] = 'tPois';
 $GLOBALS['c4g_locationtypes'][] = 'tTracks';
+$GLOBALS['c4g_locationtypes'][] = 'tBoxes';
 $GLOBALS['c4g_locationtypes'][] = 'tLive';
