@@ -60,10 +60,10 @@ class C4gTrackingDevicesModel extends \Model
 
 		$t = static::$strTable;
 
-		return static::findOneBy(array("$t.imei LIKE ?"), '%' . $strImei);
+		return static::findOneBy(
+			array("$t.imei LIKE ? OR SUBSTRING(?, -6)=$t.imei"), array('%' . $strImei, $strImei));
 	}
 
 }
-
 
 
