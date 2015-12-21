@@ -243,12 +243,30 @@ class TrackingService extends \Controller
                         $varTimeStamp = $objPositions->tstamp + $timeOffset;
 
                         $arrPositionInfo[] = \Date::parse(\Config::get('datimFormat'), $varTimeStamp);
+                        $strPositionInfo = \Date::parse(\Config::get('datimFormat'), $varTimeStamp);
 
                     }
                     else
                     {
                         $arrPositionInfo[] = \Date::parse(\Config::get('datimFormat'), $objPositions->tstamp);
+                        $strPositionInfo = \Date::parse(\Config::get('datimFormat'), $objPositions->tstamp);
                     }
+                    $arrFeatures[] = array
+                    (
+                        "type" => "Feature",
+                        "geometry" => array(
+                            "type" => "Point",
+                            "coordinates" => array(
+                                (float) $objPositions->longitude,
+                                (float) $objPositions->latitude
+                            )
+                        ),
+                        'properties' => array
+                        (
+                            'projection' => 'EPSG:4326',
+                            'tooltip' => $strPositionInfo
+                        )
+                    );
 
                 }
 
@@ -264,7 +282,8 @@ class TrackingService extends \Controller
                     'properties' => array
                     (
                         'projection' => 'EPSG:4326',
-                        'positioninfos' => $arrPositionInfo
+                        'positioninfos' => $arrPositionInfo,
+                        //'tooltip' => 'Test'
                     )
                 );
 
