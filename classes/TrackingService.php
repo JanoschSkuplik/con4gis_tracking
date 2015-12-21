@@ -113,6 +113,7 @@ class TrackingService extends \Controller
                     'properties' => array
                     (
                         'name' => $objPositions->name ? $objPositions->name : $objPositions->comment,
+                        'positionId' => $objPositions->id,
                         'popup' => array(
                             'content' => 'devices:live;id,' . $objPositions->id . ';maps,' . $intMapsItem
                         )
@@ -197,11 +198,36 @@ class TrackingService extends \Controller
             }
 
 
-            $objPositions = $this->Database->prepare("SELECT * FROM tl_c4g_tracking_positions WHERE device=?" . $strAdditionalWhere . " ORDER BY tstamp DESC")
+            $objPositions = $this->Database->prepare("SELECT * FROM tl_c4g_tracking_positions WHERE device=?" . $strAdditionalWhere . " ORDER BY tstamp")
                                            ->execute($arrParams);
+
+            $objDevice = \C4gTrackingDevicesModel::findBy('id', $intBoxId);
+            if ($objDevice !== null)
+            {
+                $arrDeviceData = $objDevice->row();
+
+                if ($arrDeviceData['timeZone'] && $arrDeviceData['timeZone']!=\Config::get('timeZone'))
+                {
+                    $blnUseTimeZoneSettings = true;
+                    $strTimeZoneSettings = $arrDeviceData['timeZone'];
+                    // store local and device timezone
+                    $dateTimeZoneDevice = new \DateTimeZone($strTimeZoneSettings);
+                    $dateTimeZoneServer = new \DateTimeZone(\Config::get('timeZone'));
+
+                    // get one date-time-object for device timezone
+                    $dateTimeDevice = new \DateTime("now", $dateTimeZoneDevice);
+
+                    // get the offset of the timezone
+                    $timeOffset = $dateTimeZoneServer->getOffset($dateTimeDevice);
+
+                }
+
+            }
+
 
             if ($objPositions->numRows)
             {
+                $arrPositionInfo = array();
                 while ($objPositions->next())
                 {
                     $arrCoordinates[] = array
@@ -209,6 +235,21 @@ class TrackingService extends \Controller
                         (float) $objPositions->longitude,
                         (float) $objPositions->latitude
                     );
+
+                    if ($blnUseTimeZoneSettings)
+                    {
+
+                        // recalculate timestamp with given offset
+                        $varTimeStamp = $objPositions->tstamp + $timeOffset;
+
+                        $arrPositionInfo[] = \Date::parse(\Config::get('datimFormat'), $varTimeStamp);
+
+                    }
+                    else
+                    {
+                        $arrPositionInfo[] = \Date::parse(\Config::get('datimFormat'), $objPositions->tstamp);
+                    }
+
                 }
 
                 $arrGeometry = array();
@@ -222,12 +263,10 @@ class TrackingService extends \Controller
                     'geometry' => $arrGeometry,
                     'properties' => array
                     (
-                        'projection' => 'EPSG:4326'
+                        'projection' => 'EPSG:4326',
+                        'positioninfos' => $arrPositionInfo
                     )
                 );
-
-
-
 
             }
 

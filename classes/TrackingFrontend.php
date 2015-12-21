@@ -313,7 +313,14 @@ class TrackingFrontend extends \Frontend
                         $strUrl = "system/modules/con4gis_core/api/trackingService?method=getLive&maps=" . $child['id'] . "&useGroup=" . $child['id'];
                           if ($child['raw']->isFilterable)
                           {
-                              $arrData['filterable'] = "&maps=" . $child['id'] . "&useGroup=" . $child['id'];
+                              $arrData['filterable'] = array();
+                              $arrData['filterable']['urlParam'] = "&maps=" . $child['id'] . "&useGroup=" . $child['id'];
+
+                              if ($child['raw']->filterLocationStyle)
+                              {
+                                  $arrData['filterable']['locationStyle'] = $child['raw']->filterLocationStyle;
+                              }
+
                           }
                       }
                       elseif ($child['raw']->liveTrackingType == "tLive_device")
@@ -323,11 +330,18 @@ class TrackingFrontend extends \Frontend
                         $strUrl = "system/modules/con4gis_core/api/trackingService?method=getLive&maps=" . $child['id'] . "&id[]=" . implode('&id[]=', $arrDevices);
                           if ($child['raw']->isFilterable)
                           {
-                              $arrData['filterable'] = array(
-                                  "type" => "tLive_device",
-                                  "maps" => $child['id'],
-                                  "devices" => $arrDevices
-                              );//"maps=" . $child['id'] . "&id[]=" . implode('&id[]=', $arrDevices);
+                              $arrData['filterable'] = array();
+                              $arrData['filterable']['urlParam'] = "&maps=" . $child['id'];
+
+                              if ($child['raw']->filterLocationStyle)
+                              {
+                                  $arrData['filterable']['locationStyle'] = $child['raw']->filterLocationStyle;
+                              }
+                              //$arrData['filterable'] = array(
+                              //    "type" => "tLive_device",
+                              //    "maps" => $child['id'],
+                              //    "devices" => $arrDevices
+                              //);//"maps=" . $child['id'] . "&id[]=" . implode('&id[]=', $arrDevices);
                           }
                       }
                       else
@@ -335,7 +349,14 @@ class TrackingFrontend extends \Frontend
                         $strUrl = "system/modules/con4gis_core/api/trackingService?method=getLive&maps=" . $child['id'] . "";
                           if ($child['raw']->isFilterable)
                           {
-                              $arrData['filterable'] = "&maps=" . $child['id'];
+                              $arrData['filterable'] = array();
+                              $arrData['filterable']['urlParam'] = "&maps=" . $child['id'];
+
+                              if ($child['raw']->filterLocationStyle)
+                              {
+                                  $arrData['filterable']['locationStyle'] = $child['raw']->filterLocationStyle;
+                              }
+
                           }
                       }
 
@@ -401,13 +422,27 @@ class TrackingFrontend extends \Frontend
 
         while ($objDevice->next())
         {
+
+            $arrFilterData = array();
+
+            if ($child['raw']->isFilterable)
+            {
+                $arrFilterData['urlParam'] = "&maps=" . $child['id'] . "&id=" . $objDevice->id;
+
+                if ($child['raw']->filterLocationStyle)
+                {
+                    $arrFilterData['locationStyle'] = $child['raw']->filterLocationStyle;
+                }
+
+            }
+
           $arrTrackData[] = array
           (
             'parent' => $child['id'],
             'id' => $child['id'] . $objDevice->id,
             'name' => $objDevice->name ? \String::decodeEntities($objDevice->name) : $objDevice->id,
             'hide' => $child['hide'] > 0 ? $child['hide'] : '',
-            'filterable' => $child['raw']->isFilterable ? ("&maps=" . $child['id'] . "&id=" . $objDevice->id) : 0,
+            'filterable' => $child['raw']->isFilterable ? $arrFilterData : 0,
             'display' => $child['display'],
             'content' => array
             (

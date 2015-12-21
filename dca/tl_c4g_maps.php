@@ -19,6 +19,7 @@
 $GLOBALS['TL_DCA']['tl_c4g_maps']['palettes']['__selector__'][] = 'memberVisibility';
 $GLOBALS['TL_DCA']['tl_c4g_maps']['palettes']['__selector__'][] = 'useDatabaseStatus';
 $GLOBALS['TL_DCA']['tl_c4g_maps']['palettes']['__selector__'][] = 'liveTrackingType';
+$GLOBALS['TL_DCA']['tl_c4g_maps']['palettes']['__selector__'][] = 'isFilterable';
 
 $GLOBALS['TL_DCA']['tl_c4g_maps']['palettes']['tPois'] = '{general_legend},name,profile,profile_mobile,published;{map_legend},is_map;{location_legend},location_type,tDontShowIfEmpty,memberVisibility,useDatabaseStatus,locstyle,data_layername,data_hidelayer,popup_info,routing_to,loc_linkurl,loc_onclick_zoomto,loc_minzoom,loc_maxzoom;{protection_legend:hide},protect_element;';
 
@@ -42,6 +43,7 @@ $GLOBALS['TL_DCA']['tl_c4g_maps']['palettes']['tLive_deviceeach'] = str_replace(
 $GLOBALS['TL_DCA']['tl_c4g_maps']['subpalettes']['memberVisibility_specialGroups'] = 'specialGroups';
 $GLOBALS['TL_DCA']['tl_c4g_maps']['subpalettes']['memberVisibility_specialMember'] = 'specialMembers';
 $GLOBALS['TL_DCA']['tl_c4g_maps']['subpalettes']['useDatabaseStatus'] = 'databaseStatus';
+$GLOBALS['TL_DCA']['tl_c4g_maps']['subpalettes']['isFilterable'] = 'filterLocationStyle';
 
 /*
  * Darstellungsart
@@ -62,7 +64,7 @@ $GLOBALS['TL_DCA']['tl_c4g_maps']['fields']['liveTrackingDevices'] = array
   'inputType'               => 'checkboxWizard',
   'foreignKey'              => 'tl_c4g_tracking_devices.name',
   'options_callback'        => array('tl_c4g_maps_tracking', 'getDevices'),
-  'eval'                    => array('multiple'=>true),
+  'eval'                    => array('multiple'=>true, 'tl_class'=>'clr'),
   'sql'                     => "blob NULL",
   'relation'                => array('type'=>'belongsToMany', 'load'=>'lazy')
 );
@@ -86,8 +88,21 @@ $GLOBALS['TL_DCA']['tl_c4g_maps']['fields']['isFilterable'] = array
     'exclude'                 => true,
     'filter'                  => true,
     'inputType'               => 'checkbox',
-    'eval'                    => array('submitOnChange'=>false, 'tl_class'=>'clr'),
+    'eval'                    => array('submitOnChange'=>true, 'tl_class'=>'clr w50 m12'),
     'sql'                     => "char(1) NOT NULL default ''"
+);
+$GLOBALS['TL_DCA']['tl_c4g_maps']['fields']['filterLocationStyle'] = array
+(
+    'label'                   => &$GLOBALS['TL_LANG']['tl_c4g_maps']['locstyle'],
+    'exclude'                 => true,
+    'inputType'               => 'select',
+    'options_callback'        => array('tl_c4g_maps','getLocStyles'),
+    'eval'                    => array('tl_class'=>'w50'),
+    'wizard' => array
+    (
+        array('tl_c4g_maps', 'editLocationStyle')
+    ),
+    'sql'                     => "int(10) unsigned NOT NULL default '0'"
 );
 
 $GLOBALS['TL_DCA']['tl_c4g_maps']['fields']['tDontShowIfEmpty'] = array
