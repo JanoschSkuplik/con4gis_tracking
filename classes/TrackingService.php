@@ -479,6 +479,55 @@ class TrackingService extends \Controller
         return true;
     }
 
+    private function trackingGetRegisteredBoxes()
+    {
+        if ($this->blnDebugMode)
+        {
+            $arrParams = array('api_key');
+
+            foreach ($arrParams as $strParam)
+            {
+                if (\Input::get($strParam))
+                {
+                    \Input::setPost($strParam, \Input::get($strParam));
+                }
+            }
+        }
+
+        // check mandatory params
+        if (!\Input::post('api_key'))
+        {
+            return false;
+        }
+
+        // check api_key
+        $objTracking = \C4gTrackingModel::findBy('apiKey', \Input::post('api_key'));
+        if ($objTracking === null)
+        {
+            return false;
+        }
+
+        $objTrackingBoxes = \C4gTrackingDevicesModel::findBy('type','box');
+
+        $arrDevices = array();
+
+        if ($objTrackingBoxes!==null)
+        {
+            while($objTrackingBoxes->next())
+            {
+                if (!$objTrackingBoxes->imei) continue;
+                $arrDevices[] = $objTrackingBoxes->imei;
+            }
+        }
+
+
+        $this->arrReturn['error'] = false;
+        $this->arrReturn['devices'] = $arrDevices;
+
+        return true;
+
+    }
+
     private function trackingNewPositionFromBox()
     {
 
@@ -512,7 +561,22 @@ class TrackingService extends \Controller
         $objTrackingBox = \C4gTrackingDevicesModel::findByImeiEndpiece(\Input::post('imei'));
         if ($objTrackingBox === null)
         {
-            return false;
+            $this->arrReturn = $this->getErrorReturn(array
+            (
+                "message" => "Device not found",
+                "status" => 900
+            ));
+            return true;
+        }
+
+        if ($objTrackingBox->deaktivated)
+        {
+            $this->arrReturn = $this->getErrorReturn(array
+            (
+                "message" => "Device is deaktivated",
+                "status" => 901
+            ));
+            return true;
         }
 
         $arrAdditionalData = array(
@@ -526,6 +590,8 @@ class TrackingService extends \Controller
 
         \Tracking::setNewPosition("devices", \Input::post('latitude'), \Input::post('longitude'), \Input::post('accuracy'), \Input::post('speed'), \Input::post('date'), $arrAdditionalData);
 
+        $this->arrReturn['error'] = false;
+        $this->arrReturn['status'] = 905;
 
         return true;
     }
@@ -903,11 +969,22 @@ class TrackingService extends \Controller
         return true;
     }
 
-    private function getErrorReturn($strMessage)
+    private function getErrorReturn($varMessage)
     {
         $arrReturn = array();
         $arrReturn['error'] = true;
-        $arrReturn['message'] = $strMessage;
+
+        if (is_array($varMessage))
+        {
+            foreach ($varMessage as $key=>$varValue)
+            {
+                $arrReturn[$key] = $varValue;
+            }
+        }
+        else
+        {
+            $arrReturn['message'] = $varMessage;
+        }
         return $arrReturn;
     }
 
