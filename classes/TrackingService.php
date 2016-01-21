@@ -479,6 +479,59 @@ class TrackingService extends \Controller
         return true;
     }
 
+    private function trackingGetDeviceStatus()
+    {
+        if ($this->blnDebugMode)
+        {
+            $arrParams = array('api_key', 'imei');
+
+            foreach ($arrParams as $strParam)
+            {
+                if (\Input::get($strParam))
+                {
+                    \Input::setPost($strParam, \Input::get($strParam));
+                }
+            }
+        }
+
+        // check mandatory params
+        if (!\Input::post('api_key') || !\Input::post('imei'))
+        {
+            return false;
+        }
+
+        // check api_key
+        $objTracking = \C4gTrackingModel::findBy('apiKey', \Input::post('api_key'));
+        if ($objTracking === null)
+        {
+            return false;
+        }
+
+        // check imei number
+        $objTrackingBox = \C4gTrackingDevicesModel::findByImeiEndpiece(\Input::post('imei'));
+        if ($objTrackingBox === null)
+        {
+            $this->arrReturn = $this->getErrorReturn(array
+            (
+                "message" => "Device not found",
+                "status" => 900
+            ));
+            return true;
+        }
+
+        if ($objTrackingBox->deaktivated)
+        {
+            $this->arrReturn['status'] = 0;
+        }
+        else
+        {
+            $this->arrReturn['status'] = 1;
+        }
+
+        return true;
+
+    }
+
     private function trackingGetRegisteredBoxes()
     {
         if ($this->blnDebugMode)
