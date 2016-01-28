@@ -257,7 +257,8 @@ c4g.maps.plugin.layerswitcher_forEachItem.push(
             settings: {
               crossOrigine: false,
               loadAsnyc: true,
-              refresh: false
+              refresh: false,
+              fitToExtend: true
             },
             type: 'urlData'
           }
@@ -272,6 +273,7 @@ c4g.maps.plugin.layerswitcher_forEachItem.push(
 
       window.setTimeout(function() {
         self.layerswitcher.proxy.loadLayerContent(uid);
+        self.layerswitcher.proxy.activeLayerIds[uid] = "visible";
       }, 300);
 
       self.filterLayerReference[uid] = testObject;
@@ -295,6 +297,7 @@ c4g.maps.plugin.layerswitcher_forEachItem.push(
       var self = this;
 
       if (self.activeLayerFilter[id]) {
+        self.layerswitcher.proxy.hideLayer(id);
         delete self.activeLayerFilter[id];
       } else {
         self.activeLayerFilter[id] = itemFilterParams;
@@ -305,7 +308,7 @@ c4g.maps.plugin.layerswitcher_forEachItem.push(
       } else {
         self.hideAllFilterLayer();
         self.$contentWrapper.addClass(c4g.maps.constant.css.HIDE);
-        self.hide();
+        //self.hide();
       }
     }
 
