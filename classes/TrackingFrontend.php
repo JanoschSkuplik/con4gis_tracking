@@ -111,10 +111,6 @@ class TrackingFrontend extends \Frontend
 
               if ($objLayer !== null)
               {
-                if ($objLayer->popup_info)
-                {
-
-                  $strPopupContentRaw = $objLayer->popup_info;
 
                   foreach ($arrTemplateData as $key=>$varValue)
                   {
@@ -153,19 +149,33 @@ class TrackingFrontend extends \Frontend
 
                       }
 
-                    if (is_array(deserialize($varValue)))
-                    {
-                      unset($arrTemplateData[$key]);
-                      $arrArrayData = deserialize($varValue, true);
-
-                      foreach ($arrArrayData as $dataKey=>$dataVarValue)
+                      if (is_array(deserialize($varValue)))
                       {
-                        $arrTemplateData[$key . ucfirst($dataKey)] = $dataVarValue;
+                          unset($arrTemplateData[$key]);
+                          $arrArrayData = deserialize($varValue, true);
+
+                          foreach ($arrArrayData as $dataKey=>$dataVarValue)
+                          {
+                              $arrTemplateData[$key . ucfirst($dataKey)] = $dataVarValue;
+                          }
+
                       }
 
-                    }
-
                   }
+
+                if ($objLayer->popupType == "template")
+                {
+                    $objPopupTemplate = new \FrontendTemplate($objLayer->popupTemplate);
+                    $objPopupTemplate->setData($arrTemplateData);
+                    $objLayer->popup_info = $objPopupTemplate->parse();
+                }
+
+                if ($objLayer->popup_info)
+                {
+
+                  $strPopupContentRaw = $objLayer->popup_info;
+
+
 
                   //print_r($arrTemplateData);
 
