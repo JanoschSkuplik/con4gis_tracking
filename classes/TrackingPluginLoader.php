@@ -18,10 +18,10 @@ class TrackingPluginLoader
 
         // load language script
         if ($GLOBALS['TL_LANGUAGE'] == 'de') {
-            $GLOBALS['TL_JAVASCRIPT']['c4g-maps-constant-i18n'] = 'system/modules/con4gis_tracking/assets/js/c4g-maps-plugin-trackingfilter-constant-i18n-de.js';
+            $GLOBALS['TL_JAVASCRIPT']['c4g-maps-plugin-trackingdatafilterconstant-i18n'] = 'system/modules/con4gis_tracking/assets/js/c4g-maps-plugin-trackingfilter-constant-i18n-de.js';
         } else {
             // use english as fallback
-            $GLOBALS['TL_JAVASCRIPT']['c4g-maps-constant-i18n'] = 'system/modules/con4gis_tracking/assets/js/c4g-maps-plugin-trackingfilter-constant-i18n-en.js';
+            $GLOBALS['TL_JAVASCRIPT']['c4g-maps-plugin-trackingdatafilterconstant-i18n'] = 'system/modules/con4gis_tracking/assets/js/c4g-maps-plugin-trackingfilter-constant-i18n-en.js';
         }
 
 
