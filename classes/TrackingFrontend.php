@@ -168,6 +168,7 @@ class TrackingFrontend extends \Frontend
                     $objPopupTemplate = new \FrontendTemplate($objLayer->popupTemplate);
                     $objPopupTemplate->setData($arrTemplateData);
                     $objLayer->popup_info = $objPopupTemplate->parse();
+                    $objLayer->popup_info = $this->replaceInsertTags($objLayer->popup_info);
                 }
 
                 if ($objLayer->popup_info)
