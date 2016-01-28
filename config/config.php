@@ -63,6 +63,8 @@ $GLOBALS['TL_HOOKS']['c4gAddLocationsParent']['tracking'] = array('TrackingFront
 $GLOBALS['TL_HOOKS']['c4gPostGetInfoWindowContent']['tracking'] = array('TrackingFrontend','getInfoWindowContent');
 $GLOBALS['TL_CRON']['daily'][] = array('TrackingFrontend', 'runCronJob');
 
+$GLOBALS['TL_HOOKS']['C4gMapsLoadPlugins'][] = array('c4g\Tracking\TrackingPluginLoader','loadTrackingPlugin');
+
 /**
  * Rest-API
  */
@@ -72,3 +74,5 @@ $GLOBALS['c4g_locationtypes'][] = 'tPois';
 $GLOBALS['c4g_locationtypes'][] = 'tTracks';
 $GLOBALS['c4g_locationtypes'][] = 'tBoxes';
 $GLOBALS['c4g_locationtypes'][] = 'tLive';
+
+
