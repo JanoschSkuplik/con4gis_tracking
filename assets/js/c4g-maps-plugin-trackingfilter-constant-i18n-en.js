@@ -13,8 +13,8 @@ this.c4g.maps.constant = this.c4g.maps.constant || {};
 
     TRACKING_FILTER_TITLE: 'Filter',
     TRACKING_FILTER_SUBMITBUTTON: 'Use filter',
-    TRACKING_FILTER_FROM_PLACEHOLDER: 'from… (dd.mm.yyyy hh:mm)">',
-    TRACKING_FILTER_TO_PLACEHOLDER: '…to (dd.mm.yyyy hh:mm)">'
+    TRACKING_FILTER_FROM_PLACEHOLDER: 'from… (dd.mm.yyyy hh:mm)',
+    TRACKING_FILTER_TO_PLACEHOLDER: '…to (dd.mm.yyyy hh:mm)'
 
   }); // end of "language constants" ---
 
