@@ -1041,6 +1041,41 @@ class TrackingService extends \Controller
         return $arrReturn;
     }
 
+    private function trackingGetLastPositionForImei()
+    {
+
+        $intMaxAge = \Input::get('max') ? \Input::get('max') : 0;
+
+        // check imei number
+        $objTrackingBox = \C4gTrackingDevicesModel::findByImeiEndpiece(\Input::get('imei'));
+
+        if ($objTrackingBox === null)
+        {
+            $this->arrReturn = $this->getErrorReturn(array
+            (
+                "message" => "Device not found",
+                "status" => 900
+            ));
+            return true;
+        }
+
+        $objLastPosition = $objTrackingBox->getRelated('lastPositionId');
+
+        if ($objLastPosition === null) {
+            $this->arrReturn = $this->getErrorReturn(array
+            (
+                "message" => "No position found"
+            ));
+            return true;
+        }
+
+        $this->arrReturn['error'] = false;
+        $this->arrReturn['position'] = $objLastPosition->row();
+
+
+        return true;
+    }
+
     private function trackingGetLastPositionForMember()
     {
         $intMemberId = \Input::get('member');
