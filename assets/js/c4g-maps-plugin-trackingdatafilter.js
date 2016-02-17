@@ -80,7 +80,7 @@ c4g.maps.plugin.layerswitcher_forEachItem.push(
      */
     create: function () {
 
-      var self,
+      /*var self,
           contentWrapper,
           contentHeadline,
           contentInfo;
@@ -152,6 +152,94 @@ c4g.maps.plugin.layerswitcher_forEachItem.push(
 
       // append filter wrapper into current starboard
       this.$contentWrapper.insertAfter(self.layerswitcher.contentDiv);
+
+      // initialize datepicker
+      jQuery('.' + c4g.maps.constant.css.PLUGIN_DATETIMEPICKER_CLASS).appendDtpicker(self.dateTimePickerOptions);
+      */
+      var self,
+          contentWrapper,
+          contentHeadline,
+          contentInfo;
+
+      self = this;
+
+      self.activeLayerFilter = {};
+      self.filterLayerReference = {};
+
+      contentWrapper = document.createElement('div');
+
+      contentHeadline = document.createElement('h4');
+      contentHeadline.innerHTML = c4g.maps.constant.i18n.TRACKING_FILTER_TITLE;
+      contentWrapper.appendChild(contentHeadline);
+
+      this.contentDiv = document.createElement('div');
+      this.contentDiv.className = c4g.maps.constant.css.STARBOARD_CONTENT_FILTER + ' ' + c4g.maps.constant.css.STARBOARD_FILTER_INPUT_WRAPPER;
+      contentInfo = document.createElement('p');
+      this.contentDiv.appendChild(contentInfo);
+      contentWrapper.appendChild(this.contentDiv);
+
+      self.view = self.layerswitcher.starboard.addView({
+        name: 'layerswitcher',
+        triggerConfig: {
+          // @TODO: Check
+          // tipLabel: c4g.maps.constant.i18n.STARBOARD_VIEW_TRIGGER_LAYERSWITCHER,
+          tipLabel: c4g.maps.constant.i18n.STARBOARD_VIEW_TRIGGER_FILTER,
+          className: c4g.maps.constant.css.STARBOARD_VIEW_TRIGGER_FILTER
+        },
+        sectionElements: [
+          {section: self.layerswitcher.starboard.contentContainer, element: contentWrapper},
+          {section: self.layerswitcher.starboard.bottomToolbar, element: self.layerswitcher.starboard.viewTriggerBar}
+        ]
+      });
+
+      this.$contentDiv = $(this.contentDiv);
+
+      self.dateTimePickerOptions = {
+        'dateFormat': "DD.MM.YYYY hh:mm",
+        'locale': "de",
+        'firstDayOfWeek': 1,
+        'closeOnSelected': true,
+        'autodateOnStart': false
+      };
+
+      // from input
+      this.$inputFrom = $('<input type="text" name="from" class="' + c4g.maps.constant.css.PLUGIN_DATETIMEPICKER_CLASS + '" placeholder="' + c4g.maps.constant.i18n.TRACKING_FILTER_FROM_PLACEHOLDER + '">');
+      this.$inputFrom.focus(function(){
+        $(this).removeClass(c4g.maps.constant.css.ERROR);
+      });
+
+      // to input
+      this.$inputTo = $('<input type="text" name="to" class="' + c4g.maps.constant.css.PLUGIN_DATETIMEPICKER_CLASS + '" placeholder="' + c4g.maps.constant.i18n.TRACKING_FILTER_TO_PLACEHOLDER + '">');
+      this.$inputTo.focus(function(){
+        $(this).removeClass(c4g.maps.constant.css.ERROR);
+      });
+
+      // submit button
+      this.$submitButton = $('<button type="submit">' + c4g.maps.constant.i18n.TRACKING_FILTER_SUBMITBUTTON + '</button>');
+
+      // append items to input-wrapper
+      this.$inputFrom.appendTo(this.$contentDiv);
+      //$('<br>').appendTo($contentDiv);
+      this.$inputTo.appendTo(this.$contentDiv);
+      //$('<br>').appendTo($contentDiv);
+      this.$submitButton.appendTo(this.$contentDiv);
+
+      // register button interaction
+      this.$submitButton.click(function(event){
+        event.preventDefault();
+        self.handleRequests();
+
+      });
+
+      // append input wrapper to filter wrapper
+      //contentWrapper.appendChild(this.contentDiv);
+
+      //this.$contentWrapper = $(contentWrapper);
+
+      //this.$contentWrapper.addClass(c4g.maps.constant.css.HIDE);
+
+      // append filter wrapper into current starboard
+      //this.$contentWrapper.insertAfter(self.layerswitcher.contentDiv);
 
       // initialize datepicker
       jQuery('.' + c4g.maps.constant.css.PLUGIN_DATETIMEPICKER_CLASS).appendDtpicker(self.dateTimePickerOptions);

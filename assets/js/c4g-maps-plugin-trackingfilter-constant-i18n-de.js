@@ -14,7 +14,9 @@ this.c4g.maps.constant = this.c4g.maps.constant || {};
     TRACKING_FILTER_TITLE: 'Filter',
     TRACKING_FILTER_SUBMITBUTTON: 'Filter anwenden',
     TRACKING_FILTER_FROM_PLACEHOLDER: 'von… (dd.mm.yyyy hh:mm)',
-    TRACKING_FILTER_TO_PLACEHOLDER: '…bis (dd.mm.yyyy hh:mm)'
+    TRACKING_FILTER_TO_PLACEHOLDER: '…bis (dd.mm.yyyy hh:mm)',
+
+    STARBOARD_VIEW_TRIGGER_FILTER: 'Filter'
 
   }); // end of "language constants" ---
 
