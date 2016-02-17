@@ -371,6 +371,21 @@ class Tracking extends \Controller
 
   }
 
+  public static function getIgnitionStatus($indDeviceId)
+  {
+    // 12 = Zündung an
+    // 13 = Zündung aus
+    $objDatabase = \Database::getInstance();
+    $objIgnitionInfo = $objDatabase->prepare("SELECT * FROM tl_c4g_tracking_positions WHERE device=? AND (boxStatus=? OR boxStatus=?) ORDER BY tstamp DESC")
+                                   ->limit(1)
+                                   ->execute($indDeviceId, 12, 13);
+    if ($objIgnitionInfo->numRows)
+    {
+      return $objIgnitionInfo->boxStatus == 12;
+    }
+    return null;
+  }
+
   private static function manipulateTrackingInfo($strKey, $strValue)
   {
     switch ($strKey)

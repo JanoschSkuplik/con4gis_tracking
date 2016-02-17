@@ -21,7 +21,13 @@ $GLOBALS['TL_LANG']['tl_c4g_maps']['databaseStatus'] = array('Mit folgendem Wert
 
 $GLOBALS['TL_LANG']['tl_c4g_maps']['liveTrackingType'] = array('Live-Tracking-Typ', 'Einträge gruppieren, zusammenfassen oder nur einzelne Geräte auswählen');
 $GLOBALS['TL_LANG']['tl_c4g_maps']['liveTrackingDevices'] = array('Geräte','Geräte');
+
 $GLOBALS['TL_LANG']['tl_c4g_maps']['isFilterable'] = array('Strukturelement ist filterbar', 'Zeigt am Strukturelement den Filter-Button an und initialisiert den Filter');
+$GLOBALS['TL_LANG']['tl_c4g_maps']['filterLocationStyle'] = array('Lokationstil für Filter-Tracks', 'Lokationstil für Filter-Tracks');
+
+$GLOBALS['TL_LANG']['tl_c4g_maps']['useIgnitionStatusStyle'] = array('Extra Stil für Zündungsstatus verwenden','Extra Stil für Zündungsstatus verwenden');
+$GLOBALS['TL_LANG']['tl_c4g_maps']['ignitionStatusStyleOn'] = array('Stil für Zündung an','Stil für Zündung an');
+$GLOBALS['TL_LANG']['tl_c4g_maps']['ignitionStatusStyleOff'] = array('Stil für Zündung aus','Stil für Zündung aus');
 
 $GLOBALS['TL_LANG']['tl_c4g_maps']['references']['tPois'] = 'Tracking – POIs';
 $GLOBALS['TL_LANG']['tl_c4g_maps']['references']['tTracks'] = 'Tracking – Tracks';

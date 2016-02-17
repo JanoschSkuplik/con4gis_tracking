@@ -462,7 +462,7 @@ class TrackingFrontend extends \Frontend
                 'id' => '',
                 'type' => 'urlData',
                 'format' => 'GeoJSON',
-                'locationStyle' => $objDevice->locationStyle ? $objDevice->locationStyle : $child['raw']->locstyle,
+                'locationStyle' => $this->checkAndReparseLocationStyle($objDevice->locationStyle ? $objDevice->locationStyle : $child['raw']->locstyle, $child, $objDevice),
                 'data' => array
                 (
                   'url' => "system/modules/con4gis_core/api/index.php/trackingService?method=getLive&maps=" . $child['id'] . "&id=" . $objDevice->id
@@ -923,6 +923,29 @@ class TrackingFrontend extends \Frontend
         }
 
       }
+    }
+
+    private function checkAndReparseLocationStyle($intCurrentLocationStyle, $arrMapsSettings, $objDevice)
+    {
+        if ($arrMapsSettings['raw']->useIgnitionStatusStyle)
+        {
+            // use ignition status for location style
+            if (($blnIgnitionStatusIsOn = \Tracking::getIgnitionStatus($objDevice->id))!==null)
+            {
+                if ($blnIgnitionStatusIsOn)
+                {
+                    return $arrMapsSettings['raw']->ignitionStatusStyleOn;
+                    return "an";
+                }
+                else
+                {
+                    return $arrMapsSettings['raw']->ignitionStatusStyleOff;
+                    return "aus";
+                }
+            }
+
+        }
+        return $intCurrentLocationStyle;
     }
 
 }

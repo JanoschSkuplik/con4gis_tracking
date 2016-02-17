@@ -194,7 +194,7 @@ $GLOBALS['TL_DCA']['tl_c4g_tracking_devices'] = array
 			'exclude'                 => true,
 			'inputType'               => 'select',
 			'options_callback'        => array('tl_c4g_tracking_devices','getLocStyles'),
-			'eval'                    => array('tl_class'=>'w50'),
+			'eval'                    => array('tl_class'=>'w50', 'chosen'=>true, 'includeBlankOption'=>true),
 			'wizard' => array
 			(
 				array('tl_c4g_tracking_devices', 'editLocationStyle')

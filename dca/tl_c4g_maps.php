@@ -20,6 +20,7 @@ $GLOBALS['TL_DCA']['tl_c4g_maps']['palettes']['__selector__'][] = 'memberVisibil
 $GLOBALS['TL_DCA']['tl_c4g_maps']['palettes']['__selector__'][] = 'useDatabaseStatus';
 $GLOBALS['TL_DCA']['tl_c4g_maps']['palettes']['__selector__'][] = 'liveTrackingType';
 $GLOBALS['TL_DCA']['tl_c4g_maps']['palettes']['__selector__'][] = 'isFilterable';
+$GLOBALS['TL_DCA']['tl_c4g_maps']['palettes']['__selector__'][] = 'useIgnitionStatusStyle';
 
 $GLOBALS['TL_DCA']['tl_c4g_maps']['palettes']['tPois'] = '{general_legend},name,profile,profile_mobile,published;{map_legend},is_map;{location_legend},location_type,tDontShowIfEmpty,memberVisibility,useDatabaseStatus,locstyle,data_layername,data_hidelayer,popup_info,routing_to,loc_linkurl,loc_onclick_zoomto,loc_minzoom,loc_maxzoom;{protection_legend:hide},protect_element;';
 
@@ -28,7 +29,7 @@ $GLOBALS['TL_DCA']['tl_c4g_maps']['palettes']['tTracks'] = '{general_legend},nam
 $GLOBALS['TL_DCA']['tl_c4g_maps']['palettes']['tBoxes'] = '{general_legend},name,profile,profile_mobile,published;{map_legend},is_map;{location_legend},location_type,tDontShowIfEmpty,memberVisibility,useDatabaseStatus,locstyle,data_layername,data_hidelayer,loc_onclick_zoomto,loc_minzoom,loc_maxzoom;{protection_legend:hide},protect_element;';
 
 
-$defaultTrackingLivePalette = '{general_legend},name,profile,profile_mobile,published;{map_legend},is_map;{location_legend},location_type,memberVisibility,useDatabaseStatus,locstyle,data_layername,data_hidelayer,loc_only_in_parent,loc_minzoom,loc_maxzoom,popupType,popup_info;{live_tracking_legend},liveTrackingType,isFilterable;{protection_legend:hide},protect_element;';
+$defaultTrackingLivePalette = '{general_legend},name,profile,profile_mobile,published;{map_legend},is_map;{location_legend},location_type,memberVisibility,useDatabaseStatus,locstyle,data_layername,data_hidelayer,loc_only_in_parent,loc_minzoom,loc_maxzoom,popupType,popup_info;{live_tracking_legend},liveTrackingType,isFilterable,useIgnitionStatusStyle;{protection_legend:hide},protect_element;';
 
 
 $GLOBALS['TL_DCA']['tl_c4g_maps']['palettes']['tLive'] = $defaultTrackingLivePalette;
@@ -44,6 +45,7 @@ $GLOBALS['TL_DCA']['tl_c4g_maps']['subpalettes']['memberVisibility_specialGroups
 $GLOBALS['TL_DCA']['tl_c4g_maps']['subpalettes']['memberVisibility_specialMember'] = 'specialMembers';
 $GLOBALS['TL_DCA']['tl_c4g_maps']['subpalettes']['useDatabaseStatus'] = 'databaseStatus';
 $GLOBALS['TL_DCA']['tl_c4g_maps']['subpalettes']['isFilterable'] = 'filterLocationStyle';
+$GLOBALS['TL_DCA']['tl_c4g_maps']['subpalettes']['useIgnitionStatusStyle'] = 'ignitionStatusStyleOn,ignitionStatusStyleOff';
 
 /*
  * Darstellungsart
@@ -88,12 +90,12 @@ $GLOBALS['TL_DCA']['tl_c4g_maps']['fields']['isFilterable'] = array
     'exclude'                 => true,
     'filter'                  => true,
     'inputType'               => 'checkbox',
-    'eval'                    => array('submitOnChange'=>true, 'tl_class'=>'clr w50 m12'),
+    'eval'                    => array('submitOnChange'=>true, 'tl_class'=>'clr w50'),
     'sql'                     => "char(1) NOT NULL default ''"
 );
 $GLOBALS['TL_DCA']['tl_c4g_maps']['fields']['filterLocationStyle'] = array
 (
-    'label'                   => &$GLOBALS['TL_LANG']['tl_c4g_maps']['locstyle'],
+    'label'                   => &$GLOBALS['TL_LANG']['tl_c4g_maps']['filterLocationStyle'],
     'exclude'                 => true,
     'inputType'               => 'select',
     'options_callback'        => array('tl_c4g_maps','getLocStyles'),
@@ -177,6 +179,41 @@ $GLOBALS['TL_DCA']['tl_c4g_maps']['fields']['specialGroups'] = array
 			'sql'                     => "blob NULL"
 );
 
+$GLOBALS['TL_DCA']['tl_c4g_maps']['fields']['useIgnitionStatusStyle'] = array
+(
+    'label'                   => &$GLOBALS['TL_LANG']['tl_c4g_maps']['useIgnitionStatusStyle'],
+    'exclude'                 => true,
+    'filter'                  => true,
+    'inputType'               => 'checkbox',
+    'eval'                    => array('submitOnChange'=>true, 'tl_class'=>'clr'),
+    'sql'                     => "char(1) NOT NULL default ''"
+);
+$GLOBALS['TL_DCA']['tl_c4g_maps']['fields']['ignitionStatusStyleOn'] = array
+(
+    'label'                   => &$GLOBALS['TL_LANG']['tl_c4g_maps']['ignitionStatusStyleOn'],
+    'exclude'                 => true,
+    'inputType'               => 'select',
+    'options_callback'        => array('tl_c4g_maps','getLocStyles'),
+    'eval'                    => array('tl_class'=>'w50'),
+    'wizard' => array
+    (
+        array('tl_c4g_maps', 'editLocationStyle')
+    ),
+    'sql'                     => "int(10) unsigned NOT NULL default '0'"
+);
+$GLOBALS['TL_DCA']['tl_c4g_maps']['fields']['ignitionStatusStyleOff'] = array
+(
+    'label'                   => &$GLOBALS['TL_LANG']['tl_c4g_maps']['ignitionStatusStyleOff'],
+    'exclude'                 => true,
+    'inputType'               => 'select',
+    'options_callback'        => array('tl_c4g_maps','getLocStyles'),
+    'eval'                    => array('tl_class'=>'w50'),
+    'wizard' => array
+    (
+        array('tl_c4g_maps', 'editLocationStyle')
+    ),
+    'sql'                     => "int(10) unsigned NOT NULL default '0'"
+);
 
 /**
  * Class tl_c4g_tracking_devices
