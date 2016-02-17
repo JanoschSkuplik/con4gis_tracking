@@ -17,7 +17,7 @@ c4g.maps.plugin.layerswitcher_forEachItem.push(
 
     if (c4g.maps.layers[objParam.entry.data('uid')].filterable) {
 
-      uid = objParam.entry.data('uid');
+      /*uid = objParam.entry.data('uid');
 
       filterBtn = document.createElement('a');
       filterBtn.setAttribute('href', '#');
@@ -46,7 +46,7 @@ c4g.maps.plugin.layerswitcher_forEachItem.push(
         }
 
         objParam.that.proxy.plugins.trackingdatafilter.plugin.changeFromLayer('filter_' + uid, c4g.maps.layers[objParam.entry.data('uid')].filterable);
-      });
+      });*/
 
 
 
@@ -189,7 +189,10 @@ c4g.maps.plugin.layerswitcher_forEachItem.push(
         sectionElements: [
           {section: self.layerswitcher.starboard.contentContainer, element: contentWrapper},
           {section: self.layerswitcher.starboard.bottomToolbar, element: self.layerswitcher.starboard.viewTriggerBar}
-        ]
+        ],
+        deactivateFunction: function() {
+          self.hideAllFilterLayer();
+        }
       });
 
       this.$contentDiv = $(this.contentDiv);
@@ -313,6 +316,8 @@ c4g.maps.plugin.layerswitcher_forEachItem.push(
         }
       }
 
+      self.getFilterableLayers();
+
       if (!hasErrors) {
         for (var key in self.activeLayerFilter) {
           if (self.activeLayerFilter.hasOwnProperty(key)) {
@@ -378,6 +383,21 @@ c4g.maps.plugin.layerswitcher_forEachItem.push(
         }
       };
 
+    },
+
+    getFilterableLayers: function() {
+      var self = this;
+
+      self.activeLayerFilter = {};
+
+      for (var key in self.layerswitcher.proxy.activeLayerIds) {
+        if (self.layerswitcher.proxy.activeLayerIds.hasOwnProperty(key)) {
+          if (c4g.maps.layers[key] && c4g.maps.layers[key].filterable) {
+            //console.log(c4g.maps.layers[key]);
+            self.activeLayerFilter['filter_'+key] = c4g.maps.layers[key].filterable;
+          }
+        }
+      }
     },
 
     changeFromLayer: function(id, itemFilterParams) {
