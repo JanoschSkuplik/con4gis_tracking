@@ -137,7 +137,10 @@ class TrackingService extends \Controller
             $this->arrReturn = $arrReturn;
             return true;
         }
-        $this->arrReturn = array();
+        $this->arrReturn = array
+        (
+            'type' => 'Feature'
+        );
         return true;
     }
 
