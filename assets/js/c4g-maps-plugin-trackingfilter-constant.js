@@ -16,7 +16,10 @@ this.c4g.maps.constant = this.c4g.maps.constant || {};
     STARBOARD_FILTER_WRAPPER: 'c4g-starboard-filter-wrapper',
     STARBOARD_FILTER_INPUT_WRAPPER: 'c4g-starboard-filter-input-wrapper',
 
-    PLUGIN_DATETIMEPICKER_CLASS: 'c4g-tracking-datetimepicker'
+    PLUGIN_DATETIMEPICKER_CLASS: 'c4g-tracking-datetimepicker',
+
+    STARBOARD_VIEW_TRIGGER_FILTER: 'c4g-starboard-view-trigger-filter',
+    STARBOARD_CONTENT_FILTER: 'c4g-content-filter'
 
   }); // end of "css constants" ---
 

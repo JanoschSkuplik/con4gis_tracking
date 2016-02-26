@@ -79,3 +79,7 @@
     padding: 0 20px;
     margin-top: 10px;
 }
+
+button.c4g-starboard-view-trigger-filter:before {
+    content: "\f0b0";
+}
