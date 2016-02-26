@@ -1049,34 +1049,107 @@ class TrackingService extends \Controller
 
         $intMaxAge = \Input::get('max') ? \Input::get('max') : 0;
 
-        // check imei number
-        $objTrackingBox = \C4gTrackingDevicesModel::findByImeiEndpiece(\Input::get('imei'));
+        $objLastPosition = $this->getLastPositionForImei(\Input::get('imei'), $intMaxAge, true);
+
+        if ($objLastPosition->id)
+        {
+            $this->arrReturn['error'] = false;
+            $this->arrReturn['position'] = $objLastPosition->row();
+        }
+
+        return true;
+    }
+
+    public function getLastPositionForImei($varImei, $intMaxAge=0, $blnRequestForApi=false)
+    {
+
+        $objTrackingBox = \C4gTrackingDevicesModel::findByImeiEndpiece($varImei);
 
         if ($objTrackingBox === null)
         {
-            $this->arrReturn = $this->getErrorReturn(array
-            (
-                "message" => "Device not found",
-                "status" => 900
-            ));
-            return true;
+            if ($blnRequestForApi)
+            {
+                $this->arrReturn = $this->getErrorReturn(array
+                (
+                    "message" => "Device not found",
+                    "status" => 900
+                ));
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
 
         $objLastPosition = $objTrackingBox->getRelated('lastPositionId');
 
         if ($objLastPosition === null) {
-            $this->arrReturn = $this->getErrorReturn(array
-            (
-                "message" => "No position found"
-            ));
-            return true;
+            if ($blnRequestForApi)
+            {
+                $this->arrReturn = $this->getErrorReturn(array
+                (
+                    "message" => "No position found"
+                ));
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
 
-        $this->arrReturn['error'] = false;
-        $this->arrReturn['position'] = $objLastPosition->row();
+        if ($intMaxAge > 0)
+        {
+            $strTimeStamp = time() - (60 * $intMaxAge);
 
+            if ($objLastPosition->tstamp < $strTimeStamp)
+            {
+                if ($blnRequestForApi)
+                {
+                    $this->arrReturn = $this->getErrorReturn(array
+                    (
+                        "message" => "No position found"
+                    ));
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+        }
 
-        return true;
+        return $objLastPosition;
+
+    }
+
+    public function getLastPositionForDevice($intDeviceId, $intMaxAge=0)
+    {
+        $objDevice = \C4gTrackingDevicesModel::findOneBy('id', $intDeviceId);
+
+        if ($objDevice === null)
+        {
+            return false;
+        }
+
+        $objLastPosition = $objDevice->getRelated('lastPositionId');
+
+        if ($objLastPosition === null) {
+            return false;
+        }
+
+        if ($intMaxAge > 0)
+        {
+            $strTimeStamp = time() - (60 * $intMaxAge);
+
+            if ($objLastPosition->tstamp < $strTimeStamp)
+            {
+                return false;
+            }
+        }
+
+        return $objLastPosition;
     }
 
     private function trackingGetLastPositionForMember()
