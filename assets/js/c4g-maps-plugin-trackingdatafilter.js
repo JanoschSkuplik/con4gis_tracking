@@ -1,19 +1,19 @@
 // "namespace"
 this.c4g = this.c4g || {};
 this.c4g.maps = this.c4g.maps || {};
-this.c4g.maps.plugin = this.c4g.maps.plugin || {};
-this.c4g.maps.plugin.layerswitcher_forEachItem = this.c4g.maps.plugin.layerswitcher_forEachItem || [];
+this.c4g.maps.hook = this.c4g.maps.hook || {};
+this.c4g.maps.hook.layerswitcher_forEachItem = this.c4g.maps.hook.layerswitcher_forEachItem || [];
 
 (function ($, c4g) {
   'use strict';
 
-c4g.maps.plugin.layerswitcher_forEachItem.push(
+c4g.maps.hook.layerswitcher_forEachItem.push(
   function (objParam) {
 
     var filterBtn,
         uid;
 
-    new c4g.maps.plugin.Trackingdatafilter(objParam.that);
+    new c4g.maps.hook.Trackingdatafilter(objParam.that);
 
     if (c4g.maps.layers[objParam.entry.data('uid')].filterable) {
 
@@ -55,7 +55,7 @@ c4g.maps.plugin.layerswitcher_forEachItem.push(
   }
 );
 
-  c4g.maps.plugin.Trackingdatafilter = function(Layerswitcher) {
+  c4g.maps.hook.Trackingdatafilter = function(Layerswitcher) {
 
     this.layerswitcher = Layerswitcher;
 
@@ -71,7 +71,7 @@ c4g.maps.plugin.layerswitcher_forEachItem.push(
   }
 
   // Add methods
-  c4g.maps.plugin.Trackingdatafilter.prototype = $.extend(c4g.maps.plugin.Trackingdatafilter.prototype, {
+  c4g.maps.hook.Trackingdatafilter.prototype = $.extend(c4g.maps.hook.Trackingdatafilter.prototype, {
 
     /**
      * @TODO: [create description]
@@ -245,7 +245,7 @@ c4g.maps.plugin.layerswitcher_forEachItem.push(
       //this.$contentWrapper.insertAfter(self.layerswitcher.contentDiv);
 
       // initialize datepicker
-      jQuery('.' + c4g.maps.constant.css.PLUGIN_DATETIMEPICKER_CLASS).appendDtpicker(self.dateTimePickerOptions);
+      jQuery('.' + c4g.maps.constant.css.PLUGIN_DATETIMEPICKER_CLASS, this.$contentDiv).appendDtpicker(self.dateTimePickerOptions);
 
     },
 
