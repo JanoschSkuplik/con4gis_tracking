@@ -164,6 +164,16 @@ class Tracking extends \Controller
       $arrSet['imei'] = $arrPositionData['imei'];
     }
 
+    $objTrack = new \C4gTrackingTracksModel();
+    $objTrack->setRow($arrSet)->save();
+
+    $arrTrackingTrack['trackId'] = $objTrack->id;
+    $arrTrackingTrack['trackUuid'] = $strUuid;
+
+    $arrTrackingTrack['version'] = $GLOBALS['con4gis_tracking_extension']['version'];
+
+    return $arrTrackingTrack;
+
   }
 
 
